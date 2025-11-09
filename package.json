@@ -1,0 +1,56 @@
+{
+    "name": "kdp-algoritmai",
+    "version": "1.0.0",
+    "description": "Kursinio darbo projekto (KDP) algoritmai. 2025 I semestras.",
+    "main": "./dist/vrp.cjs.js",
+    "module": "./dist/vrp.es.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/vrp.cjs.js",
+            "import": "./dist/vrp.es.js"
+        }
+    },
+    "scripts": {
+        "bench": "pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.js",
+        "build": "vite build",
+        "test": "vitest run",
+        "test:watch": "vitest watch",
+        "lint:attw": "attw --pack .",
+        "lint:format": "prettier --check .",
+        "format": "prettier --write .",
+        "generate:illustrations": "python generate-illustrations.py"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AlexShukel/KDP-Algoritmai.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AlexShukel/KDP-Algoritmai/issues"
+    },
+    "homepage": "https://github.com/AlexShukel/KDP-Algoritmai#readme",
+    "engines": {
+        "node": "~24.11.0",
+        "pnpm": "~10.20.0"
+    },
+    "packageManager": "pnpm@10.20.0",
+    "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.2",
+        "@types/lodash": "^4.17.20",
+        "@types/node": "^24.10.0",
+        "prettier": "^3.6.2",
+        "tsx": "^4.20.6",
+        "typescript": "^5.9.3",
+        "vite": "^7.1.12",
+        "vite-plugin-dts": "^4.5.4",
+        "vite-plugin-static-copy": "^3.1.4",
+        "vitest": "^4.0.6"
+    },
+    "dependencies": {
+        "lodash": "^4.17.21"
+    }
+}
