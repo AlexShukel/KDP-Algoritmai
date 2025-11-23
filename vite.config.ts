@@ -28,14 +28,14 @@ export default defineConfig({
             insertTypesEntry: true,
             outDir: 'dist',
         }),
-        // viteStaticCopy({
-        //     targets: [
-        //         {
-        //             src: 'src/problems/**/*',
-        //             dest: 'problems',
-        //         },
-        //     ],
-        // }),
+        viteStaticCopy({
+            targets: [
+                {
+                    src: 'problems/**/*',
+                    dest: 'problems',
+                },
+            ],
+        }),
     ],
     define: {
         'import.meta.vitest': 'undefined',
