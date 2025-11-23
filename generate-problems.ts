@@ -14,7 +14,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import { orderJsonSchema, ProblemJson, vehicleJsonSchema } from './src/types/problem-json';
+import { orderJsonSchema, Problem, vehicleJsonSchema } from './src/types/types';
 
 const dataDir = path.resolve(__dirname, 'data');
 const ordersJsonPath = path.resolve(dataDir, 'orders_1763917787471.json');
@@ -65,14 +65,13 @@ const main = async () => {
                 const vehicles = getRandomSubset(allVehicles, vCount);
                 const orders = getRandomSubset(allOrders, oCount);
 
-                const problem: ProblemJson = {
+                const problem = {
                     vehicles,
                     orders,
                     constraints: {
-                        maxDailyDistance: 600,
                         maxTotalDistance: 1200,
                     },
-                };
+                } satisfies Problem;
 
                 const fileName = `${i}_${timestamp}.json`;
                 const filePath = path.join(targetDir, fileName);

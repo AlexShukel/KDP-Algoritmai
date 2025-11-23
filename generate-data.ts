@@ -5,8 +5,8 @@
  *
  * Purposes:
  * 1. Ingests raw CSV data representing real-world shipping lanes.
- * 2. Transforms CSV rows into strictly typed `OrderJson` objects, calculating geohashes and prices.
- * 3. Synthetically generates a large fleet of `VehicleJson` objects scattered across Europe.
+ * 2. Transforms CSV rows into strictly typed `Order` objects, calculating geohashes and prices.
+ * 3. Synthetically generates a large fleet of `Vehicle` objects scattered across Europe.
  * 4. Persists the normalized data into `data/orders_<ts>.json` and `data/vehicles_<ts>.json`.
  */
 
@@ -16,7 +16,7 @@ import z from 'zod';
 import Geohash from 'latlon-geohash';
 import path from 'path';
 
-import type { OrderJson, VehicleJson } from './src/types/problem-json';
+import type { Order, Vehicle } from './src/types/types';
 
 const getRandomFloat = (min: number, max: number) => {
     return Math.random() * (max - min) + min;
@@ -65,8 +65,8 @@ const seedDatasetSchema = z
 
 const GEOHASH_PRECISION = 6;
 
-const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): OrderJson[] => {
-    const orders: OrderJson[] = [];
+const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): Order[] => {
+    const orders: Order[] = [];
 
     for (const { ID, LAT_FROM, LON_FROM, LAT_TO, LON_TO, VEHICLE_QNTY, MODEL_LF, DISTANCE_KM } of seedDataset) {
         orders.push(
@@ -84,7 +84,7 @@ const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): OrderJs
                 },
                 loadFactor: MODEL_LF,
                 price: DISTANCE_KM * getRandomPriceKm(),
-            } satisfies OrderJson),
+            } satisfies Order),
         );
     }
 
@@ -92,8 +92,8 @@ const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): OrderJs
 };
 
 const VEHICLES_N = 20000;
-const generateVehicles = (): VehicleJson[] => {
-    const vehicles: VehicleJson[] = new Array(VEHICLES_N);
+const generateVehicles = (): Vehicle[] => {
+    const vehicles: Vehicle[] = new Array(VEHICLES_N);
 
     for (let i = 0; i < VEHICLES_N; ++i) {
         const { latitude, longitude } = getRandomEuropeCoords();
