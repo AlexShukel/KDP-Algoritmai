@@ -17,7 +17,7 @@
 
 import { DistanceCalculator } from '../../types/algorithm';
 import { RouteStop, Vehicle } from '../../types/types';
-import { euclideanDistanceCalculator } from '../../utils/EuclideanDistanceCalculator';
+import { euclideanDistanceCalculator } from '../../utils/euclideanDistanceCalculator';
 import { ExtendedRouteStop } from './generateAllVehicleRoutes';
 
 export const BRUTE_FORCE_ERRORS = {

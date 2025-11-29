@@ -7,7 +7,7 @@
  * 1. Generates all possible assignments of Orders to Vehicles (Partitioning).
  * 2. For every assignment, generates all possible route permutations for each vehicle.
  * 3. Simulates each route to check constraints and calculate costs.
- * 4. Returns the global minimum based on the configured goal (Price, Total Distance, or Empty Distance).
+ * 4. Returns the global minimum for each goal (Price, Total Distance, and Empty Distance).
  *
  * Complexity:
  * The overall complexity is the product of the assignment complexity and the routing complexity.
@@ -19,17 +19,31 @@
  * for very small datasets (N < 6) or for validating heuristic solutions.
  */
 
-import { Algorithm, AlgorithmConfig } from '../../types/algorithm';
+import { AlgorithmConfig } from '../../types/algorithm';
 import { Problem, ProblemSolution, VehicleRoute } from '../../types/types';
 import { BRUTE_FORCE_ERRORS, followRoute } from './followRoute';
 import { generateAllOrderAssignments } from './generateAllOrderAssignments';
 import { generateAllVehicleRoutes } from './generateAllVehicleRoutes';
 
-export class BruteForceAlgorithm implements Algorithm {
+export class BruteForceAlgorithm {
     name: string = 'brute-force';
 
-    solve({ constraints, orders, vehicles }: Problem, config: AlgorithmConfig): ProblemSolution {
-        const bestSolution = {
+    solve({ orders, vehicles, constraints }: Problem, config: Pick<AlgorithmConfig, 'distanceCalc'>) {
+        const bestDistanceSolution = {
+            routes: {},
+            emptyDistance: Infinity,
+            totalDistance: Infinity,
+            totalPrice: Infinity,
+        } satisfies ProblemSolution;
+
+        const bestEmptyDistanceSolution = {
+            routes: {},
+            emptyDistance: Infinity,
+            totalDistance: Infinity,
+            totalPrice: Infinity,
+        } satisfies ProblemSolution;
+
+        const bestPriceSolution = {
             routes: {},
             emptyDistance: Infinity,
             totalDistance: Infinity,
@@ -42,7 +56,9 @@ export class BruteForceAlgorithm implements Algorithm {
             let distanceSum = 0;
             let emptyDistanceSum = 0;
             let priceSum = 0;
-            const currentRoutes: Record<number, VehicleRoute> = {};
+            const currentRoutesDistance: Record<number, VehicleRoute> = {};
+            const currentRoutesEmptyDistance: Record<number, VehicleRoute> = {};
+            const currentRoutesPrice: Record<number, VehicleRoute> = {};
 
             for (const [vehicleId, orderIds] of assignment.entries()) {
                 const routes = generateAllVehicleRoutes(orders, orderIds);
@@ -61,16 +77,32 @@ export class BruteForceAlgorithm implements Algorithm {
                             config.distanceCalc,
                         );
 
-                        if (
-                            (config.goal === 'emptyDistance' && emptyDistance < minRouteEmptyDistance) ||
-                            (config.goal === 'totalDistance' && totalDistance < minRouteDistance) ||
-                            (config.goal === 'totalPrice' && totalPrice < minRoutePrice)
-                        ) {
+                        if (emptyDistance < minRouteEmptyDistance) {
                             minRouteEmptyDistance = emptyDistance;
+
+                            currentRoutesEmptyDistance[vehicleId] = {
+                                totalDistance,
+                                emptyDistance,
+                                totalPrice,
+                                stops,
+                            };
+                        }
+
+                        if (totalDistance < minRouteDistance) {
                             minRouteDistance = totalDistance;
+
+                            currentRoutesDistance[vehicleId] = {
+                                totalDistance,
+                                emptyDistance,
+                                totalPrice,
+                                stops,
+                            };
+                        }
+
+                        if (totalPrice < minRoutePrice) {
                             minRoutePrice = totalPrice;
 
-                            currentRoutes[vehicleId] = {
+                            currentRoutesPrice[vehicleId] = {
                                 totalDistance,
                                 emptyDistance,
                                 totalPrice,
@@ -104,18 +136,32 @@ export class BruteForceAlgorithm implements Algorithm {
                 continue;
             }
 
-            if (
-                (config.goal === 'emptyDistance' && emptyDistanceSum < bestSolution.emptyDistance) ||
-                (config.goal === 'totalDistance' && distanceSum < bestSolution.totalDistance) ||
-                (config.goal === 'totalPrice' && priceSum < bestSolution.totalPrice)
-            ) {
-                bestSolution.emptyDistance = emptyDistanceSum;
-                bestSolution.totalDistance = distanceSum;
-                bestSolution.totalPrice = priceSum;
-                bestSolution.routes = currentRoutes;
+            if (emptyDistanceSum < bestEmptyDistanceSolution.emptyDistance) {
+                bestEmptyDistanceSolution.emptyDistance = emptyDistanceSum;
+                bestEmptyDistanceSolution.totalDistance = distanceSum;
+                bestEmptyDistanceSolution.totalPrice = priceSum;
+                bestEmptyDistanceSolution.routes = currentRoutesEmptyDistance;
+            }
+
+            if (distanceSum < bestDistanceSolution.totalDistance) {
+                bestDistanceSolution.emptyDistance = emptyDistanceSum;
+                bestDistanceSolution.totalDistance = distanceSum;
+                bestDistanceSolution.totalPrice = priceSum;
+                bestDistanceSolution.routes = currentRoutesEmptyDistance;
+            }
+
+            if (priceSum < bestPriceSolution.totalPrice) {
+                bestPriceSolution.emptyDistance = emptyDistanceSum;
+                bestPriceSolution.totalDistance = distanceSum;
+                bestPriceSolution.totalPrice = priceSum;
+                bestPriceSolution.routes = currentRoutesEmptyDistance;
             }
         }
 
-        return bestSolution;
+        return {
+            bestEmptyDistanceSolution,
+            bestDistanceSolution,
+            bestPriceSolution,
+        };
     }
 }

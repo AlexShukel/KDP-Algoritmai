@@ -22,7 +22,7 @@
         "format": "prettier --write .",
         "generate:data": "tsx ./generate-data.ts",
         "generate:problems": "tsx ./generate-problems.ts",
-        "generate:illustrations": "python generate-illustrations.py"
+        "solve:brute-force": "tsx ./brute-force-solve-problems.ts"
     },
     "repository": {
         "type": "git",
