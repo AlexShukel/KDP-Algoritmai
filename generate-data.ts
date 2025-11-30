@@ -68,7 +68,7 @@ const GEOHASH_PRECISION = 6;
 const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): Order[] => {
     const orders: Order[] = [];
 
-    for (const { ID, LAT_FROM, LON_FROM, LAT_TO, LON_TO, VEHICLE_QNTY, MODEL_LF, DISTANCE_KM } of seedDataset) {
+    for (const { ID, LAT_FROM, LON_FROM, LAT_TO, LON_TO, VEHICLE_QNTY, MODEL_LF } of seedDataset) {
         orders.push(
             ...[...new Array(VEHICLE_QNTY)].fill({
                 id: ID,
@@ -83,7 +83,7 @@ const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): Order[]
                     longitude: LON_TO,
                 },
                 loadFactor: MODEL_LF,
-                price: DISTANCE_KM * getRandomPriceKm(),
+                // price: DISTANCE_KM * getRandomPriceKm(),
             } satisfies Order),
         );
     }

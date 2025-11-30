@@ -13,7 +13,7 @@ const main = async () => {
         // get number of vehicles and number of orders from dir name
         const [vehQty, ordQty] = dir.split('_').map(val => Number.parseInt(val));
 
-        if (vehQty !== 5 || ordQty !== 5) {
+        if (vehQty !== 6 || ordQty !== 6) {
             continue;
         }
 
@@ -38,7 +38,7 @@ const main = async () => {
             totalExecTime += execTime;
 
             console.log(
-                `Solved problem in ${execTime}ms.\nMin total distance = ${output.bestDistanceSolution.totalDistance}\nMin total empty distance = ${output.bestEmptyDistanceSolution.emptyDistance}\nMin total price = ${output.bestPriceSolution.totalPrice}`,
+                `Solved problem in ${execTime}ms.\nMin total distance = ${output.bestDistanceSolution.totalDistance}\nMin total empty distance = ${output.bestEmptySolution.emptyDistance}\nMin total price = ${output.bestPriceSolution.totalPrice}`,
             );
             console.log();
 

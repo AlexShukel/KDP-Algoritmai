@@ -20,7 +20,7 @@ export const orderJsonSchema = z.object({
     id: z.number(),
     pickupLocation: locationJsonSchema,
     deliveryLocation: locationJsonSchema,
-    price: z.number(), // generate randomized price from DISTANCE_KM with price_km in range [1; 3]
+    // price: z.number(), // generate randomized price from DISTANCE_KM with price_km in range [1; 3]
     loadFactor: z.number(),
 });
 
