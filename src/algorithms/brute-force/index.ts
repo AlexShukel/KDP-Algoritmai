@@ -19,7 +19,7 @@
  * for very small datasets (N < 6) or for validating heuristic solutions.
  */
 
-import { AlgorithmConfig } from '../../types/algorithm';
+import { Algorithm, AlgorithmConfig, AlgorithmSolution } from '../../types/algorithm';
 import { Order, Problem, ProblemSolution, RouteStop, Vehicle, VehicleRoute } from '../../types/types';
 import { iterateAllSubsets } from './iterateAllSubsets';
 import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from './utils';
@@ -32,7 +32,7 @@ type TSPResult = {
     minPriceRoute: VehicleRoute;
 };
 
-export class BruteForceAlgorithm {
+export class BruteForceAlgorithm implements Algorithm {
     name: string = 'brute-force';
 
     // Global best solutions (mutable to share across recursive calls)
@@ -50,7 +50,7 @@ export class BruteForceAlgorithm {
     private distancesMat: DistanceMatrix = [];
     private vehicleStartDistancesMat: DistanceMatrix = []; // [vehicleIndex][orderIndex]
 
-    solve({ orders, vehicles, constraints }: Problem, config: Pick<AlgorithmConfig, 'distanceCalc'>) {
+    public solve({ orders, vehicles, constraints }: Problem, config: AlgorithmConfig): AlgorithmSolution {
         const N = orders.length;
         const V = vehicles.length;
 
@@ -255,8 +255,8 @@ export class BruteForceAlgorithm {
         let bestPriceRoute: VehicleRoute | null = null;
 
         let targetMask = 0;
-        for (let i = 0; i < orderIndices.length; ++i) {
-            targetMask = targetMask | (1 << i);
+        for (const idx of orderIndices) {
+            targetMask |= 1 << idx;
         }
 
         const tspRecursive = (
