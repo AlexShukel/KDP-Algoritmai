@@ -354,7 +354,7 @@ export class BruteForceAlgorithm implements Algorithm {
                     stops.pop();
                 }
 
-                // OPTION A: DELIVERY
+                // OPTION B: DELIVERY
                 else if ((pickedUpMask & orderBit) !== 0 && (deliveredMask & orderBit) === 0) {
                     const order = orders[orderIndex];
                     const removedLoad = 1 / order.loadFactor;

@@ -69,7 +69,7 @@ const main = async () => {
                     vehicles,
                     orders,
                     constraints: {
-                        maxTotalDistance: 1200,
+                        maxTotalDistance: 1e9,
                     },
                 } satisfies Problem;
 

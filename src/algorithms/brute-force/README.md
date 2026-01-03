@@ -2,4 +2,5 @@
 
 ## Things to consider:
 
-1. If solution not found consider to increase maxTotalDistance till some solution found?
+1. Maybe add penalties when route distance exceeds the max total distance?
+2. Maybe generate problems so that solution is always found with the given max total distance.
