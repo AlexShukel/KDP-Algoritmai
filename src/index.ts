@@ -4,7 +4,6 @@ import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import { Algorithm, AlgorithmConfig, AlgorithmSolution } from './types/algorithm';
 import { BruteForceAlgorithm as OptimizedBruteForce } from './algorithms/brute-force';
-import { BruteForceAlgorithm as UnoptimizedBruteForce } from './algorithms/brute-force/unoptimized';
 import { Problem } from './types/types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 
@@ -51,7 +50,7 @@ async function main(): Promise<void> {
         return vA + oA - (vB + oB);
     });
 
-    const algorithms: Algorithm[] = [new OptimizedBruteForce(), new UnoptimizedBruteForce()];
+    const algorithms: Algorithm[] = [new OptimizedBruteForce()];
 
     for (const alg of algorithms) {
         console.log(`\n========================================`);
@@ -115,4 +114,4 @@ main().catch(error => {
     process.exit(1);
 });
 
-export { OptimizedBruteForce, UnoptimizedBruteForce };
+export { OptimizedBruteForce };
