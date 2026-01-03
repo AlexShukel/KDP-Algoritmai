@@ -1,12 +1,12 @@
 /**
  * @file generate-data.ts
  * @description
- * This script serves as the Data Seeding and ETL utility.
+ * This script serves as the data seeding utility.
  *
  * Purposes:
  * 1. Ingests raw CSV data representing real-world shipping lanes.
- * 2. Transforms CSV rows into strictly typed `Order` objects, calculating geohashes and prices.
- * 3. Synthetically generates a large fleet of `Vehicle` objects scattered across Europe.
+ * 2. Transforms CSV rows into `Order` objects, calculating geohashes and prices.
+ * 3. Synthetically generates a large fleet of `Vehicle` objects scattered near pickup locations.
  * 4. Persists the normalized data into `data/orders_<ts>.json` and `data/vehicles_<ts>.json`.
  */
 
@@ -26,20 +26,32 @@ const getRandomPriceKm = () => {
     return getRandomFloat(1, 3);
 };
 
-const EuropeApproximateBounds = {
-    minLat: 36.0,
-    maxLat: 70.0,
-    minLon: -10.0,
-    maxLon: 30.0,
-};
+// Earth radius (km)
+const EARTH_RADIUS_KM = 6371;
 
-const getRandomEuropeCoords = () => {
-    const lat = getRandomFloat(EuropeApproximateBounds.minLat, EuropeApproximateBounds.maxLat);
-    const lon = getRandomFloat(EuropeApproximateBounds.minLon, EuropeApproximateBounds.maxLon);
+const getRandomCoordsInRadius = (centerLat: number, centerLon: number, radiusKm: number) => {
+    const lat1 = centerLat * (Math.PI / 180);
+    const lon1 = centerLon * (Math.PI / 180);
+
+    const maxDistRad = radiusKm / EARTH_RADIUS_KM;
+
+    const distance = Math.acos(Math.random() * (Math.cos(maxDistRad) - 1) + 1);
+    const bearing = 2 * Math.PI * Math.random();
+
+    const lat2 = Math.asin(
+        Math.sin(lat1) * Math.cos(distance) + Math.cos(lat1) * Math.sin(distance) * Math.cos(bearing),
+    );
+
+    const lon2 =
+        lon1 +
+        Math.atan2(
+            Math.sin(bearing) * Math.sin(distance) * Math.cos(lat1),
+            Math.cos(distance) - Math.sin(lat1) * Math.sin(lat2),
+        );
 
     return {
-        latitude: Number.parseFloat(lat.toFixed(6)),
-        longitude: Number.parseFloat(lon.toFixed(6)),
+        latitude: lat2 * (180 / Math.PI),
+        longitude: lon2 * (180 / Math.PI),
     };
 };
 
@@ -92,11 +104,21 @@ const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): Order[]
 };
 
 const VEHICLES_N = 20000;
-const generateVehicles = (): Vehicle[] => {
+const VEHICLE_SPAWN_RADIUS_KM = 200;
+
+const generateVehicles = (orders: Order[]): Vehicle[] => {
+    if (orders.length === 0) {
+        throw new Error('No orders found to generate vehicle locations.');
+    }
+
     const vehicles: Vehicle[] = new Array(VEHICLES_N);
 
     for (let i = 0; i < VEHICLES_N; ++i) {
-        const { latitude, longitude } = getRandomEuropeCoords();
+        const randomOrder = orders[Math.floor(Math.random() * orders.length)];
+        const centerLat = randomOrder.pickupLocation.latitude;
+        const centerLon = randomOrder.pickupLocation.longitude;
+
+        const { latitude, longitude } = getRandomCoordsInRadius(centerLat, centerLon, VEHICLE_SPAWN_RADIUS_KM);
 
         vehicles[i] = {
             id: i + 1,
@@ -120,10 +142,16 @@ const main = async () => {
         .on('data', data => raw.push(data))
         .on('end', () => {
             const orders = generateOrders(seedDatasetSchema.parse(raw));
-            const vehicles = generateVehicles();
+
+            const vehicles = generateVehicles(orders);
 
             const timestamp = new Date().getTime();
             const dataDir = path.resolve(__dirname, 'data');
+
+            if (!fs.existsSync(dataDir)) {
+                fs.mkdirSync(dataDir);
+            }
+
             fs.writeFileSync(path.resolve(dataDir, `orders_${timestamp}.json`), JSON.stringify(orders));
             fs.writeFileSync(path.resolve(dataDir, `vehicles_${timestamp}.json`), JSON.stringify(vehicles));
         });

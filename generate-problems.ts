@@ -1,7 +1,7 @@
 /**
  * @file generate-problems.ts
  * @description
- * This script generates a comprehensive suite of Vehicle Routing Problem (VRP) instances
+ * This script generates a suite of Vehicle Routing Problem (VRP) instances
  * for benchmarking and testing purposes.
  *
  * Workflow:
@@ -17,11 +17,11 @@ import path from 'path';
 import { orderJsonSchema, Problem, vehicleJsonSchema } from './src/types/types';
 
 const dataDir = path.resolve(__dirname, 'data');
-const ordersJsonPath = path.resolve(dataDir, 'orders_1763917787471.json');
-const vehiclesJsonPath = path.resolve(dataDir, 'vehicles_1763917787471.json');
+const ordersJsonPath = path.resolve(dataDir, 'orders_1767435705599.json');
+const vehiclesJsonPath = path.resolve(dataDir, 'vehicles_1767435705599.json');
 
 const MIN_SIZE = 1;
-const MAX_SIZE = 6;
+const MAX_SIZE = 12;
 const SAMPLES_PER_GROUP = 10;
 const problemsDir = path.resolve(__dirname, 'problems');
 

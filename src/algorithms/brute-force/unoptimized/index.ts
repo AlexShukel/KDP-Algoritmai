@@ -39,6 +39,10 @@ export class BruteForceAlgorithm implements Algorithm {
     private bestEmptySolution: ProblemSolution | null = null;
 
     solve({ constraints, orders, vehicles }: Problem, config: AlgorithmConfig): AlgorithmSolution {
+        if (orders.length > 5 || vehicles.length > 5) {
+            throw new Error(`Problem too large for ${this.name} implementation.`);
+        }
+
         this.bestDistance = Infinity;
         this.bestPrice = Infinity;
         this.bestEmpty = Infinity;

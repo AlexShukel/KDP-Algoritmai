@@ -13,7 +13,7 @@
         }
     },
     "scripts": {
-        "run:bench": "pnpm build && cd dist && node vrp.es.js",
+        "run:bench": "pnpm build && cd dist && node vrp.cjs.js",
         "build": "vite build",
         "test": "vitest run",
         "test:watch": "vitest watch",
@@ -21,8 +21,9 @@
         "lint:format": "prettier --check .",
         "format": "prettier --write .",
         "generate:data": "tsx ./generate-data.ts",
+        "visualize:data": "python visualize_data.py",
         "generate:problems": "tsx ./generate-problems.ts",
-        "solve:brute-force": "tsx ./brute-force-solve-problems.ts"
+        "compare:brute-force": "tsx ./compare-brute-force-results.ts"
     },
     "repository": {
         "type": "git",
@@ -56,6 +57,7 @@
         "vitest": "^4.0.6"
     },
     "dependencies": {
+        "glob": "^13.0.0",
         "lodash": "^4.17.21",
         "zod": "^4.1.12"
     }

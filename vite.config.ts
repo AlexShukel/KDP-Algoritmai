@@ -14,14 +14,13 @@ export default defineConfig({
             fileName: format => `vrp.${format}.js`,
         },
         rollupOptions: {
-            external: ['fs', 'fs/promises', 'path'],
+            external: ['fs', 'fs/promises', 'path', 'glob', 'perf_hooks'],
             output: {
                 manualChunks: undefined,
             },
         },
         sourcemap: true,
         emptyOutDir: true,
-        assetsDir: 'problems',
     },
     plugins: [
         dts({
@@ -31,8 +30,8 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {
-                    src: 'problems/**/*',
-                    dest: 'problems',
+                    src: 'problems',
+                    dest: '.',
                 },
             ],
         }),

@@ -51,6 +51,10 @@ export class BruteForceAlgorithm implements Algorithm {
     private vehicleStartDistancesMat: DistanceMatrix = []; // [vehicleIndex][orderIndex]
 
     public solve({ orders, vehicles, constraints }: Problem, config: AlgorithmConfig): AlgorithmSolution {
+        if (orders.length > 11 || vehicles.length > 11) {
+            throw new Error(`Problem too large for ${this.name} implementation.`);
+        }
+
         const N = orders.length;
         const V = vehicles.length;
 
