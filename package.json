@@ -42,6 +42,7 @@
     "packageManager": "pnpm@10.20.0",
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",
+        "@napi-rs/cli": "^3.5.1",
         "@types/latlon-geohash": "^2.0.4",
         "@types/lodash": "^4.17.20",
         "@types/node": "^24.10.0",
