@@ -576,5 +576,4 @@ if (!nativeBinding) {
 }
 
 module.exports = nativeBinding
-module.exports.addNumbers = nativeBinding.addNumbers
-module.exports.helloFromRust = nativeBinding.helloFromRust
+module.exports.solveBruteForce = nativeBinding.solveBruteForce

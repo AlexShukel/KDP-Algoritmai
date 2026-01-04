@@ -14,7 +14,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import { orderJsonSchema, Problem, vehicleJsonSchema } from './src/types/types';
+import type { Order, Problem, Vehicle } from './src/types/types';
 
 const dataDir = path.resolve(__dirname, 'data');
 const ordersJsonPath = path.resolve(dataDir, 'orders_1767524786487.json');
@@ -50,8 +50,8 @@ const main = async () => {
         fs.readFile(vehiclesJsonPath).then(val => val.toString()),
     ]);
 
-    const allOrders = orderJsonSchema.array().parse(JSON.parse(ordersJsonRaw));
-    const allVehicles = vehicleJsonSchema.array().parse(JSON.parse(vehiclesJsonRaw));
+    const allOrders: Order[] = JSON.parse(ordersJsonRaw);
+    const allVehicles: Vehicle[] = JSON.parse(vehiclesJsonRaw);
 
     for (let vCount = MIN_SIZE; vCount <= MAX_SIZE; ++vCount) {
         for (let oCount = MIN_SIZE; oCount <= MAX_SIZE; ++oCount) {

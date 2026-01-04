@@ -19,8 +19,16 @@
  * for very small datasets (N < 6) or for validating heuristic solutions.
  */
 
-import { Algorithm, AlgorithmConfig, AlgorithmSolution } from '../../types/algorithm';
-import { Order, Problem, ProblemSolution, RouteStop, Vehicle, VehicleRoute } from '../../types/types';
+import { Algorithm, AlgorithmConfig } from '../../types/algorithm';
+import {
+    Order,
+    Problem,
+    ProblemSolution,
+    RouteStop,
+    Vehicle,
+    VehicleRoute,
+    AlgorithmSolution,
+} from '../../types/types';
 import { iterateAllSubsets } from './iterateAllSubsets';
 import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from './utils';
 

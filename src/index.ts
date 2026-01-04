@@ -2,23 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
-import { Algorithm, AlgorithmConfig, AlgorithmSolution } from './types/algorithm';
+import { Algorithm, AlgorithmConfig } from './types/algorithm';
 import { BruteForceAlgorithm } from './algorithms/brute-force';
-import { Problem } from './types/types';
+import { Problem, AlgorithmSolution } from './types/types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 import { jitWarmup } from './jitWarmup';
 
-import { addNumbers, helloFromRust } from 'rust-solver';
-
-console.log('========================================');
-console.log('Testing Rust Integration');
-console.log('========================================');
-
-const msg = helloFromRust();
-console.log(`Rust says: ${msg}`);
-
-const sum = addNumbers(10, 50);
-console.log(`Rust calculated 10 + 50 = ${sum}`);
+import { solveBruteForce } from 'rust-solver';
 
 const PROBLEMS_DIR = 'problems';
 
@@ -70,7 +60,7 @@ async function main(): Promise<void> {
         console.log(`Starting benchmark for: ${alg.name}`);
         console.log(`========================================`);
 
-        jitWarmup(alg, algConfig);
+        // jitWarmup(alg, algConfig);
 
         const benchmarkResults: BenchmarkResult[] = [];
 
@@ -84,10 +74,15 @@ async function main(): Promise<void> {
             const vCount = problem.vehicles.length;
             const oCount = problem.orders.length;
 
+            if (vCount !== 6 || oCount !== 6) {
+                continue;
+            }
+
             const start = performance.now();
             let solution: AlgorithmSolution;
             try {
-                solution = alg.solve(problem, algConfig);
+                solution = solveBruteForce(problem);
+                // solution = alg.solve(problem, algConfig);
             } catch (err) {
                 console.error(`\nError solving ${relativePath}.`);
                 continue;
