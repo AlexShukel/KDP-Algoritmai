@@ -13,7 +13,7 @@
         }
     },
     "scripts": {
-        "run:bench": "pnpm build && cd dist && node vrp.cjs.js",
+        "start": "pnpm build && cd dist && node vrp.cjs.js",
         "build": "vite build",
         "test": "vitest run",
         "test:watch": "vitest watch",

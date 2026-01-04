@@ -51,7 +51,7 @@ export class BruteForceAlgorithm implements Algorithm {
     private vehicleStartDistancesMat: DistanceMatrix = []; // [vehicleIndex][orderIndex]
 
     public solve({ orders, vehicles }: Problem, config: AlgorithmConfig): AlgorithmSolution {
-        if (orders.length > 11 || vehicles.length > 11) {
+        if (orders.length > 8 || vehicles.length > 8) {
             throw new Error(`Problem too large for ${this.name} implementation.`);
         }
 

@@ -3,9 +3,10 @@ import path from 'path';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import { Algorithm, AlgorithmConfig, AlgorithmSolution } from './types/algorithm';
-import { BruteForceAlgorithm as OptimizedBruteForce } from './algorithms/brute-force';
+import { BruteForceAlgorithm } from './algorithms/brute-force';
 import { Problem } from './types/types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
+import { jitWarmup } from './jitWarmup';
 
 const PROBLEMS_DIR = 'problems';
 
@@ -50,12 +51,14 @@ async function main(): Promise<void> {
         return vA + oA - (vB + oB);
     });
 
-    const algorithms: Algorithm[] = [new OptimizedBruteForce()];
+    const algorithms: Algorithm[] = [new BruteForceAlgorithm()];
 
     for (const alg of algorithms) {
         console.log(`\n========================================`);
         console.log(`Starting benchmark for: ${alg.name}`);
         console.log(`========================================`);
+
+        jitWarmup(alg, algConfig);
 
         const benchmarkResults: BenchmarkResult[] = [];
 
@@ -68,10 +71,6 @@ async function main(): Promise<void> {
 
             const vCount = problem.vehicles.length;
             const oCount = problem.orders.length;
-
-            // if (vCount !== 5 || oCount !== 5) {
-            //     continue;
-            // }
 
             const start = performance.now();
             let solution: AlgorithmSolution;
@@ -114,4 +113,4 @@ main().catch(error => {
     process.exit(1);
 });
 
-export { OptimizedBruteForce };
+export { BruteForceAlgorithm };
