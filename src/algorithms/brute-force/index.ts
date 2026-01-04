@@ -50,7 +50,7 @@ export class BruteForceAlgorithm implements Algorithm {
     private distancesMat: DistanceMatrix = [];
     private vehicleStartDistancesMat: DistanceMatrix = []; // [vehicleIndex][orderIndex]
 
-    public solve({ orders, vehicles, constraints }: Problem, config: AlgorithmConfig): AlgorithmSolution {
+    public solve({ orders, vehicles }: Problem, config: AlgorithmConfig): AlgorithmSolution {
         if (orders.length > 11 || vehicles.length > 11) {
             throw new Error(`Problem too large for ${this.name} implementation.`);
         }
@@ -75,7 +75,6 @@ export class BruteForceAlgorithm implements Algorithm {
             new Array(V).fill(0),
             orders,
             vehicles,
-            constraints.maxTotalDistance,
             (1 << N) - 1, // target mask (all bits set)
         );
 
@@ -151,7 +150,6 @@ export class BruteForceAlgorithm implements Algorithm {
         assignments: number[], // vehicleIndex -> assignmentMask
         orders: Order[],
         vehicles: Vehicle[],
-        maxTotalDistance: number,
         fullMask: number,
     ) {
         // Stop early if currentSolution is worse for all optimization goals
@@ -175,7 +173,7 @@ export class BruteForceAlgorithm implements Algorithm {
         }
 
         const solveCurrentIteration = (mask: number) => {
-            const routeResult = this.getBestRoute(vehicleIndex, mask, vehicles, orders, maxTotalDistance);
+            const routeResult = this.getBestRoute(vehicleIndex, mask, vehicles, orders);
 
             if (routeResult) {
                 assignments[vehicleIndex] = mask;
@@ -190,7 +188,6 @@ export class BruteForceAlgorithm implements Algorithm {
                     assignments,
                     orders,
                     vehicles,
-                    maxTotalDistance,
                     fullMask,
                 );
                 assignments[vehicleIndex] = 0;
@@ -200,26 +197,11 @@ export class BruteForceAlgorithm implements Algorithm {
         iterateAllSubsets(assignmentMask, fullMask, solveCurrentIteration);
 
         // Case: Vehicle takes NO orders (empty mask)
-        this.solveRecursive(
-            vehicleIndex + 1,
-            assignmentMask,
-            currentSolution,
-            assignments,
-            orders,
-            vehicles,
-            maxTotalDistance,
-            fullMask,
-        );
+        this.solveRecursive(vehicleIndex + 1, assignmentMask, currentSolution, assignments, orders, vehicles, fullMask);
     }
 
     // Finds the optimal route for a set of orders and vehicle. Uses memoization.
-    private getBestRoute(
-        vehicleIndex: number,
-        mask: number,
-        vehicles: Vehicle[],
-        orders: Order[],
-        maxTotalDistance: number,
-    ): TSPResult | null {
+    private getBestRoute(vehicleIndex: number, mask: number, vehicles: Vehicle[], orders: Order[]): TSPResult | null {
         const cacheKey = this.getRouteCacheKey(vehicleIndex, mask);
 
         if (this.routeCache.has(cacheKey)) {
@@ -234,7 +216,7 @@ export class BruteForceAlgorithm implements Algorithm {
             }
         }
 
-        const solution = this.solveTSP(vehicleIndex, orderIndices, vehicles[vehicleIndex], orders, maxTotalDistance);
+        const solution = this.solveTSP(vehicleIndex, orderIndices, vehicles[vehicleIndex], orders);
 
         // if the solution is null it means that constraints are not met, but configuration is valid
         this.routeCache.set(cacheKey, solution);
@@ -242,13 +224,11 @@ export class BruteForceAlgorithm implements Algorithm {
     }
 
     // Finds an optimal route by generating permutations for a specific vehicle and specific orders
-    // This is a TSP problem with maxTotalDistance and pickup-delivery constraints
     private solveTSP(
         vehicleIndex: number,
         orderIndices: number[],
         vehicle: Vehicle,
         orders: Order[],
-        maxTotalDistance: number,
     ): TSPResult | null {
         let bestDistVal = Infinity;
         let bestEmptyVal = Infinity;
@@ -273,10 +253,6 @@ export class BruteForceAlgorithm implements Algorithm {
             pickedUpMask: number,
             deliveredMask: number,
         ) => {
-            if (currentDist > maxTotalDistance) {
-                return;
-            }
-
             if (currentDist >= bestDistVal && currentEmpty >= bestEmptyVal && currentPrice >= bestPriceVal) {
                 return;
             }

@@ -29,9 +29,6 @@ export type Order = z.infer<typeof orderJsonSchema>;
 export const problemJsonSchema = z.object({
     vehicles: vehicleJsonSchema.array(),
     orders: orderJsonSchema.array(),
-    constraints: z.object({
-        maxTotalDistance: z.number(),
-    }),
 });
 
 export type Problem = z.infer<typeof problemJsonSchema>;
