@@ -14,7 +14,7 @@ export default defineConfig({
             fileName: format => `vrp.${format}.js`,
         },
         rollupOptions: {
-            external: ['fs', 'fs/promises', 'path', 'glob', 'perf_hooks'],
+            external: ['fs', 'fs/promises', 'path', 'glob', 'perf_hooks', 'rust-solver'],
             output: {
                 manualChunks: undefined,
             },

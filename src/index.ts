@@ -8,6 +8,18 @@ import { Problem } from './types/types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 import { jitWarmup } from './jitWarmup';
 
+import { addNumbers, helloFromRust } from 'rust-solver';
+
+console.log('========================================');
+console.log('Testing Rust Integration');
+console.log('========================================');
+
+const msg = helloFromRust();
+console.log(`Rust says: ${msg}`);
+
+const sum = addNumbers(10, 50);
+console.log(`Rust calculated 10 + 50 = ${sum}`);
+
 const PROBLEMS_DIR = 'problems';
 
 const algConfig: AlgorithmConfig = {

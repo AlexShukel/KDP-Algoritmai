@@ -17,8 +17,8 @@ import path from 'path';
 import { orderJsonSchema, Problem, vehicleJsonSchema } from './src/types/types';
 
 const dataDir = path.resolve(__dirname, 'data');
-const ordersJsonPath = path.resolve(dataDir, 'orders_1767520639761.json');
-const vehiclesJsonPath = path.resolve(dataDir, 'vehicles_1767520639761.json');
+const ordersJsonPath = path.resolve(dataDir, 'orders_1767524786487.json');
+const vehiclesJsonPath = path.resolve(dataDir, 'vehicles_1767524786487.json');
 
 const MIN_SIZE = 1;
 const MAX_SIZE = 12;
