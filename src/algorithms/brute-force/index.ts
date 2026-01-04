@@ -19,6 +19,7 @@
  * for very small datasets (N < 6) or for validating heuristic solutions.
  */
 
+import { solveBruteForce } from 'rust-solver';
 import { Algorithm, AlgorithmConfig } from '../../types/algorithm';
 import {
     Order,
@@ -40,8 +41,16 @@ type TSPResult = {
     minPriceRoute: VehicleRoute;
 };
 
-export class BruteForceAlgorithm implements Algorithm {
-    name: string = 'brute-force';
+export class BruteForceAlgorithmRust implements Algorithm {
+    name: string = 'brute-force-rust';
+
+    public solve(problem: Problem, config: AlgorithmConfig): AlgorithmSolution {
+        return solveBruteForce(problem);
+    }
+}
+
+export class BruteForceAlgorithmJS implements Algorithm {
+    name: string = 'brute-force-js';
 
     // Global best solutions (mutable to share across recursive calls)
     private bestDistance = Infinity;
@@ -66,13 +75,14 @@ export class BruteForceAlgorithm implements Algorithm {
         const N = orders.length;
         const V = vehicles.length;
 
+        // Init state
         this.bestDistance = Infinity;
         this.bestPrice = Infinity;
         this.bestEmpty = Infinity;
         this.bestDistanceSolution = null;
         this.bestPriceSolution = null;
         this.bestEmptySolution = null;
-
+        this.routeCache.clear();
         this.distancesMat = buildDistanceMatrix(orders, config.distanceCalc);
         this.vehicleStartDistancesMat = buildVehicleDistances(vehicles, orders, config.distanceCalc);
 

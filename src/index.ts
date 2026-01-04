@@ -2,13 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
+import stringify from 'fast-json-stable-stringify';
 import { Algorithm, AlgorithmConfig } from './types/algorithm';
-import { BruteForceAlgorithm } from './algorithms/brute-force';
+import { BruteForceAlgorithmJS, BruteForceAlgorithmRust } from './algorithms/brute-force';
 import { Problem, AlgorithmSolution } from './types/types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
-import { jitWarmup } from './jitWarmup';
-
-import { solveBruteForce } from 'rust-solver';
 
 const PROBLEMS_DIR = 'problems';
 
@@ -53,14 +51,12 @@ async function main(): Promise<void> {
         return vA + oA - (vB + oB);
     });
 
-    const algorithms: Algorithm[] = [new BruteForceAlgorithm()];
+    const algorithms: Algorithm[] = [new BruteForceAlgorithmJS(), new BruteForceAlgorithmRust()];
 
     for (const alg of algorithms) {
         console.log(`\n========================================`);
         console.log(`Starting benchmark for: ${alg.name}`);
         console.log(`========================================`);
-
-        // jitWarmup(alg, algConfig);
 
         const benchmarkResults: BenchmarkResult[] = [];
 
@@ -74,15 +70,14 @@ async function main(): Promise<void> {
             const vCount = problem.vehicles.length;
             const oCount = problem.orders.length;
 
-            if (vCount !== 6 || oCount !== 6) {
+            if (vCount !== 7 || oCount !== 7) {
                 continue;
             }
 
             const start = performance.now();
             let solution: AlgorithmSolution;
             try {
-                solution = solveBruteForce(problem);
-                // solution = alg.solve(problem, algConfig);
+                solution = alg.solve(problem, algConfig);
             } catch (err) {
                 console.error(`\nError solving ${relativePath}.`);
                 continue;
@@ -104,7 +99,7 @@ async function main(): Promise<void> {
         const outputFilename = `benchmark-results-${alg.name}.json`;
         const outputPath = path.resolve(__dirname, outputFilename);
 
-        fs.writeFileSync(outputPath, JSON.stringify(benchmarkResults, null, 2));
+        fs.writeFileSync(outputPath, stringify(benchmarkResults));
         console.log(`\nResults for ${alg.name} saved to ${outputFilename}`);
     }
 }
@@ -120,4 +115,4 @@ main().catch(error => {
     process.exit(1);
 });
 
-export { BruteForceAlgorithm };
+export { BruteForceAlgorithmJS as BruteForceAlgorithm };
