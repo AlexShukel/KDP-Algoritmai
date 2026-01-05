@@ -14,14 +14,14 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import type { Order, Problem, Vehicle } from './src/types/types';
+import type { Order, Problem, Vehicle } from './src/types';
 
 const dataDir = path.resolve(__dirname, 'data');
-const ordersJsonPath = path.resolve(dataDir, 'orders_1767524786487.json');
-const vehiclesJsonPath = path.resolve(dataDir, 'vehicles_1767524786487.json');
+const ordersJsonPath = path.resolve(dataDir, 'orders_1767623656435.json');
+const vehiclesJsonPath = path.resolve(dataDir, 'vehicles_1767623656435.json');
 
 const MIN_SIZE = 1;
-const MAX_SIZE = 12;
+const MAX_SIZE = 7;
 const SAMPLES_PER_GROUP = 10;
 const problemsDir = path.resolve(__dirname, 'problems');
 

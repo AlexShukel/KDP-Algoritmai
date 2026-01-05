@@ -16,7 +16,7 @@ import z from 'zod';
 import Geohash from 'latlon-geohash';
 import path from 'path';
 
-import type { Order, Vehicle } from './src/types/types';
+import type { Order, Vehicle } from './src/types';
 
 const getRandomFloat = (min: number, max: number) => {
     return Math.random() * (max - min) + min;
@@ -80,30 +80,28 @@ const GEOHASH_PRECISION = 6;
 const generateOrders = (seedDataset: z.infer<typeof seedDatasetSchema>): Order[] => {
     const orders: Order[] = [];
 
-    for (const { ID, LAT_FROM, LON_FROM, LAT_TO, LON_TO, VEHICLE_QNTY, MODEL_LF } of seedDataset) {
-        orders.push(
-            ...[...new Array(VEHICLE_QNTY)].fill({
-                id: ID,
-                pickupLocation: {
-                    hash: Geohash.encode(LAT_FROM, LON_FROM, GEOHASH_PRECISION),
-                    latitude: LAT_FROM,
-                    longitude: LON_FROM,
-                },
-                deliveryLocation: {
-                    hash: Geohash.encode(LAT_TO, LON_TO, GEOHASH_PRECISION),
-                    latitude: LAT_TO,
-                    longitude: LON_TO,
-                },
-                loadFactor: MODEL_LF,
-                // price: DISTANCE_KM * getRandomPriceKm(),
-            } satisfies Order),
-        );
+    for (const { ID, LAT_FROM, LON_FROM, LAT_TO, LON_TO, MODEL_LF } of seedDataset) {
+        orders.push({
+            id: ID,
+            pickupLocation: {
+                hash: Geohash.encode(LAT_FROM, LON_FROM, GEOHASH_PRECISION),
+                latitude: LAT_FROM,
+                longitude: LON_FROM,
+            },
+            deliveryLocation: {
+                hash: Geohash.encode(LAT_TO, LON_TO, GEOHASH_PRECISION),
+                latitude: LAT_TO,
+                longitude: LON_TO,
+            },
+            loadFactor: MODEL_LF,
+            // price: DISTANCE_KM * getRandomPriceKm(),
+        } satisfies Order);
     }
 
     return orders;
 };
 
-const VEHICLES_N = 20000;
+const VEHICLES_N = 10000;
 const VEHICLE_SPAWN_RADIUS_KM = 200;
 
 const generateVehicles = (orders: Order[]): Vehicle[] => {

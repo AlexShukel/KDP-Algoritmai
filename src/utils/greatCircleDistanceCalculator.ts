@@ -1,4 +1,4 @@
-import { DistanceCalculator } from '../types/algorithm';
+import { DistanceCalculator } from '../types';
 
 const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 

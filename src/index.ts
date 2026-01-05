@@ -3,25 +3,18 @@ import path from 'path';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import stringify from 'fast-json-stable-stringify';
-import { Algorithm, AlgorithmConfig } from './types/algorithm';
 import { BruteForceAlgorithmJS, BruteForceAlgorithmRust } from './algorithms/brute-force';
-import { Problem, AlgorithmSolution } from './types/types';
+import { Problem, AlgorithmSolution, Algorithm, AlgorithmConfig, BenchmarkResult } from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
+import { ParallelSimulatedAnnealing } from './algorithms/p-sa';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PROBLEMS_DIR = 'problems';
 
 const algConfig: AlgorithmConfig = {
     distanceCalc: greatCircleDistanceCalculator,
-};
-
-type BenchmarkResult = {
-    problemPath: string;
-    execTime: number; // milliseconds
-    results: AlgorithmSolution;
-    problemSize: {
-        vehicles: number;
-        orders: number;
-    };
 };
 
 async function main(): Promise<void> {
@@ -51,7 +44,7 @@ async function main(): Promise<void> {
         return vA + oA - (vB + oB);
     });
 
-    const algorithms: Algorithm[] = [new BruteForceAlgorithmJS(), new BruteForceAlgorithmRust()];
+    const algorithms: Algorithm[] = [new ParallelSimulatedAnnealing(), new BruteForceAlgorithmRust()];
 
     for (const alg of algorithms) {
         console.log(`\n========================================`);
@@ -70,14 +63,10 @@ async function main(): Promise<void> {
             const vCount = problem.vehicles.length;
             const oCount = problem.orders.length;
 
-            if (vCount !== 7 || oCount !== 7) {
-                continue;
-            }
-
             const start = performance.now();
             let solution: AlgorithmSolution;
             try {
-                solution = alg.solve(problem, algConfig);
+                solution = await alg.solve(problem, algConfig);
             } catch (err) {
                 console.error(`\nError solving ${relativePath}.`);
                 continue;

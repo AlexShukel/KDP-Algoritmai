@@ -13,7 +13,7 @@
         }
     },
     "scripts": {
-        "start": "pnpm build && cd dist && node vrp.cjs.js",
+        "start": "pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs",
         "build": "vite build",
         "test": "vitest run",
         "test:watch": "vitest watch",

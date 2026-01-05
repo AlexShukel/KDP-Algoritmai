@@ -3,21 +3,22 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { builtinModules } from 'node:module';
 
 export default defineConfig({
     build: {
         target: 'node24',
         lib: {
-            entry: resolve(__dirname, 'src/index.ts'),
+            entry: {
+                vrp: resolve(__dirname, 'src/index.ts'),
+                'p-sa.worker': resolve(__dirname, 'src/algorithms/p-sa/p-sa.worker.ts'),
+            },
             name: 'VRP',
-            formats: ['es', 'cjs'],
-            fileName: format => `vrp.${format}.js`,
+            formats: ['es'],
+            fileName: (format, entryName) => `${entryName}.${format}.mjs`,
         },
         rollupOptions: {
-            external: ['fs', 'fs/promises', 'path', 'glob', 'perf_hooks', 'rust-solver'],
-            output: {
-                manualChunks: undefined,
-            },
+            external: [...builtinModules, ...builtinModules.map(m => `node:${m}`), 'rust-solver'],
         },
         sourcemap: true,
         emptyOutDir: true,

@@ -1,5 +1,4 @@
-import { DistanceCalculator } from '../../types/algorithm';
-import { Order, Vehicle } from '../../types/types';
+import { Order, Vehicle, DistanceCalculator } from '../types';
 
 export type DistanceMatrix = number[][];
 

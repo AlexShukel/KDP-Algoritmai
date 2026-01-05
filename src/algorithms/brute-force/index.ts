@@ -13,15 +13,12 @@
  * The overall complexity is the product of the assignment complexity and the routing complexity.
  * O(V^N * ((2N)! / 2^N))
  * Where V = Number of Vehicles, N = Number of Orders.
- *
- * WARNING:
- * This algorithm is extremely computationally expensive and is suitable ONLY
- * for very small datasets (N < 6) or for validating heuristic solutions.
  */
 
 import { solveBruteForce } from 'rust-solver';
-import { Algorithm, AlgorithmConfig } from '../../types/algorithm';
 import {
+    Algorithm,
+    AlgorithmConfig,
     Order,
     Problem,
     ProblemSolution,
@@ -29,9 +26,9 @@ import {
     Vehicle,
     VehicleRoute,
     AlgorithmSolution,
-} from '../../types/types';
+} from '../../types';
 import { iterateAllSubsets } from './iterateAllSubsets';
-import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from './utils';
+import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from '../../utils/DistanceMatrix';
 
 type MemoKey = number; // integer representing (vehicleIndex << 20) | mask
 type AccumulatedSolution = { distSum: number; priceSum: number; emptySum: number };
@@ -41,11 +38,17 @@ type TSPResult = {
     minPriceRoute: VehicleRoute;
 };
 
+const MAX_PROBLEM_SIZE = 7;
+
 export class BruteForceAlgorithmRust implements Algorithm {
     name: string = 'brute-force-rust';
 
-    public solve(problem: Problem, config: AlgorithmConfig): AlgorithmSolution {
-        return solveBruteForce(problem);
+    public solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmSolution> {
+        if (problem.orders.length > MAX_PROBLEM_SIZE || problem.vehicles.length > MAX_PROBLEM_SIZE) {
+            throw new Error(`Problem too large for ${this.name} implementation.`);
+        }
+
+        return new Promise(res => res(solveBruteForce(problem)));
     }
 }
 
@@ -67,8 +70,12 @@ export class BruteForceAlgorithmJS implements Algorithm {
     private distancesMat: DistanceMatrix = [];
     private vehicleStartDistancesMat: DistanceMatrix = []; // [vehicleIndex][orderIndex]
 
-    public solve({ orders, vehicles }: Problem, config: AlgorithmConfig): AlgorithmSolution {
-        if (orders.length > 8 || vehicles.length > 8) {
+    solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmSolution> {
+        return new Promise(res => res(this.solveSync(problem, config)));
+    }
+
+    public solveSync({ orders, vehicles }: Problem, config: AlgorithmConfig): AlgorithmSolution {
+        if (orders.length > MAX_PROBLEM_SIZE || vehicles.length > MAX_PROBLEM_SIZE) {
             throw new Error(`Problem too large for ${this.name} implementation.`);
         }
 
