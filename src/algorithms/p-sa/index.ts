@@ -1,13 +1,6 @@
 import os from 'os';
 
-import {
-    Algorithm,
-    AlgorithmConfig,
-    AlgorithmSolution,
-    OptimizationTarget,
-    Problem,
-    ProblemSolution,
-} from '../../types';
+import { AlgorithmConfig, OptimizationTarget, Problem, ProblemSolution, SingleTargetAlgorithm } from '../../types';
 import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from '../../utils/DistanceMatrix';
 import { generateRCRS } from './rcrs';
 import { Worker } from 'worker_threads';
@@ -16,47 +9,18 @@ import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export class ParallelSimulatedAnnealing implements Algorithm {
+export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
+    type: 'single' = 'single';
     name = 'p-sa-js';
 
-    async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmSolution> {
+    async solve(problem: Problem, config: AlgorithmConfig): Promise<ProblemSolution> {
         const distMatrix = buildDistanceMatrix(problem.orders, config.distanceCalc);
         const vehicleStartMatrix = buildVehicleDistances(problem.vehicles, problem.orders, config.distanceCalc);
 
         const totalCpus = os.cpus().length;
-        const threadsPerTarget = Math.max(2, Math.floor(totalCpus / 3));
+        const threadsPerTarget = Math.max(2, totalCpus);
 
-        const emptyPromise = this.solveTarget(
-            OptimizationTarget.EMPTY,
-            threadsPerTarget,
-            problem,
-            distMatrix,
-            vehicleStartMatrix,
-        );
-
-        const distPromise = this.solveTarget(
-            OptimizationTarget.DISTANCE,
-            threadsPerTarget,
-            problem,
-            distMatrix,
-            vehicleStartMatrix,
-        );
-
-        const pricePromise = this.solveTarget(
-            OptimizationTarget.PRICE,
-            threadsPerTarget,
-            problem,
-            distMatrix,
-            vehicleStartMatrix,
-        );
-
-        const [bestEmpty, bestDist, bestPrice] = await Promise.all([emptyPromise, distPromise, pricePromise]);
-
-        return {
-            bestEmptySolution: bestEmpty,
-            bestDistanceSolution: bestDist,
-            bestPriceSolution: bestPrice,
-        };
+        return this.solveTarget(config.target, threadsPerTarget, problem, distMatrix, vehicleStartMatrix);
     }
 
     // Spawns a pipeline of workers to solve a single target.

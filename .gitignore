@@ -5,3 +5,5 @@ data
 problems
 seed-dataset.csv
 temp-results
+*.tex
+*.txt

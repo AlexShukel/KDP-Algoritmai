@@ -17,7 +17,6 @@
 
 import { solveBruteForce } from 'rust-solver';
 import {
-    Algorithm,
     AlgorithmConfig,
     Order,
     Problem,
@@ -26,6 +25,7 @@ import {
     Vehicle,
     VehicleRoute,
     AlgorithmSolution,
+    MultiTargetAlgorithm,
 } from '../../types';
 import { iterateAllSubsets } from './iterateAllSubsets';
 import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from '../../utils/DistanceMatrix';
@@ -40,7 +40,8 @@ type TSPResult = {
 
 const MAX_PROBLEM_SIZE = 7;
 
-export class BruteForceAlgorithmRust implements Algorithm {
+export class BruteForceAlgorithmRust implements MultiTargetAlgorithm {
+    type: 'multi' = 'multi';
     name: string = 'brute-force-rust';
 
     public solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmSolution> {
@@ -52,7 +53,8 @@ export class BruteForceAlgorithmRust implements Algorithm {
     }
 }
 
-export class BruteForceAlgorithmJS implements Algorithm {
+export class BruteForceAlgorithmJS implements MultiTargetAlgorithm {
+    type: 'multi' = 'multi';
     name: string = 'brute-force-js';
 
     // Global best solutions (mutable to share across recursive calls)

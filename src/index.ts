@@ -4,7 +4,16 @@ import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import stringify from 'fast-json-stable-stringify';
 import { BruteForceAlgorithmJS, BruteForceAlgorithmRust } from './algorithms/brute-force';
-import { Problem, AlgorithmSolution, Algorithm, AlgorithmConfig, BenchmarkResult } from './types';
+import {
+    Problem,
+    Algorithm,
+    OptimizationTarget,
+    isMultiTarget,
+    isSingleTarget,
+    ProblemSolution,
+    SolutionMetrics,
+    BenchmarkRecord,
+} from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 import { ParallelSimulatedAnnealing } from './algorithms/p-sa';
 import { fileURLToPath } from 'url';
@@ -12,10 +21,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PROBLEMS_DIR = 'problems';
-
-const algConfig: AlgorithmConfig = {
-    distanceCalc: greatCircleDistanceCalculator,
-};
+const HEURISTIC_REPETITIONS = 10;
 
 async function main(): Promise<void> {
     const problemFiles = glob.sync('**/*.json', { cwd: PROBLEMS_DIR, absolute: true });
@@ -25,33 +31,32 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
+    // Sort by complexity (vehicles + orders)
     problemFiles.sort((a, b) => {
         const regex = /[\\/](\d+)_(\d+)[\\/]/;
-
         const matchA = a.match(regex);
         const matchB = b.match(regex);
-
         if (!matchA || !matchB) {
             return 0;
         }
-
-        const vA = parseInt(matchA[1], 10);
-        const oA = parseInt(matchA[2], 10);
-
-        const vB = parseInt(matchB[1], 10);
-        const oB = parseInt(matchB[2], 10);
-
-        return vA + oA - (vB + oB);
+        return parseInt(matchA[1]) + parseInt(matchA[2]) - (parseInt(matchB[1]) + parseInt(matchB[2]));
     });
 
-    const algorithms: Algorithm[] = [new ParallelSimulatedAnnealing(), new BruteForceAlgorithmRust()];
+    // Register algorithms
+    const algorithms: Algorithm[] = [new BruteForceAlgorithmRust(), new ParallelSimulatedAnnealing()];
+
+    const extractMetrics = (solution: ProblemSolution): SolutionMetrics => ({
+        totalDistance: solution.totalDistance,
+        totalPrice: solution.totalPrice,
+        emptyDistance: solution.emptyDistance,
+    });
 
     for (const alg of algorithms) {
         console.log(`\n========================================`);
         console.log(`Starting benchmark for: ${alg.name}`);
         console.log(`========================================`);
 
-        const benchmarkResults: BenchmarkResult[] = [];
+        const benchmarkRecords: BenchmarkRecord[] = [];
 
         for (let i = 0; i < problemFiles.length; ++i) {
             const filePath = problemFiles[i];
@@ -59,37 +64,73 @@ async function main(): Promise<void> {
 
             const raw = fs.readFileSync(filePath, 'utf-8');
             const problem: Problem = JSON.parse(raw);
+            const size = { vehicles: problem.vehicles.length, orders: problem.orders.length };
 
-            const vCount = problem.vehicles.length;
-            const oCount = problem.orders.length;
+            console.log(`Processing ${relativePath}`);
 
-            const start = performance.now();
-            let solution: AlgorithmSolution;
-            try {
-                solution = await alg.solve(problem, algConfig);
-            } catch (err) {
-                console.error(`\nError solving ${relativePath}.`);
-                continue;
+            if (isMultiTarget(alg)) {
+                const start = performance.now();
+
+                try {
+                    const solution = await alg.solve(problem, {
+                        distanceCalc: greatCircleDistanceCalculator,
+                        target: OptimizationTarget.DISTANCE, // ignored
+                    });
+
+                    const duration = performance.now() - start;
+
+                    const targets: Array<{ t: OptimizationTarget; s: ProblemSolution }> = [
+                        { t: OptimizationTarget.DISTANCE, s: solution.bestDistanceSolution },
+                        { t: OptimizationTarget.PRICE, s: solution.bestPriceSolution },
+                        { t: OptimizationTarget.EMPTY, s: solution.bestEmptySolution },
+                    ];
+
+                    targets.forEach(({ t, s }) => {
+                        benchmarkRecords.push({
+                            problemPath: relativePath,
+                            problemSize: size,
+                            optimizationTarget: t,
+                            runIndex: 0,
+                            execTime: duration,
+                            metrics: extractMetrics(s),
+                            isBatchResult: true,
+                        });
+                    });
+                } catch (err) {
+                    console.error(`Error solving ${relativePath}:`, err);
+                }
+            } else if (isSingleTarget(alg)) {
+                for (const target of Object.values(OptimizationTarget)) {
+                    for (let i = 0; i < HEURISTIC_REPETITIONS; i++) {
+                        const start = performance.now();
+                        try {
+                            const solution = await alg.solve(problem, {
+                                distanceCalc: greatCircleDistanceCalculator,
+                                target,
+                            });
+                            const duration = performance.now() - start;
+
+                            benchmarkRecords.push({
+                                problemPath: relativePath,
+                                problemSize: size,
+                                optimizationTarget: target,
+                                runIndex: i,
+                                execTime: duration,
+                                metrics: extractMetrics(solution),
+                                isBatchResult: false,
+                            });
+                        } catch (err) {
+                            console.error(`Error solving ${relativePath} on run ${i}, target ${target}:`, err);
+                        }
+                    }
+                }
             }
-
-            const end = performance.now();
-            const duration = end - start;
-
-            console.log(`Done solving ${relativePath} in ${duration.toFixed(2)}ms`);
-
-            benchmarkResults.push({
-                problemPath: relativePath,
-                execTime: duration,
-                problemSize: { vehicles: vCount, orders: oCount },
-                results: solution,
-            });
         }
 
         const outputFilename = `benchmark-results-${alg.name}.json`;
         const outputPath = path.resolve(__dirname, outputFilename);
-
-        fs.writeFileSync(outputPath, stringify(benchmarkResults));
-        console.log(`\nResults for ${alg.name} saved to ${outputFilename}`);
+        fs.writeFileSync(outputPath, stringify(benchmarkRecords));
+        console.log(`Saved ${benchmarkRecords.length} records to ${outputFilename}`);
     }
 }
 
