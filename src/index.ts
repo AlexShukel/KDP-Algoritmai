@@ -13,6 +13,7 @@ import {
     ProblemSolution,
     SolutionMetrics,
     BenchmarkRecord,
+    ConvergenceUpdate,
 } from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 import { ParallelSimulatedAnnealing } from './algorithms/p-sa';
@@ -22,6 +23,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PROBLEMS_DIR = 'problems';
 const HEURISTIC_REPETITIONS = 10;
+
+function sampleHistory(history: ConvergenceUpdate[], maxPoints = 100): ConvergenceUpdate[] {
+    if (history.length <= maxPoints) {
+        return history;
+    }
+    const factor = Math.ceil(history.length / maxPoints);
+    return history.filter((_, i) => i % factor === 0 || i === history.length - 1);
+}
 
 async function main(): Promise<void> {
     const problemFiles = glob.sync('**/*.json', { cwd: PROBLEMS_DIR, absolute: true });
@@ -72,7 +81,7 @@ async function main(): Promise<void> {
                 const start = performance.now();
 
                 try {
-                    const solution = await alg.solve(problem, {
+                    const { solution } = await alg.solve(problem, {
                         distanceCalc: greatCircleDistanceCalculator,
                         target: OptimizationTarget.DISTANCE, // ignored
                     });
@@ -104,7 +113,7 @@ async function main(): Promise<void> {
                     for (let i = 0; i < HEURISTIC_REPETITIONS; i++) {
                         const start = performance.now();
                         try {
-                            const solution = await alg.solve(problem, {
+                            const { history, solution } = await alg.solve(problem, {
                                 distanceCalc: greatCircleDistanceCalculator,
                                 target,
                             });
@@ -118,6 +127,7 @@ async function main(): Promise<void> {
                                 execTime: duration,
                                 metrics: extractMetrics(solution),
                                 isBatchResult: false,
+                                convergenceHistory: sampleHistory(history),
                             });
                         } catch (err) {
                             console.error(`Error solving ${relativePath} on run ${i}, target ${target}:`, err);

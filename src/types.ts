@@ -2,9 +2,24 @@ import type { AlgorithmSolution, Location, Problem, ProblemSolution } from 'rust
 
 export type DistanceCalculator = (from: Location, to: Location) => number;
 
+export interface SimulatedAnnealingConfig {
+    initialTemp: number;
+    coolingRate: number;
+    minTemp: number;
+    maxIterations: number;
+    batchSize: number; // Iterations per sync
+    syncInterval: number; // Batches per sync
+    weights?: {
+        shift: number;
+        swap: number;
+        shuffle: number;
+    };
+}
+
 export interface AlgorithmConfig {
     distanceCalc: DistanceCalculator;
     target: OptimizationTarget;
+    saConfig?: Partial<SimulatedAnnealingConfig>; // Optional override
 }
 
 export interface Algorithm<T = any> {
@@ -13,19 +28,30 @@ export interface Algorithm<T = any> {
     readonly type: 'multi' | 'single';
 }
 
-export interface MultiTargetAlgorithm extends Algorithm<AlgorithmSolution> {
+export interface AlgorithmResultWithMetadata<T> {
+    solution: T;
+    history: ConvergenceUpdate[];
+}
+
+export interface MultiTargetAlgorithm extends Algorithm<AlgorithmResultWithMetadata<AlgorithmSolution>> {
     readonly type: 'multi';
 }
 
 export const isMultiTarget = (alg: Algorithm): alg is MultiTargetAlgorithm => alg.type === 'multi';
 
-export interface SingleTargetAlgorithm extends Algorithm<ProblemSolution> {
+export interface SingleTargetAlgorithm extends Algorithm<AlgorithmResultWithMetadata<ProblemSolution>> {
     readonly type: 'single';
 }
 
 export const isSingleTarget = (alg: Algorithm): alg is SingleTargetAlgorithm => alg.type === 'single';
 
 export type SolutionMetrics = Omit<ProblemSolution, 'routes'>;
+
+export interface ConvergenceUpdate {
+    timeMs: number;
+    iteration: number;
+    metrics: SolutionMetrics;
+}
 
 export type BenchmarkRecord = {
     problemPath: string;
@@ -37,6 +63,8 @@ export type BenchmarkRecord = {
     runIndex: number;
     execTime: number; // ms
     metrics: SolutionMetrics;
+
+    convergenceHistory?: ConvergenceUpdate[];
 
     isBatchResult: boolean;
 };

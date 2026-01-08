@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { OptimizationTarget, BenchmarkRecord } from './src/types';
+import { OptimizationTarget, BenchmarkRecord, SolutionMetrics } from './src/types';
 
 const TARGET_TO_PLOT = OptimizationTarget.DISTANCE;
 
@@ -21,6 +21,17 @@ function getLegendName(filePath: string): string {
     }
     return path.parse(filePath).name;
 }
+
+const metricsToCost = (metrics: SolutionMetrics, target: OptimizationTarget) => {
+    switch (target) {
+        case OptimizationTarget.EMPTY:
+            return metrics.emptyDistance;
+        case OptimizationTarget.DISTANCE:
+            return metrics.totalDistance;
+        case OptimizationTarget.PRICE:
+            return metrics.totalPrice;
+    }
+};
 
 function average(arr: number[]): number {
     if (arr.length === 0) return 0;
@@ -202,10 +213,133 @@ async function main() {
 `;
     fs.writeFileSync(path.join(__dirname, 'diagram_reliability.tex'), texReliability);
 
+    const TARGET_FOR_CONVERGENCE = OptimizationTarget.DISTANCE;
+
+    let bestProblemPath = '';
+    let maxComplexity = 0;
+
+    heurRecords.forEach(r => {
+        const comp = r.problemSize.orders + r.problemSize.vehicles;
+        if (comp > maxComplexity) {
+            maxComplexity = comp;
+            bestProblemPath = r.problemPath;
+        }
+    });
+
+    const convergenceRun = heurRecords.find(
+        r =>
+            r.problemPath === bestProblemPath &&
+            r.optimizationTarget === TARGET_FOR_CONVERGENCE &&
+            r.convergenceHistory &&
+            r.convergenceHistory.length > 0,
+    );
+
+    const bfRecord = bfRecords.find(
+        r => r.problemPath === bestProblemPath && r.optimizationTarget === TARGET_FOR_CONVERGENCE,
+    );
+    const optimalCost = bfRecord ? bfRecord.metrics.totalDistance : 0;
+
+    let texConvergenceCoords = '';
+
+    if (convergenceRun && convergenceRun.convergenceHistory) {
+        const sortedHistory = convergenceRun.convergenceHistory.sort((a, b) => a.iteration - b.iteration);
+
+        texConvergenceCoords = sortedHistory
+            .map(h => `(${h.iteration}, ${metricsToCost(h.metrics, convergenceRun.optimizationTarget)})`)
+            .join(' ');
+    }
+
+    const texConvergence = `
+% Diagrama: Konvergencija (Iteracija vs Tikslo Funkcija)
+\\begin{figure}[hbt!]
+\\centering
+\\begin{tikzpicture}
+    \\begin{axis}[
+        xlabel={Iteracija},
+        ylabel={Tikslo funkcija (Cost)},
+        grid=major,
+        width=0.95\\linewidth,
+        height=7cm,
+        % xmode=log, % Logaritminė ašis dažnai tinka SA, jei iteracijų labai daug
+        legend pos=north east,
+        mark size=1.5pt
+    ]
+    
+    % Optimali riba
+    \\addplot[color=red, dashed, thick] coordinates {
+        (${convergenceRun?.convergenceHistory?.[0]?.iteration || 1}, ${optimalCost})
+        (${convergenceRun?.convergenceHistory?.slice(-1)[0]?.iteration || 1000}, ${optimalCost})
+    };
+    \\addlegendentry{Globalus minimumas}
+
+    % Algoritmo eiga
+    \\addplot[color=blue, mark=*, thin] coordinates { ${texConvergenceCoords} };
+    \\addlegendentry{PSA Optimizavimo eiga}
+    
+    \\end{axis}
+\\end{tikzpicture}
+\\caption{Algoritmo konvergavimo greitis (Tikslo funkcija vs Iteracijos).}
+\\label{fig:konvergencija}
+\\end{figure}
+    `;
+
+    fs.writeFileSync(path.join(__dirname, 'diagram_convergence.tex'), texConvergence);
+
+    const cloudPoints: string[] = [];
+
+    heurRecords
+        .filter(r => r.problemPath === bestProblemPath)
+        .forEach(r => {
+            cloudPoints.push(`(${r.metrics.totalDistance}, ${r.metrics.totalPrice})`);
+        });
+
+    const bfPointDist = bfRecords.find(
+        r => r.problemPath === bestProblemPath && r.optimizationTarget === OptimizationTarget.DISTANCE,
+    );
+    const bfCoords = bfPointDist ? `(${bfPointDist.metrics.totalDistance}, ${bfPointDist.metrics.totalPrice})` : '';
+
+    const texMultiTarget = `
+% Diagrama: Daugiakriterinė analizė
+\\begin{figure}[hbt!]
+\\centering
+\\begin{tikzpicture}
+    \\begin{axis}[
+        xlabel={Atstumas (km)},
+        ylabel={Kaina (€)},
+        grid=major,
+        width=0.95\\linewidth,
+        height=8cm,
+        legend pos=north east,
+        only marks, % Scatter plot
+    ]
+    
+    % Euristikos debesys
+    \\addplot[color=blue, mark=*, mark size=2pt, opacity=0.6] coordinates { ${cloudPoints.join(' ')} };
+    \\addlegendentry{Euristiniai sprendiniai}
+
+    % Tikslus sprendinys
+    ${
+        bfCoords
+            ? `\\addplot[color=red, mark=star, mark size=6pt, thick] coordinates { ${bfCoords} };
+    \\addlegendentry{Optimalus (min atstumas)}`
+            : ''
+    }
+    
+    \\end{axis}
+\\end{tikzpicture}
+\\caption{Kompromisas tarp atstumo ir kainos (Pareto fronto aproksimacija).}
+\\label{fig:daugiakriterine}
+\\end{figure}
+    `;
+
+    fs.writeFileSync(path.join(__dirname, 'diagram_multitarget.tex'), texMultiTarget);
+
     console.log(`\nGenerated files:`);
     console.log(`- diagram_scalability.tex`);
     console.log(`- diagram_quality.tex`);
     console.log(`- diagram_reliability.tex`);
+    console.log(`- diagram_convergence.tex`);
+    console.log(`- diagram_multitarget.tex`);
 }
 
 main().catch(console.error);
