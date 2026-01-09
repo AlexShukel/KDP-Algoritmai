@@ -17,10 +17,10 @@ const getDefaultConfig = (target: OptimizationTarget): SimulatedAnnealingConfig 
         case OptimizationTarget.EMPTY:
             return {
                 initialTemp: 500,
-                coolingRate: 0.999,
-                maxIterations: 10000,
-                batchSize: 100,
-                syncInterval: 4,
+                coolingRate: 0.99,
+                maxIterations: 1000,
+                batchSize: 50,
+                syncInterval: 10,
                 minTemp: 0.1,
                 weights: {
                     shift: 0.4,
@@ -32,7 +32,7 @@ const getDefaultConfig = (target: OptimizationTarget): SimulatedAnnealingConfig 
             return {
                 initialTemp: 500,
                 coolingRate: 0.999,
-                maxIterations: 20000,
+                maxIterations: 10000,
                 batchSize: 100,
                 syncInterval: 4,
                 minTemp: 0.1,
@@ -44,11 +44,11 @@ const getDefaultConfig = (target: OptimizationTarget): SimulatedAnnealingConfig 
             };
         case OptimizationTarget.PRICE:
             return {
-                initialTemp: 5000,
+                initialTemp: 1500,
                 coolingRate: 0.999,
-                maxIterations: 20000,
+                maxIterations: 10000,
                 batchSize: 200,
-                syncInterval: 10,
+                syncInterval: 4,
                 minTemp: 0.1,
                 weights: {
                     shift: 0.4,

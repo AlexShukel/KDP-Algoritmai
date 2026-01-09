@@ -14,7 +14,7 @@ const paramGrid: Partial<SimulatedAnnealingConfig>[] = [];
 
 const temps = [500, 1500, 2500];
 const coolingRates = [0.95, 0.99, 0.999];
-const maxIters = [1000, 10000, 20000];
+const maxIters = [1000, 5000, 10000];
 const batchSizes = [50, 100, 200];
 const syncIntervals = [4, 10];
 

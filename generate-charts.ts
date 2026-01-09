@@ -285,61 +285,130 @@ async function main() {
 
     fs.writeFileSync(path.join(__dirname, 'diagram_convergence.tex'), texConvergence);
 
-    const cloudPoints: string[] = [];
+    const chartsConfig = [
+        {
+            filename: 'diagram_mt_price_dist.tex',
+            xKey: 'totalDistance',
+            yKey: 'totalPrice',
+            xLabel: 'Atstumas (km)',
+            yLabel: 'Kaina (€)',
+            caption: 'Atstumo ir kainos priklausomybė',
+            label: 'fig:mt_price_dist',
+            bfTarget: OptimizationTarget.DISTANCE,
+        },
+        {
+            filename: 'diagram_mt_price_empty.tex',
+            xKey: 'emptyDistance',
+            yKey: 'totalPrice',
+            xLabel: 'Tuščia rida (km)',
+            yLabel: 'Kaina (€)',
+            caption: 'Tuščio atstumo ir kainos priklausomybė',
+            label: 'fig:mt_price_empty',
+            bfTarget: OptimizationTarget.EMPTY,
+        },
+        {
+            filename: 'diagram_mt_empty_dist.tex',
+            xKey: 'totalDistance',
+            yKey: 'emptyDistance',
+            xLabel: 'Atstumas (km)',
+            yLabel: 'Tuščia rida (km)',
+            caption: 'Atstumo ir tuščio atstumo priklausomybė',
+            label: 'fig:mt_empty_dist',
+            bfTarget: OptimizationTarget.DISTANCE,
+        },
+    ];
 
-    heurRecords
-        .filter(r => r.problemPath === bestProblemPath)
-        .forEach(r => {
-            cloudPoints.push(`(${r.metrics.totalDistance}, ${r.metrics.totalPrice})`);
+    const plotStyles = {
+        [OptimizationTarget.DISTANCE]: { color: 'blue', mark: '*', legend: 'Min atstumas' },
+        [OptimizationTarget.PRICE]: { color: 'green!60!black', mark: 'square*', legend: 'Min kaina' },
+        [OptimizationTarget.EMPTY]: { color: 'orange', mark: 'triangle*', legend: 'Min tuščia rida' },
+    };
+
+    for (const config of chartsConfig) {
+        const pointsMap: Record<string, string[]> = {
+            [OptimizationTarget.DISTANCE]: [],
+            [OptimizationTarget.PRICE]: [],
+            [OptimizationTarget.EMPTY]: [],
+        };
+
+        heurRecords
+            .filter(r => r.problemPath === bestProblemPath)
+            .forEach(r => {
+                const xVal = r.metrics[config.xKey as keyof SolutionMetrics];
+                const yVal = r.metrics[config.yKey as keyof SolutionMetrics];
+                const coord = `(${xVal}, ${yVal})`;
+
+                if (pointsMap[r.optimizationTarget]) {
+                    pointsMap[r.optimizationTarget].push(coord);
+                }
+            });
+
+        let heuristicPlotsTex = '';
+        const targets = [OptimizationTarget.DISTANCE, OptimizationTarget.PRICE, OptimizationTarget.EMPTY];
+
+        targets.forEach(target => {
+            const points = pointsMap[target];
+            const style = plotStyles[target];
+
+            if (points && points.length > 0) {
+                heuristicPlotsTex += `
+        \\addplot[color=${style.color}, mark=${style.mark}, mark size=2.5pt, opacity=0.6, only marks] coordinates { ${points.join(' ')} };
+        \\addlegendentry{${style.legend}}
+                `;
+            }
         });
 
-    const bfPointDist = bfRecords.find(
-        r => r.problemPath === bestProblemPath && r.optimizationTarget === OptimizationTarget.DISTANCE,
-    );
-    const bfCoords = bfPointDist ? `(${bfPointDist.metrics.totalDistance}, ${bfPointDist.metrics.totalPrice})` : '';
+        const bfRecord = bfRecords.find(
+            r => r.problemPath === bestProblemPath && r.optimizationTarget === config.bfTarget,
+        );
 
-    const texMultiTarget = `
-% Diagrama: Daugiakriterinė analizė
+        let bfPlotTex = '';
+        if (bfRecord) {
+            const bfX = bfRecord.metrics[config.xKey as keyof SolutionMetrics];
+            const bfY = bfRecord.metrics[config.yKey as keyof SolutionMetrics];
+            bfPlotTex = `
+        \\addplot[color=red, mark=star, mark size=6pt, thick] coordinates { (${bfX}, ${bfY}) };
+        \\addlegendentry{Optimalus (${config.bfTarget})}
+            `;
+        }
+
+        const fileContent = `
+% Diagrama: ${config.caption}
 \\begin{figure}[hbt!]
 \\centering
 \\begin{tikzpicture}
     \\begin{axis}[
-        xlabel={Atstumas (km)},
-        ylabel={Kaina (€)},
+        xlabel={${config.xLabel}},
+        ylabel={${config.yLabel}},
         grid=major,
         width=0.95\\linewidth,
-        height=8cm,
+        height=7cm,
         legend pos=north east,
-        only marks, % Scatter plot
+        legend style={nodes={scale=0.7, transform shape}}
     ]
     
-    % Euristikos debesys
-    \\addplot[color=blue, mark=*, mark size=2pt, opacity=0.6] coordinates { ${cloudPoints.join(' ')} };
-    \\addlegendentry{Euristiniai sprendiniai}
-
-    % Tikslus sprendinys
-    ${
-        bfCoords
-            ? `\\addplot[color=red, mark=star, mark size=6pt, thick] coordinates { ${bfCoords} };
-    \\addlegendentry{Optimalus (min atstumas)}`
-            : ''
-    }
+    ${heuristicPlotsTex}
+    ${bfPlotTex}
     
     \\end{axis}
 \\end{tikzpicture}
-\\caption{Kompromisas tarp atstumo ir kainos (Pareto fronto aproksimacija).}
-\\label{fig:daugiakriterine}
+\\caption{${config.caption} (Pareto analizė).}
+\\label{${config.label}}
 \\end{figure}
-    `;
+        `;
 
-    fs.writeFileSync(path.join(__dirname, 'diagram_multitarget.tex'), texMultiTarget);
+        fs.writeFileSync(path.join(__dirname, config.filename), fileContent);
+        console.log(`Generated ${config.filename}`);
+    }
 
     console.log(`\nGenerated files:`);
     console.log(`- diagram_scalability.tex`);
     console.log(`- diagram_quality.tex`);
     console.log(`- diagram_reliability.tex`);
     console.log(`- diagram_convergence.tex`);
-    console.log(`- diagram_multitarget.tex`);
+    console.log(`- diagram_mt_price_dist.tex`);
+    console.log(`- diagram_mt_price_empty.tex`);
+    console.log(`- diagram_mt_empty_dist.tex`);
 }
 
 main().catch(console.error);
