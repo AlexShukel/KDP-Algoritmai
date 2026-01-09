@@ -1,9 +1,18 @@
 import os from 'os';
 
-import { AlgorithmConfig, OptimizationTarget, Problem, ProblemSolution, SingleTargetAlgorithm } from '../../types';
+import {
+    AlgorithmConfig,
+    AlgorithmResultWithMetadata,
+    ConvergenceUpdate,
+    OptimizationTarget,
+    Problem,
+    ProblemSolution,
+    SingleTargetAlgorithm,
+} from '../../types';
 import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from '../../utils/DistanceMatrix';
 import { generateRCRS } from './rcrs';
 import { Worker } from 'worker_threads';
+import { performance } from 'perf_hooks';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -13,28 +22,42 @@ export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
     type: 'single' = 'single';
     name = 'p-sa-js';
 
-    async solve(problem: Problem, config: AlgorithmConfig): Promise<ProblemSolution> {
+    async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
         const distMatrix = buildDistanceMatrix(problem.orders, config.distanceCalc);
         const vehicleStartMatrix = buildVehicleDistances(problem.vehicles, problem.orders, config.distanceCalc);
 
         const totalCpus = os.cpus().length;
         const threadsPerTarget = Math.max(2, totalCpus);
 
-        return this.solveTarget(config.target, threadsPerTarget, problem, distMatrix, vehicleStartMatrix);
+        return this.solveTarget(config, threadsPerTarget, problem, distMatrix, vehicleStartMatrix);
     }
 
     // Spawns a pipeline of workers to solve a single target.
     private async solveTarget(
-        target: OptimizationTarget,
+        { target, saConfig }: AlgorithmConfig,
         numThreads: number,
         problem: Problem,
         distMatrix: DistanceMatrix,
         vehicleStartMatrix: DistanceMatrix,
-    ): Promise<ProblemSolution> {
+    ): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
         const initialSolution = generateRCRS(problem, distMatrix, vehicleStartMatrix, target);
 
         let globalBest = initialSolution;
         let globalBestEnergy = this.getEnergy(initialSolution, target);
+        let totalIterations = 0;
+
+        const history: ConvergenceUpdate[] = [
+            {
+                timeMs: 0,
+                iteration: 0,
+                metrics: {
+                    emptyDistance: initialSolution.emptyDistance,
+                    totalDistance: initialSolution.totalDistance,
+                    totalPrice: initialSolution.totalPrice,
+                },
+            },
+        ];
+        const startTime = performance.now();
 
         const workers: Worker[] = [];
         const workerPromises: Promise<void>[] = [];
@@ -51,6 +74,16 @@ export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
                             if (msg.energy < globalBestEnergy) {
                                 globalBestEnergy = msg.energy;
                                 globalBest = msg.solution;
+
+                                history.push({
+                                    timeMs: performance.now() - startTime,
+                                    iteration: totalIterations,
+                                    metrics: {
+                                        totalDistance: msg.solution.totalDistance,
+                                        totalPrice: msg.solution.totalPrice,
+                                        emptyDistance: msg.solution.emptyDistance,
+                                    },
+                                });
                             }
                         }
 
@@ -71,6 +104,8 @@ export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
                             worker.terminate();
                             resolve();
                         }
+
+                        ++totalIterations;
                     });
 
                     worker.on('error', err => {
@@ -81,12 +116,14 @@ export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
                     worker.postMessage({
                         type: 'INIT',
                         data: {
+                            config: saConfig,
                             target,
                             problem,
                             distMatrix,
                             vehicleStartMatrix,
                             initialSolution,
-                            initialTemp: 1000 + Math.random() * 500,
+                            // It is often good to vary start temp slightly per thread
+                            initialTemp: (saConfig?.initialTemp || 1000) * (0.9 + Math.random() * 0.2),
                         },
                     });
                 }),
@@ -94,7 +131,7 @@ export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
         }
 
         await Promise.all(workerPromises);
-        return globalBest;
+        return { solution: globalBest, history };
     }
 
     private getEnergy(solution: ProblemSolution, target: OptimizationTarget): number {

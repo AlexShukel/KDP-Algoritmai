@@ -12,6 +12,7 @@ export default defineConfig({
             entry: {
                 vrp: resolve(__dirname, 'src/index.ts'),
                 'p-sa.worker': resolve(__dirname, 'src/algorithms/p-sa/p-sa.worker.ts'),
+                tunePsa: resolve(__dirname, 'src/tune-psa.ts'),
             },
             name: 'VRP',
             formats: ['es'],

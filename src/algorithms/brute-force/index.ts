@@ -26,6 +26,7 @@ import {
     VehicleRoute,
     AlgorithmSolution,
     MultiTargetAlgorithm,
+    AlgorithmResultWithMetadata,
 } from '../../types';
 import { iterateAllSubsets } from './iterateAllSubsets';
 import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from '../../utils/DistanceMatrix';
@@ -44,12 +45,12 @@ export class BruteForceAlgorithmRust implements MultiTargetAlgorithm {
     type: 'multi' = 'multi';
     name: string = 'brute-force-rust';
 
-    public solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmSolution> {
+    public solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<AlgorithmSolution>> {
         if (problem.orders.length > MAX_PROBLEM_SIZE || problem.vehicles.length > MAX_PROBLEM_SIZE) {
             throw new Error(`Problem too large for ${this.name} implementation.`);
         }
 
-        return new Promise(res => res(solveBruteForce(problem)));
+        return new Promise(res => res({ solution: solveBruteForce(problem), history: [] }));
     }
 }
 
@@ -72,11 +73,14 @@ export class BruteForceAlgorithmJS implements MultiTargetAlgorithm {
     private distancesMat: DistanceMatrix = [];
     private vehicleStartDistancesMat: DistanceMatrix = []; // [vehicleIndex][orderIndex]
 
-    solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmSolution> {
+    solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<AlgorithmSolution>> {
         return new Promise(res => res(this.solveSync(problem, config)));
     }
 
-    public solveSync({ orders, vehicles }: Problem, config: AlgorithmConfig): AlgorithmSolution {
+    public solveSync(
+        { orders, vehicles }: Problem,
+        config: AlgorithmConfig,
+    ): AlgorithmResultWithMetadata<AlgorithmSolution> {
         if (orders.length > MAX_PROBLEM_SIZE || vehicles.length > MAX_PROBLEM_SIZE) {
             throw new Error(`Problem too large for ${this.name} implementation.`);
         }
@@ -108,9 +112,12 @@ export class BruteForceAlgorithmJS implements MultiTargetAlgorithm {
         const emptySolution = { routes: {}, emptyDistance: Infinity, totalDistance: Infinity, totalPrice: Infinity };
 
         return {
-            bestDistanceSolution: this.bestDistanceSolution || emptySolution,
-            bestPriceSolution: this.bestPriceSolution || emptySolution,
-            bestEmptySolution: this.bestEmptySolution || emptySolution,
+            solution: {
+                bestDistanceSolution: this.bestDistanceSolution || emptySolution,
+                bestPriceSolution: this.bestPriceSolution || emptySolution,
+                bestEmptySolution: this.bestEmptySolution || emptySolution,
+            },
+            history: [],
         };
     }
 
@@ -151,7 +158,6 @@ export class BruteForceAlgorithmJS implements MultiTargetAlgorithm {
                 const cacheKey = this.getRouteCacheKey(i, mask);
                 const cached = this.routeCache.get(cacheKey);
                 if (cached) {
-                    // FIXME: optimize this branching
                     const r =
                         type === 'dist'
                             ? cached.minDistanceRoute

@@ -22,7 +22,8 @@
         "format": "prettier --write .",
         "generate:data": "tsx ./generate-data.ts",
         "visualize:data": "python visualize_data.py",
-        "generate:problems": "tsx ./generate-problems.ts"
+        "generate:problems": "tsx ./generate-problems.ts",
+        "tune-psa": "pnpm build && cd dist && node tunePsa.es.mjs"
     },
     "repository": {
         "type": "git",

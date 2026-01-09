@@ -1,14 +1,62 @@
 import { parentPort } from 'worker_threads';
-import { OptimizationTarget, Problem, ProblemSolution, Vehicle, VehicleRoute } from '../../types';
+import {
+    OptimizationTarget,
+    Problem,
+    ProblemSolution,
+    SimulatedAnnealingConfig,
+    Vehicle,
+    VehicleRoute,
+} from '../../types';
 import { DistanceMatrix } from '../../utils/DistanceMatrix';
 
-// Configuration
-const CONFIG = {
-    BATCH_SIZE: 50, // How many iterations to run before checking for messages
-    SYNC_INTERVAL: 200, // How often to share our solution with the pipeline
-    MAX_ITERATIONS: 10000,
-    COOLING_RATE: 0.99,
-    MIN_TEMP: 0.1,
+let CONFIG: SimulatedAnnealingConfig;
+
+const getDefaultConfig = (target: OptimizationTarget): SimulatedAnnealingConfig => {
+    // Found optimal configurations from "tune-psa" run (optimized for largest problem sizes 7x7)
+    switch (target) {
+        case OptimizationTarget.EMPTY:
+            return {
+                initialTemp: 500,
+                coolingRate: 0.999,
+                maxIterations: 10000,
+                batchSize: 100,
+                syncInterval: 4,
+                minTemp: 0.1,
+                weights: {
+                    shift: 0.4,
+                    swap: 0.3,
+                    shuffle: 0.3,
+                },
+            };
+        case OptimizationTarget.DISTANCE:
+            return {
+                initialTemp: 500,
+                coolingRate: 0.999,
+                maxIterations: 20000,
+                batchSize: 100,
+                syncInterval: 4,
+                minTemp: 0.1,
+                weights: {
+                    shift: 0.4,
+                    swap: 0.3,
+                    shuffle: 0.3,
+                },
+            };
+        case OptimizationTarget.PRICE:
+            return {
+                initialTemp: 5000,
+                coolingRate: 0.999,
+                maxIterations: 20000,
+                batchSize: 200,
+                syncInterval: 10,
+                minTemp: 0.1,
+                weights: {
+                    shift: 0.4,
+                    swap: 0.3,
+                    shuffle: 0.3,
+                },
+            };
+    }
 };
 
 // State
@@ -62,8 +110,13 @@ function initialize(data: any) {
     distMatrix = data.distMatrix;
     vehicleStartMatrix = data.vehicleStartMatrix;
 
+    CONFIG = getDefaultConfig(target);
+    if (data.config) {
+        CONFIG = { ...CONFIG, ...data.config };
+    }
+
     currentSolution = cloneSolution(data.initialSolution);
-    temperature = data.initialTemp;
+    temperature = CONFIG.initialTemp;
 
     orderMap = new Map();
     problem.orders.forEach((o, i) => orderMap.set(o.id, i));
@@ -113,18 +166,18 @@ function runBatch() {
     }
 
     // Run a chunk of iterations synchronously
-    for (let i = 0; i < CONFIG.BATCH_SIZE; ++i) {
+    for (let i = 0; i < CONFIG.batchSize; ++i) {
         performIteration();
         ++iterationCount;
 
-        if (iterationCount >= CONFIG.MAX_ITERATIONS || temperature < CONFIG.MIN_TEMP) {
+        if (iterationCount >= CONFIG.maxIterations || temperature < CONFIG.minTemp) {
             finish();
             return;
         }
     }
 
     // Sync logic
-    if (iterationCount % CONFIG.SYNC_INTERVAL === 0) {
+    if (iterationCount % (CONFIG.batchSize * CONFIG.syncInterval) === 0) {
         parentPort?.postMessage({
             type: 'SYNC_REPORT',
             energy: bestLocalEnergy,
@@ -155,7 +208,7 @@ function performIteration() {
     }
 
     // 3. Cool down
-    temperature *= CONFIG.COOLING_RATE;
+    temperature *= CONFIG.coolingRate;
 }
 
 function finish() {
@@ -240,7 +293,7 @@ function generateNeighbor(current: ProblemSolution): ProblemSolution {
     const r = Math.random();
 
     // 1. SHIFT (40%)
-    if (r < 0.4) {
+    if (r < CONFIG.weights!.shift) {
         const v1 = nonEmpty[Math.floor(Math.random() * nonEmpty.length)];
         const r1 = solution.routes[v1];
         if (r1.stops.length === 0) return solution;
@@ -259,7 +312,7 @@ function generateNeighbor(current: ProblemSolution): ProblemSolution {
         r2.stops.splice(dIdx, 0, { orderId: oId, type: 'delivery' });
     }
     // 2. SWAP (30%)
-    else if (r < 0.7 && nonEmpty.length >= 2) {
+    else if (r < CONFIG.weights!.shift + CONFIG.weights!.swap && nonEmpty.length >= 2) {
         const v1 = nonEmpty[Math.floor(Math.random() * nonEmpty.length)];
         let v2 = nonEmpty[Math.floor(Math.random() * nonEmpty.length)];
         // Try to find different vehicle
