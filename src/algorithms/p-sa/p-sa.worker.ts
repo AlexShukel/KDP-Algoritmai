@@ -89,21 +89,6 @@ if (parentPort) {
     });
 }
 
-if (parentPort) {
-    parentPort.on('message', msg => {
-        switch (msg.type) {
-            case 'INIT':
-                initialize(msg.data);
-                startAnnealing();
-                break;
-
-            case 'INFLUENCE_UPDATE':
-                handleInfluence(msg.solution, msg.energy);
-                break;
-        }
-    });
-}
-
 function initialize(data: any) {
     target = data.target;
     problem = data.problem;
@@ -132,20 +117,14 @@ function handleInfluence(neighborSolution: ProblemSolution, neighborEnergy: numb
         currentSolution = cloneSolution(neighborSolution);
         currentEnergy = neighborEnergy;
 
-        // 2. Perturb it immediately to prevent cloning.
-        const mutated = generateNeighbor(currentSolution);
-        if (isValidSolution(mutated)) {
-            currentSolution = mutated;
-            currentEnergy = calculateEnergy(mutated);
-        }
-
-        // 3. Update personal best if applicable
+        // 2. Update personal best if applicable
         if (currentEnergy < bestLocalEnergy) {
             bestLocalSolution = cloneSolution(currentSolution);
             bestLocalEnergy = currentEnergy;
         }
 
-        // 4. Re-heat slightly
+        // 3. Re-heat slightly
+        // TODO: try with different re-heating parameters
         temperature = Math.max(temperature, 50);
     }
 }
@@ -192,6 +171,11 @@ function runBatch() {
 function performIteration() {
     // 1. Generate neighbor
     const neighbor = generateNeighbor(currentSolution);
+
+    if (!neighbor) {
+        return;
+    }
+
     const neighborEnergy = calculateEnergy(neighbor);
 
     // 2. Acceptance probability
@@ -221,10 +205,6 @@ function finish() {
 }
 
 function calculateEnergy(solution: ProblemSolution): number {
-    if (!isValidSolution(solution)) {
-        return Infinity;
-    }
-
     switch (target) {
         case OptimizationTarget.EMPTY:
             return solution.emptyDistance;
@@ -281,7 +261,7 @@ function checkRouteConstraints(route: VehicleRoute, vehicle: Vehicle): boolean {
 
 // OPERATORS
 
-function generateNeighbor(current: ProblemSolution): ProblemSolution {
+function generateNeighbor(current: ProblemSolution): ProblemSolution | null {
     const solution = cloneSolution(current);
     const vIds = Object.keys(solution.routes).map(Number);
     const nonEmpty = vIds.filter(id => solution.routes[id].stops.length > 0);
@@ -333,6 +313,7 @@ function generateNeighbor(current: ProblemSolution): ProblemSolution {
             r2.stops = r2.stops.filter(s => s.orderId !== o2);
 
             // Simplified append for swap stability
+            // TODO: check if insertion in random position makes better solutions
             r1.stops.push({ orderId: o2, type: 'pickup' }, { orderId: o2, type: 'delivery' });
             r2.stops.push({ orderId: o1, type: 'pickup' }, { orderId: o1, type: 'delivery' });
         }
@@ -341,6 +322,7 @@ function generateNeighbor(current: ProblemSolution): ProblemSolution {
     else {
         const v = nonEmpty[Math.floor(Math.random() * nonEmpty.length)];
         const route = solution.routes[v];
+        // TODO: try with different constant
         if (route.stops.length >= 4) {
             const orders = Array.from(new Set(route.stops.map(s => s.orderId)));
             // Simple shuffle of order sequence
@@ -348,12 +330,17 @@ function generateNeighbor(current: ProblemSolution): ProblemSolution {
                 const j = Math.floor(Math.random() * (i + 1));
                 [orders[i], orders[j]] = [orders[j], orders[i]];
             }
+            // TODO: check if randomized insertion makes better solutions
             route.stops = [];
             orders.forEach(oid => {
                 route.stops.push({ orderId: oid, type: 'pickup' });
                 route.stops.push({ orderId: oid, type: 'delivery' });
             });
         }
+    }
+
+    if (!isValidSolution(solution)) {
+        return null;
     }
 
     recalculateStats(solution);
