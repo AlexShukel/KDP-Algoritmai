@@ -22,7 +22,9 @@
         "format": "prettier --write .",
         "generate:data": "tsx ./generate-data.ts",
         "generate:problems": "tsx ./generate-problems.ts",
-        "tune-psa": "pnpm build && cd dist && node tunePsa.es.mjs"
+        "tune-psa": "pnpm build && cd dist && node tunePsa.es.mjs",
+        "parity:smoke": "tsx ./scripts/parity-smoke.ts",
+        "parity:compare": "tsx ./scripts/compare-results.ts"
     },
     "repository": {
         "type": "git",
