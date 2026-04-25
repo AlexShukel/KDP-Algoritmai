@@ -3,7 +3,7 @@ import path from 'path';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import stringify from 'fast-json-stable-stringify';
-import { BruteForceAlgorithmJS, BruteForceAlgorithmRust } from './algorithms/brute-force';
+import { BruteForceAlgorithmRust } from './algorithms/brute-force';
 import {
     Problem,
     Algorithm,
@@ -155,4 +155,4 @@ main().catch(error => {
     process.exit(1);
 });
 
-export { BruteForceAlgorithmJS as BruteForceAlgorithm };
+export { BruteForceAlgorithmRust as BruteForceAlgorithm };

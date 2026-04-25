@@ -1,7 +1,7 @@
 [package]
-authors = ["LongYinan <lynweklm@gmail.com>"]
-name = "rust_solver"
+name = "napi_bridge"
 version = "0.1.0"
+description = "NAPI cdylib that exposes Rust solver crates to the TypeScript harness."
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true

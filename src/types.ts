@@ -1,4 +1,4 @@
-import type { AlgorithmSolution, Location, Problem, ProblemSolution } from 'rust-solver';
+import type { AlgorithmSolution, Location, Problem, ProblemSolution } from 'napi-bridge';
 
 export type DistanceCalculator = (from: Location, to: Location) => number;
 
@@ -84,4 +84,4 @@ export type {
     VehicleRoute,
     AlgorithmSolution,
     RouteStop,
-} from 'rust-solver';
+} from 'napi-bridge';

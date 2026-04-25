@@ -12,8 +12,8 @@ Prieš pradedant, įsitikinkite, kad jūsų sistemoje įdiegtos šios versijos:
 
 - `git clone https://github.com/AlexShukel/KDP-Algoritmai.git`
 - `cd KDP-Algoritmai`
-- `cd rust-solver`
+- `cd crates/napi-bridge`
 - `pnpm i && pnpm build`
-- `cd .. && pnpm i`
+- `cd ../.. && pnpm i`
 - Unzip `./sample_problems.zip` to `./problems` dir
 - `pnpm start`

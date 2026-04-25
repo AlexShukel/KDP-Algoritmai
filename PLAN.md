@@ -26,7 +26,7 @@ The primary contribution is empirical; a secondary contribution is the problem-s
 From the [KDP-Algoritmai](https://github.com/AlexShukel/KDP-Algoritmai) repository:
 
 - **Problem generator** (`generate-data.ts`, `generate-problems.ts`): produces geographically realistic instances up to 7×7.
-- **Brute Force solver**: implemented twice — NodeJS (bitmask enumeration, Branch-and-Bound pruning) and Rust (`rust-solver/`, ~3× faster). Finds optima for all three objectives in a single run.
+- **Brute Force solver**: implemented in Rust (originally `rust-solver/`, now lifted into `crates/vrppd-brute-force/` with the napi shell at `crates/napi-bridge/`). The earlier NodeJS variant has been retired. Finds optima for all three objectives in a single run.
 - **p-SA**: NodeJS with Worker Threads, RCRS initial solution, Shift / Lazy Swap / Intra-Shuffle operators, island-model synchronization with re-heating.
 - **Parameter tuning tool** (`tune-psa`): automated sweep on 7×7 instances.
 - **Benchmarking harness**: full experimental pipeline with charts (490 problems × 3 objectives × 10 reps = 14 700 runs).
@@ -80,7 +80,9 @@ From the coursework thesis (`Kursinis darbas`):
 ```
 KDP-Algoritmai/
 ├── src/                     # TypeScript: p-SA, harness, validation
-├── rust-solver/             # Rust: Brute Force
+├── crates/napi-bridge/      # NAPI cdylib: TS↔Rust bridge (was rust-solver/)
+├── crates/vrppd-core/       # Rust: shared problem model + Haversine
+├── crates/vrppd-brute-force/ # Rust: Brute Force (lifted from rust-solver/)
 ├── generate-data.ts         # seed-data generation
 ├── generate-problems.ts     # problem-instance generation
 ├── generate-charts.ts       # chart rendering

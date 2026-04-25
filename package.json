@@ -60,7 +60,7 @@
         "fast-json-stable-stringify": "^2.1.0",
         "glob": "^13.0.0",
         "lodash": "^4.17.21",
-        "rust-solver": "file:./rust-solver",
+        "napi-bridge": "file:./crates/napi-bridge",
         "zod": "^4.1.12"
     }
 }

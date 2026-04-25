@@ -4,7 +4,7 @@
 //!
 //! The Rust algorithm logic lives in `vrppd-brute-force` (and future solver
 //! crates). This crate's only job is to mirror the wire types as
-//! `#[napi(object)]` structs that the TS side imports from `'rust-solver'`,
+//! `#[napi(object)]` structs that the TS side imports from `'napi-bridge'`,
 //! and to convert between those wire types and `vrppd-core` types around each
 //! solver call.
 

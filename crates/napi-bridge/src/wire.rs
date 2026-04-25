@@ -1,7 +1,7 @@
 //! NAPI-visible mirror types and conversions to/from `vrppd-core`.
 //!
 //! Field names and shapes match the TypeScript contract that
-//! `import { ... } from 'rust-solver'` produces today.
+//! `import { ... } from 'napi-bridge'` produces.
 
 use std::collections::HashMap;
 

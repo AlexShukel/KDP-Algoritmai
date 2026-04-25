@@ -3,7 +3,7 @@ resolver = "2"
 members = [
   "crates/vrppd-core",
   "crates/vrppd-brute-force",
-  "rust-solver",
+  "crates/napi-bridge",
 ]
 
 [workspace.package]

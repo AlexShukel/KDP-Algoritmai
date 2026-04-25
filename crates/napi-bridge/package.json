@@ -1,7 +1,7 @@
 {
-  "name": "rust-solver",
+  "name": "napi-bridge",
   "version": "1.0.0",
-  "description": "Template project for writing node package with napi-rs",
+  "description": "NAPI bridge exposing Rust solver crates (vrppd-brute-force, …) to the TypeScript harness.",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
     "*.node"
   ],
   "napi": {
-    "binaryName": "rust-solver",
+    "binaryName": "napi-bridge",
     "targets": [
       "x86_64-unknown-linux-gnu"
     ]

@@ -30,7 +30,7 @@ jobs:
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      # The rust-solver crate is a NAPI cdylib; clippy it with the rest of the workspace.
+      # The napi-bridge crate is a NAPI cdylib; clippy it with the rest of the workspace.
       - run: cargo clippy --workspace --all-targets -- -D warnings
 
   test:
