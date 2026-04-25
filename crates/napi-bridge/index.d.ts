@@ -6,6 +6,36 @@ export interface AlgorithmSolution {
   bestEmptySolution: ProblemSolution
 }
 
+/**
+ * Optional per-call overrides for CEA. Any field left undefined falls back
+ * to the WC13 defaults baked into `CeaConfig::default()`.
+ */
+export interface CeaConfig {
+  populationSize?: number
+  convCount?: number
+  wallTimeCapMs?: number
+  recombinationFractionLow?: number
+  recombinationFractionHigh?: number
+  pReinsertion?: number
+  pCrossover?: number
+  seed?: number
+}
+
+export interface CeaConvergencePoint {
+  timeMs: number
+  /** Generation index. Same JS-number caveat as PsaConvergencePoint::iteration. */
+  generation: number
+  totalDistance: number
+  emptyDistance: number
+  totalPrice: number
+}
+
+export interface CeaSolved {
+  solution: ProblemSolution
+  history: Array<CeaConvergencePoint>
+  generations: number
+}
+
 export interface Location {
   hash: string
   latitude: number
@@ -74,6 +104,12 @@ export interface RouteStop {
 }
 
 export declare function solveBruteForce(problem: Problem): AlgorithmSolution
+
+/**
+ * Run the Coevolutionary Algorithm. `target` accepts the same strings as
+ * `solve_p_sa`. `config.seed` (if provided) gives a reproducible run.
+ */
+export declare function solveCea(problem: Problem, target: string, config?: CeaConfig | undefined | null): CeaSolved
 
 /**
  * Run the multi-thread p-SA pipeline. `target` accepts the same SCREAMING_CASE

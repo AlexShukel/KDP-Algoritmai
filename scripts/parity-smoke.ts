@@ -1,10 +1,10 @@
 /**
  * Parity smoke: end-to-end sanity check of the TS↔Rust napi path.
  *
- * Loads one small problem from the existing problem bank, runs the Rust
- * `solvePSa` napi binding for each of the three objectives, prints the
- * resulting solution metrics, and asserts the response is structurally well
- * formed (every order picked-up-then-delivered exactly once across the
+ * Loads one small problem from the existing problem bank, runs both Rust
+ * solvers (`solvePSa`, `solveCea`) for each of the three objectives, prints
+ * the resulting solution metrics, and asserts the responses are structurally
+ * well formed (every order picked-up-then-delivered exactly once across the
  * solution).
  *
  * Run with: pnpm parity:smoke
@@ -16,7 +16,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { solvePSa } from 'napi-bridge';
+import { solveCea, solvePSa } from 'napi-bridge';
 import type { Problem, ProblemSolution } from 'napi-bridge';
 
 const targets: Array<'EMPTY' | 'DISTANCE' | 'PRICE'> = ['EMPTY', 'DISTANCE', 'PRICE'];
@@ -87,6 +87,7 @@ async function main(): Promise<void> {
         `Smoke fixture: ${path.relative(process.cwd(), fixturePath)} (V=${problem.vehicles.length}, N=${problem.orders.length})\n`,
     );
 
+    console.log('-- p-SA (multi-thread pipeline) --');
     for (const target of targets) {
         const t0 = performance.now();
         const solved = solvePSa(problem, target, { seed: 2026, threads: 4 });
@@ -103,7 +104,31 @@ async function main(): Promise<void> {
         );
     }
 
-    console.log('\nOK — Rust p-SA reachable via napi-bridge and producing valid solutions.');
+    console.log('\n-- CEA (Wang & Chen 2013) --');
+    for (const target of targets) {
+        const t0 = performance.now();
+        // Tight budget keeps the smoke under a few seconds total.
+        const solved = solveCea(problem, target, {
+            seed: 2026,
+            populationSize: 10,
+            convCount: 50,
+            wallTimeCapMs: 5000,
+        });
+        const elapsed = performance.now() - t0;
+        assertSolutionValid(problem, solved.solution);
+
+        console.log(
+            `[${target.padEnd(8)}] ` +
+                `dist=${fmt(solved.solution.totalDistance)} ` +
+                `empty=${fmt(solved.solution.emptyDistance)} ` +
+                `price=${fmt(solved.solution.totalPrice)} ` +
+                `gens=${solved.generations} ` +
+                `history=${solved.history.length} pts ` +
+                `wall=${fmt(elapsed, 1)} ms`,
+        );
+    }
+
+    console.log('\nOK — Rust p-SA and CEA both reachable via napi-bridge and producing valid solutions.');
 }
 
 main().catch(err => {

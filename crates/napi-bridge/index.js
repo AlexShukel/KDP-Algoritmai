@@ -577,4 +577,5 @@ if (!nativeBinding) {
 
 module.exports = nativeBinding
 module.exports.solveBruteForce = nativeBinding.solveBruteForce
+module.exports.solveCea = nativeBinding.solveCea
 module.exports.solvePSa = nativeBinding.solvePSa

@@ -17,6 +17,7 @@ import {
 } from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 import { ParallelSimulatedAnnealing, ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
+import { CoevolutionaryAlgorithmRust } from './algorithms/cea';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -58,6 +59,7 @@ async function main(): Promise<void> {
         new BruteForceAlgorithmRust(),
         new ParallelSimulatedAnnealing(),
         new ParallelSimulatedAnnealingRust(),
+        new CoevolutionaryAlgorithmRust(),
     ];
 
     const extractMetrics = (solution: ProblemSolution): SolutionMetrics => ({

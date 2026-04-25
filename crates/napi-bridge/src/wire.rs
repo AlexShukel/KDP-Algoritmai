@@ -133,6 +133,63 @@ impl From<vrppd_psa::Solved> for PsaSolved {
   }
 }
 
+// ---- CEA wire types ----
+
+#[napi(object)]
+#[derive(Clone, Debug)]
+pub struct CeaConvergencePoint {
+  pub time_ms: f64,
+  /// Generation index. Same JS-number caveat as PsaConvergencePoint::iteration.
+  pub generation: f64,
+  pub total_distance: f64,
+  pub empty_distance: f64,
+  pub total_price: f64,
+}
+
+#[napi(object)]
+pub struct CeaSolved {
+  pub solution: ProblemSolution,
+  pub history: Vec<CeaConvergencePoint>,
+  pub generations: f64,
+}
+
+/// Optional per-call overrides for CEA. Any field left undefined falls back
+/// to the WC13 defaults baked into `CeaConfig::default()`.
+#[napi(object)]
+#[derive(Clone, Debug, Default)]
+pub struct CeaConfig {
+  pub population_size: Option<u32>,
+  pub conv_count: Option<u32>,
+  pub wall_time_cap_ms: Option<f64>,
+  pub recombination_fraction_low: Option<f64>,
+  pub recombination_fraction_high: Option<f64>,
+  pub p_reinsertion: Option<f64>,
+  pub p_crossover: Option<f64>,
+  pub seed: Option<f64>,
+}
+
+impl From<vrppd_cea::ConvergencePoint> for CeaConvergencePoint {
+  fn from(c: vrppd_cea::ConvergencePoint) -> Self {
+    Self {
+      time_ms: c.time_ms,
+      generation: c.generation as f64,
+      total_distance: c.total_distance,
+      empty_distance: c.empty_distance,
+      total_price: c.total_price,
+    }
+  }
+}
+
+impl From<vrppd_cea::Solved> for CeaSolved {
+  fn from(s: vrppd_cea::Solved) -> Self {
+    Self {
+      solution: s.solution.into(),
+      history: s.history.into_iter().map(Into::into).collect(),
+      generations: s.generations as f64,
+    }
+  }
+}
+
 // --- conversions: wire -> core ---
 
 impl From<Location> for vrppd_core::Location {

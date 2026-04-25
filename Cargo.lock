@@ -261,6 +261,7 @@ dependencies = [
  "napi-build",
  "napi-derive",
  "vrppd-brute-force",
+ "vrppd-cea",
  "vrppd-core",
  "vrppd-psa",
 ]

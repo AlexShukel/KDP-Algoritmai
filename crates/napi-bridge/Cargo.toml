@@ -16,6 +16,7 @@ napi-derive = "3.0.0"
 vrppd-core = { workspace = true }
 vrppd-brute-force = { workspace = true }
 vrppd-psa = { workspace = true }
+vrppd-cea = { workspace = true }
 
 [build-dependencies]
 napi-build = "2"
