@@ -429,6 +429,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9629274872b2bfaf8d66f5f15725007f635594914870f65218920345aa11aa8c"
 
 [[package]]
+name = "vrppd-bounds"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "vrppd-brute-force",
+ "vrppd-core",
+]
+
+[[package]]
 name = "vrppd-brute-force"
 version = "0.1.0"
 dependencies = [
