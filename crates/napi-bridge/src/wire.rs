@@ -72,6 +72,67 @@ pub struct AlgorithmSolution {
   pub best_empty_solution: ProblemSolution,
 }
 
+// ---- p-SA wire types ----
+
+#[napi(object)]
+#[derive(Clone, Debug)]
+pub struct PsaConvergencePoint {
+  pub time_ms: f64,
+  /// Iteration index. JS receives a `number`; iterations stay well within
+  /// `Number.MAX_SAFE_INTEGER` for any plausible run length.
+  pub iteration: f64,
+  pub total_distance: f64,
+  pub empty_distance: f64,
+  pub total_price: f64,
+}
+
+#[napi(object)]
+pub struct PsaSolved {
+  pub solution: ProblemSolution,
+  pub history: Vec<PsaConvergencePoint>,
+}
+
+/// Optional per-call overrides matching the TS `SimulatedAnnealingConfig` plus
+/// the multi-thread pipeline parameters. Any field left undefined falls back
+/// to the per-objective tuned default.
+#[napi(object)]
+#[derive(Clone, Debug, Default)]
+pub struct PsaConfig {
+  pub initial_temp: Option<f64>,
+  pub cooling_rate: Option<f64>,
+  pub min_temp: Option<f64>,
+  pub max_iterations: Option<f64>,
+  pub seed: Option<f64>,
+  pub threads: Option<u32>,
+  pub batch_size: Option<f64>,
+  pub sync_interval: Option<f64>,
+  pub reheat_floor: Option<f64>,
+  pub weight_shift: Option<f64>,
+  pub weight_swap: Option<f64>,
+  pub weight_shuffle: Option<f64>,
+}
+
+impl From<vrppd_psa::ConvergencePoint> for PsaConvergencePoint {
+  fn from(c: vrppd_psa::ConvergencePoint) -> Self {
+    Self {
+      time_ms: c.time_ms,
+      iteration: c.iteration as f64,
+      total_distance: c.total_distance,
+      empty_distance: c.empty_distance,
+      total_price: c.total_price,
+    }
+  }
+}
+
+impl From<vrppd_psa::Solved> for PsaSolved {
+  fn from(s: vrppd_psa::Solved) -> Self {
+    Self {
+      solution: s.solution.into(),
+      history: s.history.into_iter().map(Into::into).collect(),
+    }
+  }
+}
+
 // --- conversions: wire -> core ---
 
 impl From<Location> for vrppd_core::Location {

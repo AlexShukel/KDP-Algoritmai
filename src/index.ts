@@ -16,7 +16,7 @@ import {
     ConvergenceUpdate,
 } from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
-import { ParallelSimulatedAnnealing } from './algorithms/p-sa';
+import { ParallelSimulatedAnnealing, ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -51,8 +51,14 @@ async function main(): Promise<void> {
         return parseInt(matchA[1]) + parseInt(matchA[2]) - (parseInt(matchB[1]) + parseInt(matchB[2]));
     });
 
-    // Register algorithms
-    const algorithms: Algorithm[] = [new BruteForceAlgorithmRust(), new ParallelSimulatedAnnealing()];
+    // Register algorithms. TS p-SA stays in place as the parity oracle (per
+    // PLAN.md §1.1) until the distributional-parity benchmark in the next
+    // session validates the Rust port at scale.
+    const algorithms: Algorithm[] = [
+        new BruteForceAlgorithmRust(),
+        new ParallelSimulatedAnnealing(),
+        new ParallelSimulatedAnnealingRust(),
+    ];
 
     const extractMetrics = (solution: ProblemSolution): SolutionMetrics => ({
         totalDistance: solution.totalDistance,

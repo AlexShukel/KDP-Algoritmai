@@ -8,9 +8,11 @@
 pub mod config;
 pub mod matrix;
 pub mod operators;
+pub mod pipeline;
 pub mod rcrs;
 pub mod sa;
 pub mod solution;
 
-pub use config::{default_config_for, SaConfig};
+pub use config::{default_config_for, OperatorWeights, SaConfig};
+pub use pipeline::{solve_pipeline, solve_pipeline_seeded};
 pub use sa::{solve, solve_seeded, ConvergencePoint, Solved};

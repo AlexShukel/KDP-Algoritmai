@@ -31,12 +31,55 @@ export interface ProblemSolution {
   totalPrice: number
 }
 
+/**
+ * Optional per-call overrides matching the TS `SimulatedAnnealingConfig` plus
+ * the multi-thread pipeline parameters. Any field left undefined falls back
+ * to the per-objective tuned default.
+ */
+export interface PsaConfig {
+  initialTemp?: number
+  coolingRate?: number
+  minTemp?: number
+  maxIterations?: number
+  seed?: number
+  threads?: number
+  batchSize?: number
+  syncInterval?: number
+  reheatFloor?: number
+  weightShift?: number
+  weightSwap?: number
+  weightShuffle?: number
+}
+
+export interface PsaConvergencePoint {
+  timeMs: number
+  /**
+   * Iteration index. JS receives a `number`; iterations stay well within
+   * `Number.MAX_SAFE_INTEGER` for any plausible run length.
+   */
+  iteration: number
+  totalDistance: number
+  emptyDistance: number
+  totalPrice: number
+}
+
+export interface PsaSolved {
+  solution: ProblemSolution
+  history: Array<PsaConvergencePoint>
+}
+
 export interface RouteStop {
   orderId: number
   type: string
 }
 
 export declare function solveBruteForce(problem: Problem): AlgorithmSolution
+
+/**
+ * Run the multi-thread p-SA pipeline. `target` accepts the same SCREAMING_CASE
+ * strings as the TS `OptimizationTarget` enum: "EMPTY", "DISTANCE", "PRICE".
+ */
+export declare function solvePSa(problem: Problem, target: string, config?: PsaConfig | undefined | null): PsaSolved
 
 export interface Vehicle {
   id: number

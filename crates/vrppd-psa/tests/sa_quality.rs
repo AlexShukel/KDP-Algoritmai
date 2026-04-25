@@ -7,7 +7,7 @@
 use std::path::PathBuf;
 
 use vrppd_core::{Objective, Problem};
-use vrppd_psa::{default_config_for, solve_seeded};
+use vrppd_psa::{default_config_for, solve_pipeline_seeded, solve_seeded};
 
 fn load_fixture(name: &str) -> Problem {
   let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -88,10 +88,86 @@ fn sa_history_is_monotone_improving() {
 
   let mut prev = f64::INFINITY;
   for point in &solved.history {
-    let e = point.solution.total_distance;
+    let e = point.total_distance;
     assert!(
       e <= prev + 1e-9,
       "convergence trace not monotone: {e} > {prev} at iter {}",
+      point.iteration
+    );
+    prev = e;
+  }
+}
+
+#[test]
+fn pipeline_matches_brute_force_on_single_order() {
+  // The multi-thread pipeline must produce the unique feasible route on N=1
+  // regardless of thread count or seed.
+  let problem = load_fixture("single_vehicle_single_order.json");
+  let bf = vrppd_brute_force::solve(&problem);
+  let bf_dist = bf.best_distance_solution.total_distance;
+
+  for seed in [3_u64, 17, 2026] {
+    let solved = solve_pipeline_seeded(
+      &problem,
+      Objective::Distance,
+      default_config_for(Objective::Distance),
+      seed,
+    );
+    assert!(
+      (solved.solution.total_distance - bf_dist).abs() < 1e-9,
+      "seed {seed}: pipeline got {}, BF {}",
+      solved.solution.total_distance,
+      bf_dist
+    );
+  }
+}
+
+#[test]
+fn pipeline_finds_brute_force_optimum_on_three_orders() {
+  // With multiple workers cooperating, reaching the BF optimum on N=3 should
+  // be at least as easy as the single-thread case. Tighten the bound to 0%.
+  let problem = load_fixture("two_vehicles_three_orders.json");
+  let bf = vrppd_brute_force::solve(&problem);
+
+  for target in [Objective::Distance, Objective::Empty, Objective::Price] {
+    let bf_energy = target.energy(match target {
+      Objective::Distance => &bf.best_distance_solution,
+      Objective::Empty => &bf.best_empty_solution,
+      Objective::Price => &bf.best_price_solution,
+    });
+
+    let mut best_rpd = f64::INFINITY;
+    for seed in 0..6_u64 {
+      let solved = solve_pipeline_seeded(&problem, target, default_config_for(target), seed);
+      let sa_energy = target.energy(&solved.solution);
+      let rpd = (sa_energy - bf_energy) / bf_energy.max(1e-9);
+      best_rpd = best_rpd.min(rpd);
+    }
+    assert!(
+      best_rpd < 1e-9,
+      "objective {:?}: pipeline best RPD across 6 seeds was {:.6}, expected 0%",
+      target,
+      best_rpd
+    );
+  }
+}
+
+#[test]
+fn pipeline_history_is_monotone_improving() {
+  let problem = load_fixture("two_vehicles_three_orders.json");
+  let solved = solve_pipeline_seeded(
+    &problem,
+    Objective::Distance,
+    default_config_for(Objective::Distance),
+    11,
+  );
+
+  let mut prev = f64::INFINITY;
+  for point in &solved.history {
+    let e = point.total_distance;
+    assert!(
+      e <= prev + 1e-9,
+      "pipeline history not monotone: {e} > {prev} at iter {}",
       point.iteration
     );
     prev = e;

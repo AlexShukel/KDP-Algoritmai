@@ -1,10 +1,8 @@
 //! Single-threaded simulated-annealing driver.
 //!
 //! Plain Metropolis acceptance with geometric cooling. The multi-thread
-//! pipeline (worker N relays its `SYNC_REPORT` as worker N+1's
-//! `INFLUENCE_UPDATE`) lands in a follow-up commit per PLAN.md §1.1.
+//! pipeline lives in `pipeline.rs` and reuses the same operators and config.
 
-use rand::seq::SliceRandom;
 use rand::{thread_rng, Rng, SeedableRng};
 use rand_xoshiro::Xoshiro256StarStar;
 use std::time::Instant;
@@ -15,13 +13,30 @@ use crate::config::SaConfig;
 use crate::matrix::{OrderMatrix, VehicleStartMatrix};
 use crate::operators::generate_neighbor;
 use crate::rcrs::generate_rcrs;
+use crate::solution::WorkingSolution;
 
-/// One sample on the convergence trace.
+/// One sample on the convergence trace. Stores objective metrics rather than
+/// the full solution to keep the trace cheap to ship across thread / napi
+/// boundaries.
 #[derive(Clone, Debug)]
 pub struct ConvergencePoint {
   pub time_ms: f64,
   pub iteration: u64,
-  pub solution: ProblemSolution,
+  pub total_distance: f64,
+  pub empty_distance: f64,
+  pub total_price: f64,
+}
+
+impl ConvergencePoint {
+  pub(crate) fn from_solution(time_ms: f64, iteration: u64, sol: &WorkingSolution) -> Self {
+    Self {
+      time_ms,
+      iteration,
+      total_distance: sol.total_distance,
+      empty_distance: sol.empty_distance,
+      total_price: sol.total_price,
+    }
+  }
 }
 
 #[derive(Clone, Debug)]
@@ -45,20 +60,49 @@ pub fn solve_seeded(problem: &Problem, target: Objective, config: SaConfig, seed
   let order_mat = OrderMatrix::build(&problem.orders);
   let vstart_mat = VehicleStartMatrix::build(&problem.vehicles, &problem.orders);
 
-  let mut current = generate_rcrs(problem, &order_mat, &vstart_mat, target, &mut rng);
-  let mut current_energy = energy(&current, target);
+  let current = generate_rcrs(problem, &order_mat, &vstart_mat, target, &mut rng);
+  let mut history = Vec::new();
+  history.push(ConvergencePoint::from_solution(0.0, 0, &current));
 
+  let started = Instant::now();
+  let best = anneal(
+    current,
+    problem,
+    &order_mat,
+    &vstart_mat,
+    target,
+    &config,
+    &mut rng,
+    started,
+    &mut history,
+  );
+
+  Solved {
+    solution: best.into_problem_solution(problem),
+    history,
+  }
+}
+
+/// Inner annealing loop, factored out so the multi-thread pipeline driver can
+/// reuse it on each worker thread. Mutates `history` in place with each
+/// improving best.
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn anneal<R: Rng + ?Sized>(
+  initial: WorkingSolution,
+  problem: &Problem,
+  order_mat: &OrderMatrix,
+  vstart_mat: &VehicleStartMatrix,
+  target: Objective,
+  config: &SaConfig,
+  rng: &mut R,
+  started: Instant,
+  history: &mut Vec<ConvergencePoint>,
+) -> WorkingSolution {
+  let mut current = initial;
+  let mut current_energy = target.energy_working(&current);
   let mut best = current.clone();
   let mut best_energy = current_energy;
-
   let mut temperature = config.initial_temp;
-  let started = Instant::now();
-  let mut history = Vec::new();
-  history.push(ConvergencePoint {
-    time_ms: 0.0,
-    iteration: 0,
-    solution: current.clone().into_problem_solution(problem),
-  });
 
   for iter in 1..=config.max_iterations {
     if temperature < config.min_temp {
@@ -68,12 +112,12 @@ pub fn solve_seeded(problem: &Problem, target: Objective, config: SaConfig, seed
     if let Some(neighbor) = generate_neighbor(
       &current,
       problem,
-      &order_mat,
-      &vstart_mat,
+      order_mat,
+      vstart_mat,
       config.weights,
-      &mut rng,
+      rng,
     ) {
-      let neighbor_energy = energy(&neighbor, target);
+      let neighbor_energy = target.energy_working(&neighbor);
       let delta = neighbor_energy - current_energy;
 
       let accept = delta < 0.0 || {
@@ -88,11 +132,11 @@ pub fn solve_seeded(problem: &Problem, target: Objective, config: SaConfig, seed
         if current_energy < best_energy {
           best_energy = current_energy;
           best = current.clone();
-          history.push(ConvergencePoint {
-            time_ms: started.elapsed().as_secs_f64() * 1_000.0,
-            iteration: iter,
-            solution: best.clone().into_problem_solution(problem),
-          });
+          history.push(ConvergencePoint::from_solution(
+            started.elapsed().as_secs_f64() * 1_000.0,
+            iter,
+            &best,
+          ));
         }
       }
     }
@@ -100,23 +144,21 @@ pub fn solve_seeded(problem: &Problem, target: Objective, config: SaConfig, seed
     temperature *= config.cooling_rate;
   }
 
-  Solved {
-    solution: best.into_problem_solution(problem),
-    history,
-  }
+  best
 }
 
-#[inline(always)]
-fn energy(sol: &crate::solution::WorkingSolution, target: Objective) -> f64 {
-  match target {
-    Objective::Empty => sol.empty_distance,
-    Objective::Distance => sol.total_distance,
-    Objective::Price => sol.total_price,
-  }
+/// Helper to compute energy directly on the internal mutable representation.
+trait WorkingEnergy {
+  fn energy_working(self, sol: &WorkingSolution) -> f64;
 }
 
-// Helper kept around for future fixture work; not part of the public API.
-#[doc(hidden)]
-pub fn _shuffle_in_place<T, R: Rng + ?Sized>(slice: &mut [T], rng: &mut R) {
-  slice.shuffle(rng);
+impl WorkingEnergy for Objective {
+  #[inline(always)]
+  fn energy_working(self, sol: &WorkingSolution) -> f64 {
+    match self {
+      Objective::Empty => sol.empty_distance,
+      Objective::Distance => sol.total_distance,
+      Objective::Price => sol.total_price,
+    }
+  }
 }
