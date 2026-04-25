@@ -1,17 +1,15 @@
 //! Parallel Simulated Annealing for the specific VRPPD variant.
 //!
-//! This crate currently provides a **single-threaded** driver: RCRS initial
-//! solution, three neighbour operators (Shift / Swap / Intra-Shuffle), and a
-//! Metropolis-with-geometric-cooling loop. The multi-thread pipeline (island
-//! migration via channels) lands in a follow-up commit per PLAN.md §1.1.
+//! Single-threaded driver in [`sa`] and a multi-thread pipeline in
+//! [`pipeline`]. The mutable solution representation, distance matrices, and
+//! validity / recalculation primitives live in `vrppd-core::working` and are
+//! shared with the coevolutionary crate.
 
 pub mod config;
-pub mod matrix;
 pub mod operators;
 pub mod pipeline;
 pub mod rcrs;
 pub mod sa;
-pub mod solution;
 
 pub use config::{default_config_for, OperatorWeights, SaConfig};
 pub use pipeline::{solve_pipeline, solve_pipeline_seeded};

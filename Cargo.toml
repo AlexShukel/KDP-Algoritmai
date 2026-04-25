@@ -4,6 +4,7 @@ members = [
   "crates/vrppd-core",
   "crates/vrppd-brute-force",
   "crates/vrppd-psa",
+  "crates/vrppd-cea",
   "crates/napi-bridge",
 ]
 
@@ -22,6 +23,7 @@ crossbeam-channel = "0.5"
 vrppd-core = { path = "crates/vrppd-core" }
 vrppd-brute-force = { path = "crates/vrppd-brute-force" }
 vrppd-psa = { path = "crates/vrppd-psa" }
+vrppd-cea = { path = "crates/vrppd-cea" }
 
 [profile.release]
 lto = true

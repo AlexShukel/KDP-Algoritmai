@@ -23,11 +23,10 @@ use rand_xoshiro::Xoshiro256StarStar;
 use vrppd_core::{Objective, Problem};
 
 use crate::config::SaConfig;
-use crate::matrix::{OrderMatrix, VehicleStartMatrix};
 use crate::operators::generate_neighbor;
 use crate::rcrs::generate_rcrs;
 use crate::sa::{ConvergencePoint, Solved};
-use crate::solution::WorkingSolution;
+use vrppd_core::{OrderMatrix, VehicleStartMatrix, WorkingSolution};
 
 /// Multi-threaded entry point. Seeds from the OS RNG.
 pub fn solve_pipeline(problem: &Problem, target: Objective, config: SaConfig) -> Solved {

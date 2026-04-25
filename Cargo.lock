@@ -436,6 +436,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "vrppd-cea"
+version = "0.1.0"
+dependencies = [
+ "rand",
+ "rand_xoshiro",
+ "serde_json",
+ "vrppd-brute-force",
+ "vrppd-core",
+]
+
+[[package]]
 name = "vrppd-core"
 version = "0.1.0"
 dependencies = [

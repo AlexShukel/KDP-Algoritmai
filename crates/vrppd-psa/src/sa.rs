@@ -10,10 +10,9 @@ use std::time::Instant;
 use vrppd_core::{Objective, Problem, ProblemSolution};
 
 use crate::config::SaConfig;
-use crate::matrix::{OrderMatrix, VehicleStartMatrix};
 use crate::operators::generate_neighbor;
 use crate::rcrs::generate_rcrs;
-use crate::solution::WorkingSolution;
+use vrppd_core::{OrderMatrix, VehicleStartMatrix, WorkingSolution};
 
 /// One sample on the convergence trace. Stores objective metrics rather than
 /// the full solution to keep the trace cheap to ship across thread / napi

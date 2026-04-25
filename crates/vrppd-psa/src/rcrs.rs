@@ -18,8 +18,7 @@ use rand_xoshiro::Xoshiro256StarStar;
 
 use vrppd_core::{Objective, Problem, StopKind};
 
-use crate::matrix::{OrderMatrix, VehicleStartMatrix};
-use crate::solution::{WorkingRoute, WorkingSolution, WorkingStop};
+use vrppd_core::{OrderMatrix, VehicleStartMatrix, WorkingRoute, WorkingSolution, WorkingStop};
 
 /// Generate an initial valid solution for the given problem under the given
 /// objective, using `rng` as the source of order-shuffle randomness.
@@ -172,39 +171,6 @@ fn estimate_insertion(
     delta_total: trial.total_distance - route.total_distance,
     delta_empty: trial.empty_distance - route.empty_distance,
   })
-}
-
-impl WorkingRoute {
-  /// Same as `is_capacity_feasible` but tolerates a non-zero ending load
-  /// (used when checking a single route inside a solution that still has
-  /// orders waiting to be inserted by RCRS — the final route may be empty
-  /// of orders other than this one and still have a non-zero load mid-walk).
-  pub fn is_capacity_feasible_for_partial(&self, problem: &Problem) -> bool {
-    let mut load = 0.0;
-    let mut picked = vec![false; problem.orders.len()];
-    for stop in &self.stops {
-      let load_delta = 1.0 / problem.orders[stop.order_idx].load_factor;
-      match stop.kind {
-        StopKind::Pickup => {
-          if picked[stop.order_idx] {
-            return false;
-          }
-          picked[stop.order_idx] = true;
-          load += load_delta;
-        }
-        StopKind::Delivery => {
-          if !picked[stop.order_idx] {
-            return false;
-          }
-          load -= load_delta;
-        }
-      }
-      if load > 1.0 + 1e-6 {
-        return false;
-      }
-    }
-    true
-  }
 }
 
 #[cfg(test)]

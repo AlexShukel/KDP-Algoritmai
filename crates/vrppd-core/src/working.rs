@@ -1,20 +1,109 @@
-//! Internal mutable solution representation used during the SA inner loop.
+//! Internal mutable solution representation shared across solvers.
 //!
 //! Routes are stored as `Vec<Vec<WorkingStop>>` keyed by vehicle index (not by
 //! string id), and stops carry the order's index in `problem.orders` rather
-//! than its public id — this avoids hash lookups inside the hot path.
-//! Conversion to/from `vrppd_core::ProblemSolution` happens at solver
-//! boundaries.
+//! than its public id — this avoids hash lookups inside any hot loop.
+//! Conversion to/from [`crate::ProblemSolution`] happens at solver boundaries.
+//!
+//! Both `vrppd-psa` (simulated annealing) and `vrppd-cea` (coevolutionary
+//! algorithm) build on these types so a "candidate solution" is the same data
+//! structure regardless of which metaheuristic produced it.
 
 use std::collections::HashMap;
 
-use vrppd_core::{Problem, ProblemSolution, RouteStop, StopKind, VehicleRoute};
-
-use crate::matrix::{stop_node, OrderMatrix, VehicleStartMatrix};
+use crate::{haversine_km, Location};
+use crate::{Order, Problem, ProblemSolution, RouteStop, StopKind, Vehicle, VehicleRoute};
 
 const LOAD_TOLERANCE: f64 = 1e-6;
 const EMPTY_LEG_THRESHOLD: f64 = 1e-3;
 const MAX_LOAD: f64 = 1.0;
+
+// --- distance matrices -----------------------------------------------------
+
+/// Flat row-major `2N × 2N` distance matrix between every pickup/delivery
+/// node. Index convention: row/column `i` represents stop `i / 2` of order
+/// `orders[i / 2]` (`i` even → pickup, odd → delivery). Built once per
+/// `solve` call and shared (read-only) by every operator that touches a
+/// candidate solution.
+#[derive(Clone, Debug)]
+pub struct OrderMatrix {
+  pub data: Vec<f64>,
+  pub dim: usize,
+}
+
+impl OrderMatrix {
+  #[inline(always)]
+  pub fn get(&self, from: usize, to: usize) -> f64 {
+    self.data[from * self.dim + to]
+  }
+
+  pub fn build(orders: &[Order]) -> Self {
+    let dim = orders.len() * 2;
+    let mut data = vec![0.0; dim * dim];
+
+    for i in 0..dim {
+      for j in 0..dim {
+        if i == j {
+          continue;
+        }
+        let from = stop_location(orders, i);
+        let to = stop_location(orders, j);
+        data[i * dim + j] = haversine_km(from, to);
+      }
+    }
+
+    Self { data, dim }
+  }
+}
+
+/// Flat row-major `V × N` distance matrix from each vehicle's start to each
+/// order's pickup.
+#[derive(Clone, Debug)]
+pub struct VehicleStartMatrix {
+  pub data: Vec<f64>,
+  pub n_orders: usize,
+}
+
+impl VehicleStartMatrix {
+  #[inline(always)]
+  pub fn get(&self, vehicle_idx: usize, order_idx: usize) -> f64 {
+    self.data[vehicle_idx * self.n_orders + order_idx]
+  }
+
+  pub fn build(vehicles: &[Vehicle], orders: &[Order]) -> Self {
+    let n_orders = orders.len();
+    let mut data = vec![0.0; vehicles.len() * n_orders.max(1)];
+
+    for (v_idx, vehicle) in vehicles.iter().enumerate() {
+      for (o_idx, order) in orders.iter().enumerate() {
+        data[v_idx * n_orders + o_idx] =
+          haversine_km(&vehicle.start_location, &order.pickup_location);
+      }
+    }
+
+    Self { data, n_orders }
+  }
+}
+
+#[inline(always)]
+fn stop_location(orders: &[Order], stop_idx: usize) -> &Location {
+  let order_idx = stop_idx / 2;
+  if stop_idx % 2 == 0 {
+    &orders[order_idx].pickup_location
+  } else {
+    &orders[order_idx].delivery_location
+  }
+}
+
+#[inline(always)]
+pub fn stop_node(order_idx: usize, kind: StopKind) -> usize {
+  match kind {
+    StopKind::Pickup => order_idx * 2,
+    StopKind::Delivery => order_idx * 2 + 1,
+  }
+}
+
+// --- mutable solution ------------------------------------------------------
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct WorkingStop {
@@ -49,9 +138,9 @@ impl WorkingSolution {
     }
   }
 
-  /// Whole-solution validity. Mirrors the TS `isValidSolution` behaviour:
-  /// every route must be capacity-feasible AND every order must be
-  /// picked-up-then-delivered exactly once across the full solution.
+  /// Whole-solution validity: every route is capacity-feasible and every
+  /// order is picked-up-then-delivered exactly once across the full
+  /// solution. Mirrors the TS `isValidSolution` behaviour.
   pub fn is_valid(&self, problem: &Problem) -> bool {
     let mut picked_up = vec![false; problem.orders.len()];
     let mut delivered = vec![false; problem.orders.len()];
@@ -82,8 +171,8 @@ impl WorkingSolution {
   }
 
   /// Recompute every route's totals and the aggregate solution totals from
-  /// scratch. Intended for use after structural mutations; full O(2N) but
-  /// cheap because `2N` is small for the problem sizes of interest here.
+  /// scratch. O(2N); cheap because `2N` is small for problem sizes of
+  /// interest.
   pub fn recalculate_all(
     &mut self,
     problem: &Problem,
@@ -134,8 +223,8 @@ impl WorkingSolution {
 
 impl WorkingRoute {
   /// Capacity-feasibility plus pickup-before-delivery within this single
-  /// route. Per-route check used both by SA's neighbour validation and by
-  /// the trial-insertion logic in RCRS.
+  /// route. Used both by SA's neighbour validation and by the trial-
+  /// insertion logic in the RCRS / RSCIM heuristics.
   pub fn is_capacity_feasible(&self, problem: &Problem) -> bool {
     if self.stops.is_empty() {
       return true;
@@ -168,10 +257,40 @@ impl WorkingRoute {
     load.abs() < LOAD_TOLERANCE
   }
 
-  /// Recompute this route's totals from its current `stops` list. Walks the
+  /// Variant tolerant of a route still being constructed (mid-RSCIM): the
+  /// final load may be non-zero because more orders are still pending
+  /// insertion. Capacity ceiling and pickup-before-delivery still enforced.
+  pub fn is_capacity_feasible_for_partial(&self, problem: &Problem) -> bool {
+    let mut load = 0.0;
+    let mut picked = vec![false; problem.orders.len()];
+    for stop in &self.stops {
+      let load_delta = 1.0 / problem.orders[stop.order_idx].load_factor;
+      match stop.kind {
+        StopKind::Pickup => {
+          if picked[stop.order_idx] {
+            return false;
+          }
+          picked[stop.order_idx] = true;
+          load += load_delta;
+        }
+        StopKind::Delivery => {
+          if !picked[stop.order_idx] {
+            return false;
+          }
+          load -= load_delta;
+        }
+      }
+      if load > MAX_LOAD + LOAD_TOLERANCE {
+        return false;
+      }
+    }
+    true
+  }
+
+  /// Recompute this route's totals from its current stops list. Walks the
   /// stops once, accumulating loaded vs empty legs. The empty-leg detection
-  /// matches the TS implementation exactly: a leg counts as empty iff the
-  /// vehicle's load just before the leg is approximately zero.
+  /// matches the TS implementation: a leg counts as empty iff the load just
+  /// before the leg is approximately zero.
   pub fn recalculate(
     &mut self,
     v_idx: usize,
@@ -194,8 +313,8 @@ impl WorkingRoute {
 
     let mut load = match first.kind {
       StopKind::Pickup => 1.0 / problem.orders[first.order_idx].load_factor,
-      // First stop should be a pickup in any feasible route, but stay defensive
-      // — a malformed neighbour upstream must not panic the SA loop.
+      // First stop should be a pickup in any feasible route. Stay defensive
+      // so a malformed candidate upstream doesn't panic the inner loop.
       StopKind::Delivery => -1.0 / problem.orders[first.order_idx].load_factor,
     };
 
@@ -225,7 +344,7 @@ impl WorkingRoute {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use vrppd_core::{Location, Order, Vehicle};
+  use crate::{Location, Order, Problem, Vehicle};
 
   fn loc(lat: f64, lon: f64) -> Location {
     Location {
@@ -289,7 +408,6 @@ mod tests {
       orders: vec![order(1, 2.0), order(2, 2.0), order(3, 0.5)],
     };
     let mut sol = WorkingSolution::empty(1);
-    // Pick up all three orders before delivering any. Total load 0.5 + 0.5 + 2.0 = 3.0, way over 1.0.
     sol.routes[0].stops = vec![
       WorkingStop {
         order_idx: 0,
@@ -317,5 +435,55 @@ mod tests {
       },
     ];
     assert!(!sol.is_valid(&problem));
+  }
+
+  #[test]
+  fn order_matrix_zero_on_diagonal() {
+    let orders = vec![Order {
+      id: 1,
+      pickup_location: loc(0.0, 0.0),
+      delivery_location: loc(1.0, 0.0),
+      load_factor: 1.0,
+    }];
+    let m = OrderMatrix::build(&orders);
+    assert_eq!(m.dim, 2);
+    assert_eq!(m.get(0, 0), 0.0);
+    assert_eq!(m.get(1, 1), 0.0);
+  }
+
+  #[test]
+  fn vehicle_start_matrix_layout() {
+    let vehicles = vec![
+      Vehicle {
+        id: 7,
+        start_location: loc(0.0, 0.0),
+        price_km: 1.0,
+      },
+      Vehicle {
+        id: 8,
+        start_location: loc(10.0, 0.0),
+        price_km: 1.0,
+      },
+    ];
+    let orders = vec![
+      Order {
+        id: 1,
+        pickup_location: loc(0.0, 0.0),
+        delivery_location: loc(50.0, 50.0),
+        load_factor: 1.0,
+      },
+      Order {
+        id: 2,
+        pickup_location: loc(10.0, 0.0),
+        delivery_location: loc(50.0, 50.0),
+        load_factor: 1.0,
+      },
+    ];
+    let m = VehicleStartMatrix::build(&vehicles, &orders);
+    // Co-located points round to a sub-metre epsilon (~3e-4 km at lat 10°).
+    assert!(m.get(0, 0) < 1e-3);
+    assert!(m.get(1, 1) < 1e-3);
+    assert!(m.get(0, 1) > 100.0);
+    assert!(m.get(1, 0) > 100.0);
   }
 }

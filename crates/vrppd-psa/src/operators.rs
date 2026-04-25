@@ -17,8 +17,7 @@ use rand::Rng;
 use vrppd_core::{Problem, StopKind};
 
 use crate::config::OperatorWeights;
-use crate::matrix::{OrderMatrix, VehicleStartMatrix};
-use crate::solution::{WorkingSolution, WorkingStop};
+use vrppd_core::{OrderMatrix, VehicleStartMatrix, WorkingSolution, WorkingStop};
 
 /// Pick one of the three operators by weight, apply it to a clone of
 /// `current`, validate, recalculate stats, and return.
