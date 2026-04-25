@@ -22,6 +22,8 @@
         "format": "prettier --write .",
         "generate:data": "tsx ./generate-data.ts",
         "generate:problems": "tsx ./generate-problems.ts",
+        "generate:problems:small": "tsx ./generate-problems.ts --small",
+        "generate:problems:large": "tsx ./generate-problems.ts --large",
         "tune-psa": "pnpm build && cd dist && node tunePsa.es.mjs",
         "parity:smoke": "tsx ./scripts/parity-smoke.ts",
         "parity:compare": "tsx ./scripts/compare-results.ts"
