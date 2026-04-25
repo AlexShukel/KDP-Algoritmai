@@ -7,3 +7,6 @@ seed-dataset.csv
 temp-results
 *.tex
 *.txt
+
+# Rust workspace build artifacts
+target/
