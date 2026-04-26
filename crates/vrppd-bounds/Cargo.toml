@@ -9,6 +9,7 @@ description = "Lower bounds for the specific VRPPD variant. Direct-sum bound now
 
 [dependencies]
 vrppd-core = { workspace = true }
+good_lp = { workspace = true }
 
 [dev-dependencies]
 serde_json = { workspace = true }

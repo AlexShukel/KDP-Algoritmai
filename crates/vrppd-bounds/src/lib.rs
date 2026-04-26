@@ -7,10 +7,17 @@
 //! actually solves: no time windows, no max-distance ceiling, real-valued
 //! unit capacity).
 //!
-//! This commit ships the **direct-sum bound** only. The LP-relaxation bound
-//! from the same MILP lands in a follow-up commit (per PLAN.md §3.2 it
-//! depends on an LP solver dependency that's worth a separate decision).
+//! Two bounds are exposed:
+//!
+//! - **Direct-sum bound** (`O(N)` from the problem data) — trivially
+//!   computable, intentionally loose; works at any scale.
+//! - **LP-relaxation bound** — solves the MILP with continuous relaxations
+//!   of all binaries. Tighter, but constrained by LP-solver scaling
+//!   (practical ceiling around `N ≤ 20` with the bundled `microlp`
+//!   backend).
 
 pub mod direct;
+pub mod lp;
 
 pub use direct::{lower_bound_direct, lower_bound_for, LowerBounds};
+pub use lp::{lower_bound_lp, BoundsError};

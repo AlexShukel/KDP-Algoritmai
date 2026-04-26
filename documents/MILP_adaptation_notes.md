@@ -87,8 +87,16 @@ Each run of the bounds solver picks one of the three.
 Only the constraints with no time / max-distance dependency carry over.
 Numbering follows §2.5 of the original.
 
-1. **Order assignment** (§2.5.1):
-   `Σ_{v∈V} y_{ov} ≤ 1     ∀ o ∈ O`
+1. **Order assignment** (§2.5.1, **strengthened**):
+   `Σ_{v∈V} y_{ov} = 1     ∀ o ∈ O`
+   The original `≤ 1` allowed un-served orders. Our brute-force solver
+   only records full-assignment solutions (it returns the default
+   solution if no assignment serving every order exists), and the
+   metaheuristics likewise treat full coverage as the goal. Tightening
+   `≤` to `=` makes the LP optimum a lower bound on what the
+   implementation actually computes — without this strengthening the LP
+   would trivially pick `y = 0`, `x = 0` and report a useless `0` for
+   every objective.
 2. **Tour starts at vehicle's location** (§2.5.2):
    `Σ_{j∈L} x_{S_v,j,v} ≤ 1` and `Σ_{i∈N} x_{i,S_v,v} = 0     ∀ v ∈ V`
 3. **Order servicing** (§2.5.3 — verbatim):
@@ -133,14 +141,27 @@ This bound is computable in `O(N)` from the problem data and works at
 fixtures is reported by the tests so the looseness can be quoted in the
 thesis.
 
-### `LB_LP` — LP relaxation (next session)
+### `LB_LP` — LP relaxation
 
 Take the MILP above, relax `y_{ov} ∈ {0,1} → [0,1]` and
 `x_{ijv} ∈ {0,1} → [0,1]`, keep `q_iv` and `u_iv` continuous. The LP
 optimum is a valid lower bound on the MILP optimum (the LP feasible
-region contains the MILP feasible region). Per PLAN.md §3.2 this lands
-in a follow-up session — needs an LP-solver dependency
-(`good_lp` wrapping HiGHS / CBC / CPLEX).
+region contains the MILP feasible region).
+
+Implemented in `crates/vrppd-bounds/src/lp.rs` via `good_lp` with the
+`microlp` backend (pure-Rust LP solver — no external install required).
+The same constraint set is used for all three objectives; only the
+objective expression differs:
+
+- DISTANCE: `Σ_{v} Σ_{i,j∈L_v, i≠j} x_{ijv} · atst(i,j)`
+- EMPTY:    DISTANCE − `Σ_{v} Σ_{o} y_{ov} · atstumas_o`
+- PRICE:    `Σ_{v} kaina_km_v · Σ_{i,j∈L_v, i≠j} x_{ijv} · atst(i,j)`
+
+Big-M values: `M_q = 2` (since `MAX_LOAD = 1`), `M_u = 2N`
+(MTZ position upper bound). For each vehicle `v` we restrict the model
+to the node set `L_v = {S_v} ∪ N` (its own start plus all service
+nodes); other vehicles' starts are not flowed through `v`'s arcs at
+all, which keeps the LP tight without redundant zero-flow variables.
 
 ## Cross-references
 
