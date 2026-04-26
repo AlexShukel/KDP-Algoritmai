@@ -18,6 +18,8 @@ import {
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 import { ParallelSimulatedAnnealing, ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
 import { CoevolutionaryAlgorithmRust } from './algorithms/cea';
+import { DirectLowerBound, LpLowerBound } from './algorithms/bounds';
+import { MilpExact } from './algorithms/milp';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -60,6 +62,9 @@ async function main(): Promise<void> {
         new ParallelSimulatedAnnealing(),
         new ParallelSimulatedAnnealingRust(),
         new CoevolutionaryAlgorithmRust(),
+        new DirectLowerBound(),
+        new LpLowerBound(),
+        new MilpExact(),
     ];
 
     const extractMetrics = (solution: ProblemSolution): SolutionMetrics => ({
@@ -117,8 +122,9 @@ async function main(): Promise<void> {
                     console.error(`Error solving ${relativePath}:`, err);
                 }
             } else if (isSingleTarget(alg)) {
+                const reps = alg.repetitions ?? HEURISTIC_REPETITIONS;
                 for (const target of Object.values(OptimizationTarget)) {
-                    for (let i = 0; i < HEURISTIC_REPETITIONS; i++) {
+                    for (let i = 0; i < reps; i++) {
                         const start = performance.now();
                         try {
                             const { history, solution } = await alg.solve(problem, {

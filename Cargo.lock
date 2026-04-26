@@ -456,9 +456,11 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
+ "vrppd-bounds",
  "vrppd-brute-force",
  "vrppd-cea",
  "vrppd-core",
+ "vrppd-milp",
  "vrppd-psa",
 ]
 

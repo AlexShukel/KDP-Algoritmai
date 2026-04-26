@@ -26,6 +26,14 @@ export interface Algorithm<T = any> {
     name: string;
     solve: (problem: Problem, config: AlgorithmConfig) => Promise<T>;
     readonly type: 'multi' | 'single';
+    /**
+     * Optional override for the harness's repetition count on
+     * single-target algorithms. Set to `1` for deterministic algorithms
+     * (lower bounds, exact solvers) where re-running produces the
+     * identical result. If omitted, the harness uses its default
+     * `HEURISTIC_REPETITIONS` (intended for stochastic algorithms).
+     */
+    readonly repetitions?: number;
 }
 
 export interface AlgorithmResultWithMetadata<T> {

@@ -190,6 +190,48 @@ impl From<vrppd_cea::Solved> for CeaSolved {
   }
 }
 
+// ---- bounds + MILP wire types ----
+
+/// Direct-sum bound returned by `lowerBoundDirect`. All three objectives
+/// in one O(N) pass (the Rust function returns the same shape).
+#[napi(object)]
+#[derive(Clone, Debug)]
+pub struct LowerBoundsResult {
+  pub empty: f64,
+  pub distance: f64,
+  pub price: f64,
+}
+
+impl From<vrppd_bounds::LowerBounds> for LowerBoundsResult {
+  fn from(c: vrppd_bounds::LowerBounds) -> Self {
+    Self {
+      empty: c.empty,
+      distance: c.distance,
+      price: c.price,
+    }
+  }
+}
+
+/// MILP run config. `timeoutMs <= 0` (or undefined) falls back to
+/// `vrppd_milp::DEFAULT_TIMEOUT` (30 minutes per PLAN.md §3.3).
+#[napi(object)]
+#[derive(Clone, Debug, Default)]
+pub struct MilpConfig {
+  pub timeout_ms: Option<f64>,
+}
+
+/// MILP result. `status` is `"OPTIMAL"` if HiGHS proved `value` is the
+/// MILP optimum, `"TIMEDOUT"` if the wall-clock budget expired before
+/// optimality was proven (in which case `value` is the best primal
+/// incumbent found).
+#[napi(object)]
+#[derive(Clone, Debug)]
+pub struct MilpResult {
+  pub value: f64,
+  pub status: String,
+  pub solve_time_ms: f64,
+}
+
 // --- conversions: wire -> core ---
 
 impl From<Location> for vrppd_core::Location {

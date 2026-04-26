@@ -42,6 +42,53 @@ export interface Location {
   longitude: number
 }
 
+/**
+ * Direct-sum lower bound for all three objectives in one O(N) pass.
+ * EMPTY's component is always 0 by construction (see
+ * `documents/MILP_adaptation_notes.md`); kept in the result for symmetry
+ * with the other two objectives.
+ */
+export declare function lowerBoundDirect(problem: Problem): LowerBoundsResult
+
+/**
+ * LP-relaxation lower bound for one objective. EMPTY is documented as
+ * returning the trivial `0` because the implementation's load-aware
+ * empty distance is not bound by the §2.4 formula — callers wanting a
+ * non-trivial bound on EMPTY should fall through to `lowerBoundDirect`
+ * (which also returns 0) and rely on metaheuristic upper bounds.
+ */
+export declare function lowerBoundLp(problem: Problem, target: string): number
+
+/**
+ * Direct-sum bound returned by `lowerBoundDirect`. All three objectives
+ * in one O(N) pass (the Rust function returns the same shape).
+ */
+export interface LowerBoundsResult {
+  empty: number
+  distance: number
+  price: number
+}
+
+/**
+ * MILP run config. `timeoutMs <= 0` (or undefined) falls back to
+ * `vrppd_milp::DEFAULT_TIMEOUT` (30 minutes per PLAN.md §3.3).
+ */
+export interface MilpConfig {
+  timeoutMs?: number
+}
+
+/**
+ * MILP result. `status` is `"OPTIMAL"` if HiGHS proved `value` is the
+ * MILP optimum, `"TIMEDOUT"` if the wall-clock budget expired before
+ * optimality was proven (in which case `value` is the best primal
+ * incumbent found).
+ */
+export interface MilpResult {
+  value: number
+  status: string
+  solveTimeMs: number
+}
+
 export interface Order {
   id: number
   pickupLocation: Location
@@ -110,6 +157,14 @@ export declare function solveBruteForce(problem: Problem): AlgorithmSolution
  * `solve_p_sa`. `config.seed` (if provided) gives a reproducible run.
  */
 export declare function solveCea(problem: Problem, target: string, config?: CeaConfig | undefined | null): CeaSolved
+
+/**
+ * Exact MILP via the bundled HiGHS solver. `target` accepts the same
+ * strings as the metaheuristic bindings; `EMPTY` is rejected because
+ * the MILP formulation models a different EMPTY than the
+ * implementation (see `documents/MILP_adaptation_notes.md`).
+ */
+export declare function solveMilp(problem: Problem, target: string, config?: MilpConfig | undefined | null): MilpResult
 
 /**
  * Run the multi-thread p-SA pipeline. `target` accepts the same SCREAMING_CASE

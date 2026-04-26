@@ -17,8 +17,9 @@ use vrppd_core::Objective;
 use vrppd_psa::{default_config_for, OperatorWeights, SaConfig};
 
 pub use wire::{
-  AlgorithmSolution, CeaConfig, CeaConvergencePoint, CeaSolved, Location, Order, Problem,
-  ProblemSolution, PsaConfig, PsaConvergencePoint, PsaSolved, RouteStop, Vehicle, VehicleRoute,
+  AlgorithmSolution, CeaConfig, CeaConvergencePoint, CeaSolved, Location, LowerBoundsResult,
+  MilpConfig, MilpResult, Order, Problem, ProblemSolution, PsaConfig, PsaConvergencePoint,
+  PsaSolved, RouteStop, Vehicle, VehicleRoute,
 };
 
 #[napi]
@@ -65,6 +66,59 @@ pub fn solve_cea(problem: Problem, target: String, config: Option<CeaConfig>) ->
   };
 
   Ok(solved.into())
+}
+
+/// Direct-sum lower bound for all three objectives in one O(N) pass.
+/// EMPTY's component is always 0 by construction (see
+/// `documents/MILP_adaptation_notes.md`); kept in the result for symmetry
+/// with the other two objectives.
+#[napi]
+pub fn lower_bound_direct(problem: Problem) -> LowerBoundsResult {
+  let core_problem: vrppd_core::Problem = problem.into();
+  vrppd_bounds::lower_bound_direct(&core_problem).into()
+}
+
+/// LP-relaxation lower bound for one objective. EMPTY is documented as
+/// returning the trivial `0` because the implementation's load-aware
+/// empty distance is not bound by the §2.4 formula — callers wanting a
+/// non-trivial bound on EMPTY should fall through to `lowerBoundDirect`
+/// (which also returns 0) and rely on metaheuristic upper bounds.
+#[napi]
+pub fn lower_bound_lp(problem: Problem, target: String) -> Result<f64> {
+  let objective = parse_target(&target)?;
+  let core_problem: vrppd_core::Problem = problem.into();
+  vrppd_bounds::lower_bound_lp(&core_problem, objective)
+    .map_err(|e| Error::new(Status::GenericFailure, format!("LP solver: {e}")))
+}
+
+/// Exact MILP via the bundled HiGHS solver. `target` accepts the same
+/// strings as the metaheuristic bindings; `EMPTY` is rejected because
+/// the MILP formulation models a different EMPTY than the
+/// implementation (see `documents/MILP_adaptation_notes.md`).
+#[napi]
+pub fn solve_milp(
+  problem: Problem,
+  target: String,
+  config: Option<MilpConfig>,
+) -> Result<MilpResult> {
+  let objective = parse_target(&target)?;
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_milp::DEFAULT_TIMEOUT,
+  };
+
+  match vrppd_milp::solve_milp(&core_problem, objective, timeout) {
+    Ok(r) => Ok(MilpResult {
+      value: r.objective_value,
+      status: match r.status {
+        vrppd_milp::MilpStatus::Optimal => "OPTIMAL".to_string(),
+        vrppd_milp::MilpStatus::TimedOut => "TIMEDOUT".to_string(),
+      },
+      solve_time_ms: r.solve_time_ms as f64,
+    }),
+    Err(e) => Err(Error::new(Status::GenericFailure, format!("MILP: {e}"))),
+  }
 }
 
 fn parse_target(s: &str) -> Result<Objective> {

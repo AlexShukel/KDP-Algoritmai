@@ -576,6 +576,9 @@ if (!nativeBinding) {
 }
 
 module.exports = nativeBinding
+module.exports.lowerBoundDirect = nativeBinding.lowerBoundDirect
+module.exports.lowerBoundLp = nativeBinding.lowerBoundLp
 module.exports.solveBruteForce = nativeBinding.solveBruteForce
 module.exports.solveCea = nativeBinding.solveCea
+module.exports.solveMilp = nativeBinding.solveMilp
 module.exports.solvePSa = nativeBinding.solvePSa

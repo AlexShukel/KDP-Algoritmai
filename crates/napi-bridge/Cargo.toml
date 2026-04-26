@@ -17,6 +17,8 @@ vrppd-core = { workspace = true }
 vrppd-brute-force = { workspace = true }
 vrppd-psa = { workspace = true }
 vrppd-cea = { workspace = true }
+vrppd-bounds = { workspace = true }
+vrppd-milp = { workspace = true }
 
 [build-dependencies]
 napi-build = "2"

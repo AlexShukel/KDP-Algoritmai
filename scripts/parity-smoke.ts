@@ -16,7 +16,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { solveCea, solvePSa } from 'napi-bridge';
+import { lowerBoundDirect, lowerBoundLp, solveCea, solveMilp, solvePSa } from 'napi-bridge';
 import type { Problem, ProblemSolution } from 'napi-bridge';
 
 const targets: Array<'EMPTY' | 'DISTANCE' | 'PRICE'> = ['EMPTY', 'DISTANCE', 'PRICE'];
@@ -128,7 +128,30 @@ async function main(): Promise<void> {
         );
     }
 
-    console.log('\nOK — Rust p-SA and CEA both reachable via napi-bridge and producing valid solutions.');
+    console.log('\n-- Lower bounds --');
+    const direct = lowerBoundDirect(problem);
+    console.log(
+        `[direct  ] dist=${fmt(direct.distance)} empty=${fmt(direct.empty)} price=${fmt(direct.price)}`,
+    );
+    for (const target of (['DISTANCE', 'PRICE'] as const)) {
+        const t0 = performance.now();
+        const v = lowerBoundLp(problem, target);
+        const elapsed = performance.now() - t0;
+        console.log(`[lp-${target.toLowerCase().padEnd(8)}] value=${fmt(v)} wall=${fmt(elapsed, 1)} ms`);
+    }
+
+    console.log('\n-- MILP (HiGHS) --');
+    for (const target of (['DISTANCE', 'PRICE'] as const)) {
+        const t0 = performance.now();
+        const r = solveMilp(problem, target, { timeoutMs: 30_000 });
+        const elapsed = performance.now() - t0;
+        console.log(
+            `[${target.padEnd(8)}] value=${fmt(r.value)} status=${r.status} ` +
+                `solveTime=${fmt(r.solveTimeMs, 1)} ms wall=${fmt(elapsed, 1)} ms`,
+        );
+    }
+
+    console.log('\nOK — p-SA, CEA, lower bounds, and MILP all reachable via napi-bridge.');
 }
 
 main().catch(err => {
