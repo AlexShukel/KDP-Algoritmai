@@ -1,0 +1,22 @@
+[package]
+name = "vrppd-milp"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Exact MILP solver for the adapted VRPPD variant. Builds the model from documents/MILP_adaptation_notes.md with full integrality and solves it via the bundled HiGHS solver. Used as a baseline / ground-truth for N up to ~30 with a configurable wall-clock timeout per PLAN.md §3.3."
+
+[dependencies]
+vrppd-core = { workspace = true }
+# `highs-sys` (transitive) ships a `build` feature on by default that
+# compiles HiGHS from source via cmake. No external install required —
+# cmake must be on PATH (verified at the start of this phase). We use
+# the `highs` crate directly rather than going through good_lp because
+# we need access to the solver's model status (Optimal vs TimeLimit),
+# which good_lp 1.15 does not surface.
+highs = "2"
+
+[dev-dependencies]
+serde_json = { workspace = true }
+vrppd-brute-force = { workspace = true }

@@ -163,10 +163,34 @@ to the node set `L_v = {S_v} ∪ N` (its own start plus all service
 nodes); other vehicles' starts are not flowed through `v`'s arcs at
 all, which keeps the LP tight without redundant zero-flow variables.
 
+## Exact MILP optimum
+
+`crates/vrppd-milp` solves the same constraint set with full integrality
+(`y_ov, x_ijv ∈ {0,1}`) via the bundled HiGHS branch-and-cut solver,
+exposed as
+
+```rust
+solve_milp(problem, target, timeout) -> Result<MilpResult, MilpError>
+```
+
+The result distinguishes `MilpStatus::Optimal` (HiGHS proved the
+returned `objective_value` is optimal) from `MilpStatus::TimedOut`
+(wall-clock budget elapsed; `objective_value` is the best primal
+incumbent found). PLAN.md §3.3 specifies a 30-minute timeout per
+instance, exposed as `vrppd_milp::DEFAULT_TIMEOUT`.
+
+`Objective::Empty` is **not** supported by the MILP for the same reason
+as `LB_LP`: the §2.4 formula models a quantity that's an *upper* bound
+on the implementation's load-aware empty distance, and the two values
+diverge whenever pickups and deliveries interleave. `DISTANCE` and
+`PRICE` are supported and verified to coincide with brute-force
+optima on `N ≤ 3` fixtures (see `crates/vrppd-milp/tests/bf_match.rs`).
+
 ## Cross-references
 
 - `documents/Kursinis_darbas.pdf` §2 — the original general formulation.
 - `documents/CEA_adaptation_notes.md` — the same simplification in the
   metaheuristic context.
 - `crates/vrppd-bounds/` — the bound implementations.
+- `crates/vrppd-milp/` — the exact MILP solver (HiGHS).
 - `PLAN.md` §3 — the bounds + MILP roadmap.

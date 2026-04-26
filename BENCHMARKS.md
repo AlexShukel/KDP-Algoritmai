@@ -15,6 +15,31 @@ The `--force` reinstall trick: `pnpm`'s `file:` dependency cache for
 any change to the napi crate, run `pnpm install --force` (with `CI=true`
 prefix on Windows to suppress the TTY prompt) before invoking the harness.
 
+### Native dependencies for `vrppd-milp`
+
+The MILP solver (`crates/vrppd-milp`) bundles HiGHS from source, so the
+**first** build of the crate needs both of the following on `PATH` (they
+are not needed once the build artefacts have been cached):
+
+- **CMake** (≥ 3.16) — for compiling HiGHS itself. Install via
+  `winget install Kitware.CMake` on Windows, or via your distro's package
+  manager. Verify with `cmake --version`.
+- **LLVM / libclang** — `highs-sys` invokes `bindgen` to generate Rust FFI
+  bindings, and bindgen needs `libclang.dll`. Install via
+  `winget install LLVM.LLVM` on Windows, or `apt install libclang-dev`
+  (or equivalent) on Linux.
+
+`winget install LLVM.LLVM` does not always update `PATH` for shells that
+are already running. Either open a fresh shell or set `LIBCLANG_PATH`
+explicitly:
+
+```bash
+export LIBCLANG_PATH="C:\\Program Files\\LLVM\\bin"
+```
+
+Without these, the build fails with either a `cmake` panic or
+`Unable to find libclang: "couldn't find any valid shared libraries matching: ['clang.dll', 'libclang.dll']"`.
+
 ---
 
 ## Generating problem instances
