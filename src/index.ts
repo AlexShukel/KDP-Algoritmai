@@ -3,7 +3,7 @@ import path from 'path';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import stringify from 'fast-json-stable-stringify';
-import { BruteForceAlgorithmJS, BruteForceAlgorithmRust } from './algorithms/brute-force';
+import { BruteForceAlgorithmRust } from './algorithms/brute-force';
 import {
     Problem,
     Algorithm,
@@ -16,7 +16,10 @@ import {
     ConvergenceUpdate,
 } from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
-import { ParallelSimulatedAnnealing } from './algorithms/p-sa';
+import { ParallelSimulatedAnnealing, ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
+import { CoevolutionaryAlgorithmRust } from './algorithms/cea';
+import { DirectLowerBound, LpLowerBound } from './algorithms/bounds';
+import { MilpExact } from './algorithms/milp';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -51,8 +54,18 @@ async function main(): Promise<void> {
         return parseInt(matchA[1]) + parseInt(matchA[2]) - (parseInt(matchB[1]) + parseInt(matchB[2]));
     });
 
-    // Register algorithms
-    const algorithms: Algorithm[] = [new BruteForceAlgorithmRust(), new ParallelSimulatedAnnealing()];
+    // Register algorithms. TS p-SA stays in place as the parity oracle (per
+    // PLAN.md §1.1) until the distributional-parity benchmark in the next
+    // session validates the Rust port at scale.
+    const algorithms: Algorithm[] = [
+        new BruteForceAlgorithmRust(),
+        new ParallelSimulatedAnnealing(),
+        new ParallelSimulatedAnnealingRust(),
+        new CoevolutionaryAlgorithmRust(),
+        new DirectLowerBound(),
+        new LpLowerBound(),
+        new MilpExact(),
+    ];
 
     const extractMetrics = (solution: ProblemSolution): SolutionMetrics => ({
         totalDistance: solution.totalDistance,
@@ -109,8 +122,9 @@ async function main(): Promise<void> {
                     console.error(`Error solving ${relativePath}:`, err);
                 }
             } else if (isSingleTarget(alg)) {
+                const reps = alg.repetitions ?? HEURISTIC_REPETITIONS;
                 for (const target of Object.values(OptimizationTarget)) {
-                    for (let i = 0; i < HEURISTIC_REPETITIONS; i++) {
+                    for (let i = 0; i < reps; i++) {
                         const start = performance.now();
                         try {
                             const { history, solution } = await alg.solve(problem, {
@@ -155,4 +169,4 @@ main().catch(error => {
     process.exit(1);
 });
 
-export { BruteForceAlgorithmJS as BruteForceAlgorithm };
+export { BruteForceAlgorithmRust as BruteForceAlgorithm };

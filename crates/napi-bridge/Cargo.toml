@@ -1,0 +1,24 @@
+[package]
+name = "napi_bridge"
+version = "0.1.0"
+description = "NAPI cdylib that exposes Rust solver crates to the TypeScript harness."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = "3.0.0"
+napi-derive = "3.0.0"
+vrppd-core = { workspace = true }
+vrppd-brute-force = { workspace = true }
+vrppd-psa = { workspace = true }
+vrppd-cea = { workspace = true }
+vrppd-bounds = { workspace = true }
+vrppd-milp = { workspace = true }
+
+[build-dependencies]
+napi-build = "2"

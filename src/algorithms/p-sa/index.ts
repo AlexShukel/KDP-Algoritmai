@@ -1,5 +1,6 @@
 import os from 'os';
 
+import { solvePSa } from 'napi-bridge';
 import {
     AlgorithmConfig,
     AlgorithmResultWithMetadata,
@@ -17,6 +18,44 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * TS adapter wrapping the Rust multi-thread p-SA pipeline (`vrppd-psa`
+ * crate, exposed via `napi-bridge::solvePSa`). Conforms to the harness's
+ * `SingleTargetAlgorithm` interface so it can be benchmarked side-by-side
+ * with `ParallelSimulatedAnnealing` (the JS oracle).
+ */
+export class ParallelSimulatedAnnealingRust implements SingleTargetAlgorithm {
+    type: 'single' = 'single';
+    name = 'p-sa-rust';
+
+    async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
+        const sa = config.saConfig ?? {};
+        const solved = solvePSa(problem, config.target, {
+            initialTemp: sa.initialTemp,
+            coolingRate: sa.coolingRate,
+            minTemp: sa.minTemp,
+            maxIterations: sa.maxIterations,
+            batchSize: sa.batchSize,
+            syncInterval: sa.syncInterval,
+            weightShift: sa.weights?.shift,
+            weightSwap: sa.weights?.swap,
+            weightShuffle: sa.weights?.shuffle,
+        });
+
+        const history: ConvergenceUpdate[] = solved.history.map(p => ({
+            timeMs: p.timeMs,
+            iteration: p.iteration,
+            metrics: {
+                totalDistance: p.totalDistance,
+                emptyDistance: p.emptyDistance,
+                totalPrice: p.totalPrice,
+            },
+        }));
+
+        return { solution: solved.solution, history };
+    }
+}
 
 export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
     type: 'single' = 'single';

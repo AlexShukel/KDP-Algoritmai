@@ -19,7 +19,7 @@ export default defineConfig({
             fileName: (format, entryName) => `${entryName}.${format}.mjs`,
         },
         rollupOptions: {
-            external: [...builtinModules, ...builtinModules.map(m => `node:${m}`), 'rust-solver'],
+            external: [...builtinModules, ...builtinModules.map(m => `node:${m}`), 'napi-bridge'],
         },
         sourcemap: true,
         emptyOutDir: true,

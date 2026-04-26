@@ -5,5 +5,14 @@ data
 problems
 seed-dataset.csv
 temp-results
+results
 *.tex
 *.txt
+
+# Rust workspace build artifacts
+target/
+
+# Third-party copyrighted papers used as references but not redistributable.
+# The author's own thesis PDFs (Kursinis_darbas.pdf, Kursinio_darbo_projektas.pdf)
+# are intentionally NOT excluded — those belong to the project author.
+documents/WC13_*.pdf
