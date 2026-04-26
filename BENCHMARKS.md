@@ -12,8 +12,15 @@ All commands assume you've already done the one-time setup:
 
 The `--force` reinstall trick: `pnpm`'s `file:` dependency cache for
 `crates/napi-bridge` doesn't always pick up rebuilt `.node` binaries. After
-any change to the napi crate, run `pnpm install --force` (with `CI=true`
-prefix on Windows to suppress the TTY prompt) before invoking the harness.
+any change to the napi crate, run `pnpm install --force` before invoking
+the harness. On Windows, prefix with `CI=true` to suppress pnpm's TTY
+prompt. On macOS / Linux the prefix is unnecessary.
+
+The napi binary is platform-specific (`.node` filename embeds the
+target triple — `napi-bridge.darwin-arm64.node` on Apple Silicon,
+`napi-bridge.darwin-x64.node` on Intel Macs, `napi-bridge.win32-x64-msvc.node`
+on Windows). Always rebuild on the same machine you're benchmarking on;
+copying `.node` files across platforms will not work.
 
 ### Native dependencies for `vrppd-milp`
 
@@ -21,13 +28,40 @@ The MILP solver (`crates/vrppd-milp`) bundles HiGHS from source, so the
 **first** build of the crate needs both of the following on `PATH` (they
 are not needed once the build artefacts have been cached):
 
-- **CMake** (≥ 3.16) — for compiling HiGHS itself. Install via
-  `winget install Kitware.CMake` on Windows, or via your distro's package
-  manager. Verify with `cmake --version`.
-- **LLVM / libclang** — `highs-sys` invokes `bindgen` to generate Rust FFI
-  bindings, and bindgen needs `libclang.dll`. Install via
-  `winget install LLVM.LLVM` on Windows, or `apt install libclang-dev`
-  (or equivalent) on Linux.
+- **CMake** (≥ 3.16) — for compiling HiGHS itself. Verify with
+  `cmake --version`.
+- **LLVM / libclang** — `highs-sys` invokes `bindgen` to generate Rust
+  FFI bindings, and bindgen needs the `libclang` shared library
+  (`libclang.dll` on Windows, `libclang.dylib` on macOS,
+  `libclang.so` on Linux).
+
+#### macOS setup (Apple Silicon or Intel)
+
+```bash
+# CMake.
+brew install cmake
+
+# libclang. Either of the following works:
+xcode-select --install      # Apple's bundled toolchain ships libclang.dylib
+brew install llvm           # newer libclang; required if Apple's is too old
+
+# If bindgen can't auto-discover libclang on macOS, point it at one
+# explicitly. Apple's lives at:
+export LIBCLANG_PATH="$(xcode-select -p)/usr/lib"
+# Homebrew's (Apple Silicon default prefix):
+export LIBCLANG_PATH="/opt/homebrew/opt/llvm/lib"
+# Homebrew's (Intel default prefix):
+export LIBCLANG_PATH="/usr/local/opt/llvm/lib"
+```
+
+Verify with `cmake --version && clang --version` in a fresh shell.
+
+#### Windows setup
+
+```powershell
+winget install Kitware.CMake
+winget install LLVM.LLVM
+```
 
 `winget install LLVM.LLVM` does not always update `PATH` for shells that
 are already running. Either open a fresh shell or set `LIBCLANG_PATH`
@@ -37,8 +71,20 @@ explicitly:
 export LIBCLANG_PATH="C:\\Program Files\\LLVM\\bin"
 ```
 
-Without these, the build fails with either a `cmake` panic or
-`Unable to find libclang: "couldn't find any valid shared libraries matching: ['clang.dll', 'libclang.dll']"`.
+#### Linux setup
+
+```bash
+sudo apt install cmake clang libclang-dev   # Debian / Ubuntu
+sudo dnf install cmake clang clang-devel    # Fedora / RHEL
+```
+
+#### Failure modes
+
+Without CMake the build panics from inside `highs-sys`'s build script
+with a `cmake` not-found error. Without libclang, bindgen panics with
+`Unable to find libclang: "couldn't find any valid shared libraries
+matching: ['clang.dll', 'libclang.dll']"` (or `libclang.dylib` /
+`libclang.so` on macOS / Linux respectively).
 
 ---
 
@@ -181,6 +227,16 @@ load-aware empty distance, not a matching quantity); see
 - **Output size**: each `BenchmarkRecord` carries an optional convergence
   trace. The harness already samples it down to ~100 points per run, but
   10 000-record results files can still be 10s of MB. Compress before shipping.
+- **macOS thermals**: long benchmarks on a MacBook will throttle CPU
+  under sustained load — keep the laptop plugged in, on a hard surface,
+  and ideally close the lid (clamshell mode) only with an external
+  display attached so the system doesn't aggressively idle the cores.
+  An M-series chip on battery will under-report Rust solver throughput
+  by 20–40% versus the same chip on AC.
+- **macOS file watching**: if you're running these from inside an IDE
+  with file watchers (VS Code, JetBrains), exclude `target/`,
+  `problems/`, and `results/` from the watcher — the directories grow
+  to gigabytes during a sweep and the watcher will spike a CPU.
 
 ---
 
