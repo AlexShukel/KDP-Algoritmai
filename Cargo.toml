@@ -7,6 +7,7 @@ members = [
   "crates/vrppd-cea",
   "crates/vrppd-bounds",
   "crates/vrppd-milp",
+  "crates/vrppd-validation",
   "crates/napi-bridge",
 ]
 
@@ -29,6 +30,7 @@ vrppd-psa = { path = "crates/vrppd-psa" }
 vrppd-cea = { path = "crates/vrppd-cea" }
 vrppd-bounds = { path = "crates/vrppd-bounds" }
 vrppd-milp = { path = "crates/vrppd-milp" }
+vrppd-validation = { path = "crates/vrppd-validation" }
 
 [profile.release]
 lto = true

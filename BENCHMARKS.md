@@ -125,6 +125,48 @@ For the very large instances, drop `HEURISTIC_REPETITIONS` in
 
 ---
 
+## Bound validation sweep (PLAN.md §3.4)
+
+Closes Phase 3 by producing the per-instance soundness / tightness CSV for
+the bounds chapter of the thesis. For every problem under `--problems`
+whose order count is `≤ --max-n`, runs:
+
+- brute-force (the optimum reference);
+- LP-relaxation lower bound (`vrppd-bounds`);
+- exact MILP (`vrppd-milp`, with a per-instance wall-clock timeout).
+
+**Cost:** roughly **30–120 minutes** on the small bank (`max_n=7`, ~490
+instances × 2 objectives ≈ 980 rows). MILP per-instance time grows
+quickly with N — at N=3 the median is ~150 ms; at N=7 expect a few
+seconds. Soundness/match counts and LP-ratio statistics print to stdout
+at the end so a copy-paste into a thesis table is one step.
+
+```bash
+# 1. Smoke run on N ≤ 3 — finishes in ~5 minutes, validates wiring.
+cargo run -p vrppd-validation --bin bound-sweep --release -- \
+  --problems problems/problems --max-n 3 \
+  --milp-timeout-secs 30 \
+  --output results/bound_sweep_n3.csv
+
+# 2. Full small-bank sweep — leave running, ~1–2 h.
+cargo run -p vrppd-validation --bin bound-sweep --release -- \
+  --problems problems/problems --max-n 7 \
+  --milp-timeout-secs 60 \
+  --output results/bound_sweep_n7.csv
+```
+
+CSV columns: `instance, n, v, objective, bf_optimum, lp_lb, lp_ratio,
+milp_value, milp_status, milp_time_ms, sound, milp_matches_bf`. The
+`results/` directory is gitignored — copy any thesis-bound CSV out of
+the repo or commit a summary table instead.
+
+The sweep skips `Objective::Empty` because both LP and MILP define EMPTY
+in terms of the §2.4 formula (an upper bound on the implementation's
+load-aware empty distance, not a matching quantity); see
+`documents/MILP_adaptation_notes.md` for the derivation.
+
+---
+
 ## Tips
 
 - **Memory**: `pnpm start` already passes `--max-old-space-size=12288` (12 GB).
