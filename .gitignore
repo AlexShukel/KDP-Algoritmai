@@ -16,3 +16,4 @@ target/
 # The author's own thesis PDFs (Kursinis_darbas.pdf, Kursinio_darbo_projektas.pdf)
 # are intentionally NOT excluded — those belong to the project author.
 documents/WC13_*.pdf
+.DS_Store
