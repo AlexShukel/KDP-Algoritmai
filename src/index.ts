@@ -58,10 +58,10 @@ async function main(): Promise<void> {
     // PLAN.md §1.1) until the distributional-parity benchmark in the next
     // session validates the Rust port at scale.
     const algorithms: Algorithm[] = [
-        new BruteForceAlgorithmRust(),
-        new ParallelSimulatedAnnealing(),
-        new ParallelSimulatedAnnealingRust(),
-        new CoevolutionaryAlgorithmRust(),
+        // new BruteForceAlgorithmRust(),
+        // new ParallelSimulatedAnnealing(),
+        // new ParallelSimulatedAnnealingRust(),
+        // new CoevolutionaryAlgorithmRust(),
         new DirectLowerBound(),
         new LpLowerBound(),
         new MilpExact(),
@@ -123,7 +123,8 @@ async function main(): Promise<void> {
                 }
             } else if (isSingleTarget(alg)) {
                 const reps = alg.repetitions ?? HEURISTIC_REPETITIONS;
-                for (const target of Object.values(OptimizationTarget)) {
+                const targets = alg.supportedTargets ?? Object.values(OptimizationTarget);
+                for (const target of targets) {
                     for (let i = 0; i < reps; i++) {
                         const start = performance.now();
                         try {

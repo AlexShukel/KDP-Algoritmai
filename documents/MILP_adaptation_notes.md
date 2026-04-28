@@ -76,7 +76,10 @@ distance the vehicle carries cargo for orders assigned to it.
   `Z_dist = Σ_{v∈V} Σ_{i∈L} Σ_{j∈L, i≠j} x_{ijv} · atst(i,j)`
 - **EMPTY** (the original §2 objective):
   `Z_empty = Z_dist − Σ_{v∈V} Σ_{o∈O} y_{ov} · atstumas_o`
-  (total distance minus the loaded portion).
+  (total distance minus the loaded portion). **Defined here for
+  completeness, but not exposed by the LP-LB or MILP solvers** — see
+  [§4.5 below](#45-why-z_empty--implementation-empty) for why this
+  formula diverges from the implementation's load-aware empty distance.
 - **PRICE** (heterogeneous-fleet money cost):
   `Z_price = Σ_{v∈V} kaina_km_v · Σ_{i∈L} Σ_{j∈L, i≠j} x_{ijv} · atst(i,j)`
 
@@ -121,6 +124,86 @@ solvers explore and whose optima coincide with the BF outputs on
 `N ≤ 14` instances — verified empirically by the tightness tests in
 `crates/vrppd-bounds/tests/bf_tightness.rs`.
 
+### 4.5 Why `Z_empty` ≠ implementation EMPTY
+
+The §2.4 formula `Z_empty = Z_dist − Σ_o (y_{ov} · atstumas_o)`
+measures empty distance as *total kilometres minus the sum of each
+order's straight-line pickup-to-delivery distance*. The implementation
+(`vrppd-brute-force`, `vrppd-psa`, `vrppd-cea`) measures it differently:
+it walks each leg of each route and sums the legs where the vehicle's
+load on departure is `0`. The two definitions agree only when every
+order is picked up and delivered back-to-back, with no interleaving.
+
+#### Concrete divergence
+
+Vehicle starts at `S` and serves two orders with locations chosen so
+their loaded portions overlap:
+
+- O1: pickup `A`, delivery `D`
+- O2: pickup `B`, delivery `C`
+
+Route: `S → A → B → C → D` (picks up O1 at `A`, picks up O2 at `B`
+while still carrying O1, delivers O2 at `C`, delivers O1 at `D`).
+
+| Quantity | Value |
+| --- | --- |
+| `Z_dist` | `atst(S,A) + atst(A,B) + atst(B,C) + atst(C,D)` |
+| Σ direct atstumas | `atst(A,D) + atst(B,C)` |
+| §2.4 `Z_empty` | `Z_dist − atst(A,D) − atst(B,C)` |
+| Implementation `empty` | `atst(S,A)` (only `S→A` is empty) |
+
+These are functions of different things. The §2.4 formula subtracts the
+*direct* `A→D` distance even though the vehicle never travelled that
+leg, and only counts O2's loaded portion as `B→C` even though the
+vehicle is *also* carrying O1 over that segment. The implementation
+asks per leg "was the load zero here?". Depending on geometry, §2.4
+EMPTY can be larger or smaller than implementation EMPTY for the same
+solution.
+
+#### Why this rules out reporting `Z_empty*`
+
+A solver minimising `Z_empty` is not minimising implementation EMPTY.
+Likewise, an LP-relaxed `Z_empty` is not a valid lower bound on
+implementation EMPTY in either direction. Plugging an MILP optimum of
+`Z_empty` into a parity report — or treating it as a quality reference
+for the metaheuristics — would be unsound. Hence the API guards
+described in §4.6.
+
+#### What a load-aware EMPTY MILP would require
+
+To make the MILP measure the same quantity the implementation does,
+the model would need:
+
+- per-leg empty-flag variables `e_{ijv} ∈ {0,1}` linked to the load
+  state: `e_{ijv} = 1` iff `q_{iv} = 0` and `x_{ijv} = 1`. The
+  conjunction is non-linear and requires Big-M linearisation
+  (`e_{ijv} ≤ 1 − q_{iv} / M_q`, `e_{ijv} ≤ x_{ijv}`,
+  `e_{ijv} ≥ x_{ijv} − q_{iv} / M_q`, etc.);
+- a replacement objective `Σ x_{ijv} · e_{ijv} · atst(i,j)`, also
+  Big-M-linearised through an auxiliary `z_{ijv} = x_{ijv} · e_{ijv}`.
+
+The result is a substantially larger model with looser LP relaxation
+and slower branch-and-bound. Out of scope for this thesis; recorded as
+a future-work direction (PLAN.md §10).
+
+### 4.6 Behaviour at the API boundary
+
+The two consumers of the §2.4 formula handle the EMPTY rejection
+asymmetrically:
+
+- **`vrppd-milp::solve_milp`** returns
+  `Err(MilpError::UnsupportedObjective(Objective::Empty))` — surfaced
+  through napi as the error string `MILP for objective Empty is not
+  supported (see docs)`. Calling it on EMPTY is a hard refuse.
+- **`vrppd-bounds::lower_bound_lp`** returns the trivial `0` for EMPTY
+  rather than erroring — pass-through behaviour preserved so callers
+  that don't know about the divergence get a deterministic answer
+  rather than a panic. The benchmark harness now skips EMPTY for
+  `lb-lp` via `supportedTargets`, so the `0` is no longer recorded.
+
+Both behaviours are stable. Consumers building new adapters should
+declare EMPTY as unsupported and avoid the call entirely.
+
 ## Lower bounds derived from the adapted MILP
 
 ### `LB_direct` — direct-sum bound
@@ -154,8 +237,11 @@ The same constraint set is used for all three objectives; only the
 objective expression differs:
 
 - DISTANCE: `Σ_{v} Σ_{i,j∈L_v, i≠j} x_{ijv} · atst(i,j)`
-- EMPTY:    DISTANCE − `Σ_{v} Σ_{o} y_{ov} · atstumas_o`
 - PRICE:    `Σ_{v} kaina_km_v · Σ_{i,j∈L_v, i≠j} x_{ijv} · atst(i,j)`
+- EMPTY:    short-circuited to `0` at the API layer — see §4.5 and
+  §4.6. The formula `DISTANCE − Σ_{v} Σ_{o} y_{ov} · atstumas_o` is
+  computable but does not measure the implementation's load-aware
+  empty distance, so the LP-LB consumer is not exposed to it.
 
 Big-M values: `M_q = 2` (since `MAX_LOAD = 1`), `M_u = 2N`
 (MTZ position upper bound). For each vehicle `v` we restrict the model
@@ -179,12 +265,16 @@ returned `objective_value` is optimal) from `MilpStatus::TimedOut`
 incumbent found). PLAN.md §3.3 specifies a 30-minute timeout per
 instance, exposed as `vrppd_milp::DEFAULT_TIMEOUT`.
 
-`Objective::Empty` is **not** supported by the MILP for the same reason
-as `LB_LP`: the §2.4 formula models a quantity that's an *upper* bound
-on the implementation's load-aware empty distance, and the two values
-diverge whenever pickups and deliveries interleave. `DISTANCE` and
+`Objective::Empty` is **not** supported — `solve_milp` returns
+`MilpError::UnsupportedObjective(Objective::Empty)`. The reason is that the §2.4
+formula and the implementation's load-aware empty distance measure
+different quantities (see §4.5 for the derivation and a worked
+example), so a MILP optimum on `Z_empty` would not be a valid
+reference for the implementation's EMPTY metric. `DISTANCE` and
 `PRICE` are supported and verified to coincide with brute-force
 optima on `N ≤ 3` fixtures (see `crates/vrppd-milp/tests/bf_match.rs`).
+LP-LB and MILP behave asymmetrically on EMPTY (silent `0` vs. hard
+error); see §4.6.
 
 ## Cross-references
 

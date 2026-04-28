@@ -66,6 +66,7 @@ export class DirectLowerBound implements MultiTargetAlgorithm {
 export class LpLowerBound implements SingleTargetAlgorithm {
     readonly type = 'single' as const;
     readonly repetitions = 1;
+    readonly supportedTargets = [OptimizationTarget.DISTANCE, OptimizationTarget.PRICE] as const;
     name = 'lb-lp';
 
     async solve(
