@@ -24,8 +24,28 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Where the harness reads instances from. Override by moving directories
+// in/out of `problems/` — there is intentionally no scale-class CLI flag
+// (BENCHMARKS.md §p-SA parity benchmark §"To run on a subset only").
 const PROBLEMS_DIR = 'problems';
-const HEURISTIC_REPETITIONS = 10;
+
+// Stochastic algorithms run this many independent replications per
+// (instance, target). Defaults to 10 (PLAN.md §4.2 main matrix); override
+// to 1–3 for the very large classes (30×100 and bigger) to keep wall-time
+// inside the 2026-05-21 freeze (see Projects/Bachelor-VRPPD/benchmark-queue):
+//   HEURISTIC_REPETITIONS=3 pnpm start
+// The env var is parsed up-front; an unparseable value falls back to 10
+// so a typo cannot silently inflate the budget.
+const HEURISTIC_REPETITIONS = (() => {
+    const raw = process.env.HEURISTIC_REPETITIONS;
+    if (!raw) return 10;
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) {
+        console.warn(`Ignoring invalid HEURISTIC_REPETITIONS="${raw}", using default 10.`);
+        return 10;
+    }
+    return parsed;
+})();
 
 function sampleHistory(history: ConvergenceUpdate[], maxPoints = 100): ConvergenceUpdate[] {
     if (history.length <= maxPoints) {
@@ -54,16 +74,26 @@ async function main(): Promise<void> {
         return parseInt(matchA[1]) + parseInt(matchA[2]) - (parseInt(matchB[1]) + parseInt(matchB[2]));
     });
 
-    // Register algorithms. The TS p-SA oracle was retired on 2026-05-07
-    // (see `src/algorithms/p-sa/index.ts` history note); only the Rust
-    // adapter participates from now on.
+    // Algorithms registered for the main comparison matrix (PLAN.md §4.2).
+    // The order is the run order: cheapest baselines first so that even a
+    // cancelled run leaves usable lower-bound and exact-solver rows. The
+    // two metaheuristics come last because they dominate the wall-time
+    // budget on the large classes (BENCHMARKS.md §"Larger-instance
+    // benchmarks" wall-time table).
+    //
+    // Per-algorithm filtering of which `OptimizationTarget`s are run is
+    // declared on the class itself (see `supportedTargets` on each
+    // adapter); the loop below honours it. EMPTY is excluded from the
+    // bounds + MILP rows because the LP/MILP formulation defines EMPTY
+    // as an upper bound on the load-aware empty distance, not a matching
+    // quantity (documents/MILP_adaptation_notes.md §2.4).
     const algorithms: Algorithm[] = [
-        // new BruteForceAlgorithmRust(),
-        // new ParallelSimulatedAnnealingRust(),
-        // new CoevolutionaryAlgorithmRust(),
+        new BruteForceAlgorithmRust(),
         new DirectLowerBound(),
         new LpLowerBound(),
         new MilpExact(),
+        new ParallelSimulatedAnnealingRust(),
+        new CoevolutionaryAlgorithmRust(),
     ];
 
     const extractMetrics = (solution: ProblemSolution): SolutionMetrics => ({
