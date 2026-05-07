@@ -10,8 +10,14 @@ export default defineConfig({
         target: 'node24',
         lib: {
             entry: {
+                // Two bundle entries remain after the 2026-05-07 TS p-SA
+                // removal: the harness (`vrp`) and the parameter tuner
+                // (`tunePsa`). The previous `p-sa.worker` entry was the
+                // worker-thread script for the now-deleted TS p-SA — its
+                // Rust replacement (`vrppd-psa` crate, napi-bridge bound)
+                // does its own threading internally and needs no JS
+                // worker bundle.
                 vrp: resolve(__dirname, 'src/index.ts'),
-                'p-sa.worker': resolve(__dirname, 'src/algorithms/p-sa/p-sa.worker.ts'),
                 tunePsa: resolve(__dirname, 'src/tune-psa.ts'),
             },
             name: 'VRP',

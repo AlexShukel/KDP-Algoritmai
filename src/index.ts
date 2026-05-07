@@ -16,7 +16,7 @@ import {
     ConvergenceUpdate,
 } from './types';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
-import { ParallelSimulatedAnnealing, ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
+import { ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
 import { CoevolutionaryAlgorithmRust } from './algorithms/cea';
 import { DirectLowerBound, LpLowerBound } from './algorithms/bounds';
 import { MilpExact } from './algorithms/milp';
@@ -54,12 +54,11 @@ async function main(): Promise<void> {
         return parseInt(matchA[1]) + parseInt(matchA[2]) - (parseInt(matchB[1]) + parseInt(matchB[2]));
     });
 
-    // Register algorithms. TS p-SA stays in place as the parity oracle (per
-    // PLAN.md §1.1) until the distributional-parity benchmark in the next
-    // session validates the Rust port at scale.
+    // Register algorithms. The TS p-SA oracle was retired on 2026-05-07
+    // (see `src/algorithms/p-sa/index.ts` history note); only the Rust
+    // adapter participates from now on.
     const algorithms: Algorithm[] = [
         // new BruteForceAlgorithmRust(),
-        // new ParallelSimulatedAnnealing(),
         // new ParallelSimulatedAnnealingRust(),
         // new CoevolutionaryAlgorithmRust(),
         new DirectLowerBound(),

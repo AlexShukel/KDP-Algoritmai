@@ -1,36 +1,53 @@
-import os from 'os';
+// p-SA TS adapter for the harness.
+//
+// History (2026-05-07): the original TypeScript p-SA implementation
+// (`ParallelSimulatedAnnealing`, with Worker-thread island model and an
+// in-TS RCRS) was retired together with `p-sa.worker.ts` and `rcrs.ts`.
+// The Rust port in `crates/vrppd-psa` (exposed via napi-bridge as
+// `solvePSa`) had reached parity per `reports/psa-port-report.md`, so
+// the TS oracle was no longer needed and a single source of truth is
+// preferable for the thesis (PLAN.md §1.1, §4 Rust runner direction).
+//
+// What remains here is just the *adapter* that lets the Rust solver
+// participate in the TS harness as a `SingleTargetAlgorithm`.
 
 import { solvePSa } from 'napi-bridge';
 import {
     AlgorithmConfig,
     AlgorithmResultWithMetadata,
     ConvergenceUpdate,
-    OptimizationTarget,
     Problem,
     ProblemSolution,
     SingleTargetAlgorithm,
 } from '../../types';
-import { buildDistanceMatrix, buildVehicleDistances, DistanceMatrix } from '../../utils/DistanceMatrix';
-import { generateRCRS } from './rcrs';
-import { Worker } from 'worker_threads';
-import { performance } from 'perf_hooks';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * TS adapter wrapping the Rust multi-thread p-SA pipeline (`vrppd-psa`
- * crate, exposed via `napi-bridge::solvePSa`). Conforms to the harness's
- * `SingleTargetAlgorithm` interface so it can be benchmarked side-by-side
- * with `ParallelSimulatedAnnealing` (the JS oracle).
+ * Adapter wrapping the Rust multi-thread p-SA pipeline (`vrppd-psa`
+ * crate, exposed via `napi-bridge::solvePSa`). Conforms to the
+ * harness's `SingleTargetAlgorithm` interface so it can be benchmarked
+ * alongside CEA, MILP, the lower bounds, and Brute Force.
+ *
+ * The adapter is intentionally thin: all algorithmic logic (RCRS
+ * initial solution, Shift / Lazy Swap / Intra-Shuffle operators, island
+ * model + re-heating) lives in Rust. This class only translates between
+ * the harness's `AlgorithmConfig` shape and the napi binding's flat
+ * config object, then re-shapes the convergence trace into the
+ * harness's `ConvergenceUpdate[]`.
  */
 export class ParallelSimulatedAnnealingRust implements SingleTargetAlgorithm {
     type: 'single' = 'single';
     name = 'p-sa-rust';
 
     async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
+        // Pull SA-specific knobs out of the harness config. Each is
+        // optional; when undefined, the Rust side falls back to its own
+        // defaults defined in `vrppd-psa::config`.
         const sa = config.saConfig ?? {};
+
+        // The napi binding is *flat* — operator weights are passed as
+        // separate top-level fields rather than as a nested `weights`
+        // object — so we hand-roll the mapping here. Keep this list in
+        // sync with `napi-bridge`'s `PsaConfig` struct.
         const solved = solvePSa(problem, config.target, {
             initialTemp: sa.initialTemp,
             coolingRate: sa.coolingRate,
@@ -43,6 +60,10 @@ export class ParallelSimulatedAnnealingRust implements SingleTargetAlgorithm {
             weightShuffle: sa.weights?.shuffle,
         });
 
+        // Rust returns the convergence trace as flat records (one row
+        // per sampled iteration). The harness expects nested metrics,
+        // so re-shape here. Sampling-down to ~100 points is the
+        // harness's job (see `sampleHistory` in `src/index.ts`).
         const history: ConvergenceUpdate[] = solved.history.map(p => ({
             timeMs: p.timeMs,
             iteration: p.iteration,
@@ -54,133 +75,5 @@ export class ParallelSimulatedAnnealingRust implements SingleTargetAlgorithm {
         }));
 
         return { solution: solved.solution, history };
-    }
-}
-
-export class ParallelSimulatedAnnealing implements SingleTargetAlgorithm {
-    type: 'single' = 'single';
-    name = 'p-sa-js';
-
-    async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
-        const distMatrix = buildDistanceMatrix(problem.orders, config.distanceCalc);
-        const vehicleStartMatrix = buildVehicleDistances(problem.vehicles, problem.orders, config.distanceCalc);
-
-        const totalCpus = os.cpus().length;
-        const threadsPerTarget = Math.max(2, totalCpus);
-
-        return this.solveTarget(config, threadsPerTarget, problem, distMatrix, vehicleStartMatrix);
-    }
-
-    // Spawns a pipeline of workers to solve a single target.
-    private async solveTarget(
-        { target, saConfig }: AlgorithmConfig,
-        numThreads: number,
-        problem: Problem,
-        distMatrix: DistanceMatrix,
-        vehicleStartMatrix: DistanceMatrix,
-    ): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
-        const initialSolution = generateRCRS(problem, distMatrix, vehicleStartMatrix, target);
-
-        let globalBest = initialSolution;
-        let globalBestEnergy = this.getEnergy(initialSolution, target);
-        let totalIterations = 0;
-
-        const history: ConvergenceUpdate[] = [
-            {
-                timeMs: 0,
-                iteration: 0,
-                metrics: {
-                    emptyDistance: initialSolution.emptyDistance,
-                    totalDistance: initialSolution.totalDistance,
-                    totalPrice: initialSolution.totalPrice,
-                },
-            },
-        ];
-        const startTime = performance.now();
-
-        const workers: Worker[] = [];
-        const workerPromises: Promise<void>[] = [];
-
-        for (let i = 0; i < numThreads; ++i) {
-            workerPromises.push(
-                new Promise<void>((resolve, reject) => {
-                    const worker = new Worker(path.resolve(__dirname, 'p-sa.worker.es.mjs'));
-
-                    workers.push(worker);
-
-                    worker.on('message', msg => {
-                        if (msg.type === 'SYNC_REPORT' || msg.type === 'DONE') {
-                            if (msg.energy < globalBestEnergy) {
-                                globalBestEnergy = msg.energy;
-                                globalBest = msg.solution;
-
-                                history.push({
-                                    timeMs: performance.now() - startTime,
-                                    iteration: totalIterations,
-                                    metrics: {
-                                        totalDistance: msg.solution.totalDistance,
-                                        totalPrice: msg.solution.totalPrice,
-                                        emptyDistance: msg.solution.emptyDistance,
-                                    },
-                                });
-                            }
-                        }
-
-                        if (msg.type === 'SYNC_REPORT') {
-                            if (i < numThreads - 1) {
-                                const nextWorkerIdx = i + 1;
-                                const nextWorker = workers[nextWorkerIdx];
-
-                                nextWorker.postMessage({
-                                    type: 'INFLUENCE_UPDATE',
-                                    solution: msg.solution,
-                                    energy: msg.energy,
-                                });
-                            }
-                        }
-
-                        if (msg.type === 'DONE') {
-                            worker.terminate();
-                            resolve();
-                        }
-
-                        ++totalIterations;
-                    });
-
-                    worker.on('error', err => {
-                        console.error(`Worker error in ${OptimizationTarget[target]} pipeline:`, err);
-                        reject(err);
-                    });
-
-                    worker.postMessage({
-                        type: 'INIT',
-                        data: {
-                            config: saConfig,
-                            target,
-                            problem,
-                            distMatrix,
-                            vehicleStartMatrix,
-                            initialSolution,
-                            // It is often good to vary start temp slightly per thread
-                            initialTemp: (saConfig?.initialTemp || 1000) * (0.9 + Math.random() * 0.2),
-                        },
-                    });
-                }),
-            );
-        }
-
-        await Promise.all(workerPromises);
-        return { solution: globalBest, history };
-    }
-
-    private getEnergy(solution: ProblemSolution, target: OptimizationTarget): number {
-        switch (target) {
-            case OptimizationTarget.EMPTY:
-                return solution.emptyDistance;
-            case OptimizationTarget.DISTANCE:
-                return solution.totalDistance;
-            case OptimizationTarget.PRICE:
-                return solution.totalPrice;
-        }
     }
 }
