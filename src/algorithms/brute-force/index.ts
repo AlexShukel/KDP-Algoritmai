@@ -17,17 +17,18 @@ import {
     AlgorithmResultWithMetadata,
 } from '../../types';
 
-const MAX_PROBLEM_SIZE = 7;
+// Hard upper bound on `vehicles + orders` (PLAN.md §4.2 has BF only at
+// N=10 and N=14). The Rust crate's `PathBuffer` is `[u8; 16]` which by
+// itself caps the order count at 8 (each order = 2 nodes); 14 is the
+// joint cap that keeps the outer enumeration tractable.
+const MAX_V_PLUS_O = 14;
 
 export class BruteForceAlgorithmRust implements MultiTargetAlgorithm {
-    type: 'multi' = 'multi';
+    readonly type = 'multi' as const;
+    readonly maxProblemSize = MAX_V_PLUS_O;
     name: string = 'brute-force-rust';
 
     public solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<AlgorithmSolution>> {
-        if (problem.orders.length > MAX_PROBLEM_SIZE || problem.vehicles.length > MAX_PROBLEM_SIZE) {
-            throw new Error(`Problem too large for ${this.name} implementation.`);
-        }
-
         return new Promise(res => res({ solution: solveBruteForce(problem), history: [] }));
     }
 }

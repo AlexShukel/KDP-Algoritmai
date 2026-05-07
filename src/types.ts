@@ -41,6 +41,23 @@ export interface Algorithm<T = any> {
      * `documents/MILP_adaptation_notes.md`).
      */
     readonly supportedTargets?: readonly OptimizationTarget[];
+    /**
+     * Optional upper bound on `vehicles + orders` (the same V+O quantity
+     * the harness sorts by). The harness silently skips a problem
+     * instance for this algorithm if `problem.vehicles.length +
+     * problem.orders.length > maxProblemSize`.
+     *
+     * Use this for algorithms whose runtime / wall-clock makes them
+     * useless past a known cliff: BF (exponential), MILP (timeouts at
+     * large N), microlp-backed LP-LB (simplex scaling ceiling). Without
+     * a cap, those algos still get launched per instance and either
+     * throw (BF) or burn the full timeout for no useful primal — neither
+     * of which is what the comparison matrix wants.
+     *
+     * Heuristics that *should* scale (p-SA, CEA, direct-sum LB) leave
+     * this `undefined`.
+     */
+    readonly maxProblemSize?: number;
 }
 
 export interface AlgorithmResultWithMetadata<T> {
