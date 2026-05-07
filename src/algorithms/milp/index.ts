@@ -36,6 +36,22 @@ import {
 
 const DEFAULT_TIMEOUT_MS = 30 * 60 * 1_000;
 
+// Env-var override so a smoke run can dial the timeout down without a code
+// edit (mirrors the `HEURISTIC_REPETITIONS` pattern in the harness):
+//   MILP_TIMEOUT_MS=60000 pnpm start    # 60 s cap, smoke-speed
+// Unparseable / sub-second values fall back to the 30-min default with
+// a warning so a typo can't silently inflate the budget.
+function envTimeoutMs(): number {
+    const raw = process.env.MILP_TIMEOUT_MS;
+    if (!raw) return DEFAULT_TIMEOUT_MS;
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed < 1_000) {
+        console.warn(`Ignoring invalid MILP_TIMEOUT_MS="${raw}", using default ${DEFAULT_TIMEOUT_MS}ms.`);
+        return DEFAULT_TIMEOUT_MS;
+    }
+    return parsed;
+}
+
 export class MilpExact implements SingleTargetAlgorithm {
     readonly type = 'single' as const;
     readonly repetitions = 1;
@@ -43,7 +59,7 @@ export class MilpExact implements SingleTargetAlgorithm {
     readonly maxProblemSize = 20;
     name = 'milp-rust';
 
-    constructor(private readonly timeoutMs: number = DEFAULT_TIMEOUT_MS) {}
+    constructor(private readonly timeoutMs: number = envTimeoutMs()) {}
 
     async solve(
         problem: Problem,

@@ -29,6 +29,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // (BENCHMARKS.md §p-SA parity benchmark §"To run on a subset only").
 const PROBLEMS_DIR = 'problems';
 
+// Where the harness writes per-algorithm benchmark JSONs. Lives **outside**
+// `dist/` because vite's `emptyOutDir: true` wipes `dist/` at the start of
+// every build — and any incidental `pnpm build` while a long benchmark is
+// in flight (e.g. when iterating on harness code) silently destroys all
+// previously-saved results from earlier algos in that run. Writing one
+// directory up keeps the JSONs out of vite's blast radius.
+//
+// We resolve relative to `dist/` (where __dirname lives at runtime) so
+// the path is `<repo>/results/`, the same directory the launch wrapper
+// writes its run log to. `mkdirSync({recursive: true})` is defensive —
+// the wrapper usually creates this already.
+const RESULTS_DIR = path.resolve(__dirname, '..', 'results');
+
 // Stochastic algorithms run this many independent replications per
 // (instance, target). Defaults to 10 (PLAN.md §4.2 main matrix); override
 // to 1–3 for the very large classes (30×100 and bigger) to keep wall-time
@@ -192,9 +205,10 @@ async function main(): Promise<void> {
         }
 
         const outputFilename = `benchmark-results-${alg.name}.json`;
-        const outputPath = path.resolve(__dirname, outputFilename);
+        fs.mkdirSync(RESULTS_DIR, { recursive: true });
+        const outputPath = path.join(RESULTS_DIR, outputFilename);
         fs.writeFileSync(outputPath, stringify(benchmarkRecords));
-        console.log(`Saved ${benchmarkRecords.length} records to ${outputFilename}`);
+        console.log(`Saved ${benchmarkRecords.length} records to ${path.relative(process.cwd(), outputPath)}`);
     }
 }
 
