@@ -14,6 +14,12 @@
 //! 30-min ceiling — bound validation runs on small instances where MILP
 //! finishes in well under a second).
 //!
+//! Per-instance work is independent so the sweep parallelises with
+//! `rayon::par_iter` over the instance list. CSV rows are written in
+//! completion order (not sorted) — `sort -t, -k1,1 results/bound_sweep_n7.csv`
+//! post-hoc if a stable diff against a previous run is needed. The
+//! summary stats at the end are order-independent.
+//!
 //! Usage:
 //!
 //! ```text
@@ -31,7 +37,11 @@ use std::collections::BTreeMap;
 use std::fs::{self, File};
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Mutex;
 use std::time::{Duration, Instant};
+
+use rayon::prelude::*;
 
 use vrppd_bounds::lower_bound_lp;
 use vrppd_core::{Objective, Problem};
@@ -83,8 +93,9 @@ fn parse_args() -> Args {
 
 fn main() {
   let args = parse_args();
+  let workers = rayon::current_num_threads();
   println!(
-    "bound-sweep: problems={:?} max_n={} milp_timeout={:?} output={:?}",
+    "bound-sweep: problems={:?} max_n={} milp_timeout={:?} output={:?} workers={workers}",
     args.problems_dir, args.max_n, args.milp_timeout, args.output
   );
 
@@ -97,37 +108,44 @@ fn main() {
     fs::create_dir_all(parent).expect("create output dir");
   }
   let out = File::create(&args.output).expect("open output");
-  let mut w = BufWriter::new(out);
-  writeln!(
-    w,
-    "instance,n,v,objective,bf_optimum,lp_lb,lp_ratio,milp_value,milp_status,milp_time_ms,sound,milp_matches_bf"
-  )
-  .unwrap();
+  let writer: Mutex<BufWriter<File>> = Mutex::new(BufWriter::new(out));
+  {
+    let mut w = writer.lock().unwrap();
+    writeln!(
+      w,
+      "instance,n,v,objective,bf_optimum,lp_lb,lp_ratio,milp_value,milp_status,milp_time_ms,sound,milp_matches_bf"
+    )
+    .unwrap();
+    w.flush().unwrap();
+  }
 
   // Per-objective aggregates so the run prints a thesis-ready summary at
   // the end without needing to re-parse the CSV. Keyed by objective name
   // so the output order is stable across runs.
-  let mut agg: BTreeMap<&'static str, Aggregate> = BTreeMap::new();
+  let agg: Mutex<BTreeMap<&'static str, Aggregate>> = Mutex::new(BTreeMap::new());
   let started_all = Instant::now();
-  let mut row_count = 0usize;
+  let row_count = AtomicUsize::new(0);
+  let progress = AtomicUsize::new(0);
+  let total = instances.len();
 
-  for path in &instances {
+  instances.par_iter().for_each(|path| {
+    let instance_started = Instant::now();
     let raw = match fs::read_to_string(path) {
       Ok(s) => s,
       Err(e) => {
         eprintln!("skip {}: {e}", path.display());
-        continue;
+        return;
       }
     };
     let problem: Problem = match serde_json::from_str(&raw) {
       Ok(p) => p,
       Err(e) => {
         eprintln!("skip {}: parse error {e}", path.display());
-        continue;
+        return;
       }
     };
     if problem.orders.len() > args.max_n {
-      continue;
+      return;
     }
     let n = problem.orders.len();
     let v = problem.vehicles.len();
@@ -141,7 +159,7 @@ fn main() {
         "skip {} (BF returned trivial 0 — likely no feasible assignment)",
         path.display()
       );
-      continue;
+      return;
     }
 
     for &(obj_name, obj, bf_opt) in &[
@@ -183,46 +201,69 @@ fn main() {
         MilpStatus::TimedOut => "TIMEDOUT",
       };
 
-      let entry = agg.entry(obj_name).or_default();
-      entry.rows += 1;
-      if sound {
-        entry.sound += 1;
-      }
-      if milp_matches {
-        entry.milp_match += 1;
-      }
-      if !lp_ratio.is_nan() {
-        entry.lp_ratio_sum += lp_ratio;
-        entry.lp_ratio_min = entry.lp_ratio_min.min(lp_ratio);
-        entry.lp_ratio_max = entry.lp_ratio_max.max(lp_ratio);
-        entry.lp_ratio_count += 1;
-      }
-      if matches!(milp.status, MilpStatus::TimedOut) {
-        entry.milp_timeouts += 1;
+      {
+        let mut a = agg.lock().unwrap();
+        let entry = a.entry(obj_name).or_default();
+        entry.rows += 1;
+        if sound {
+          entry.sound += 1;
+        }
+        if milp_matches {
+          entry.milp_match += 1;
+        }
+        if !lp_ratio.is_nan() {
+          entry.lp_ratio_sum += lp_ratio;
+          entry.lp_ratio_min = entry.lp_ratio_min.min(lp_ratio);
+          entry.lp_ratio_max = entry.lp_ratio_max.max(lp_ratio);
+          entry.lp_ratio_count += 1;
+        }
+        if matches!(milp.status, MilpStatus::TimedOut) {
+          entry.milp_timeouts += 1;
+        }
       }
 
-      writeln!(
-        w,
-        "{},{n},{v},{obj_name},{bf_opt:.6},{lp_lb:.6},{lp_ratio:.6},{:.6},{milp_status},{},{},{}",
-        path.display().to_string().replace(',', ";"),
-        milp.objective_value,
-        milp.solve_time_ms,
-        sound,
-        milp_matches,
-      )
-      .unwrap();
-      row_count += 1;
+      {
+        let mut w = writer.lock().unwrap();
+        writeln!(
+          w,
+          "{},{n},{v},{obj_name},{bf_opt:.6},{lp_lb:.6},{lp_ratio:.6},{:.6},{milp_status},{},{},{}",
+          path.display().to_string().replace(',', ";"),
+          milp.objective_value,
+          milp.solve_time_ms,
+          sound,
+          milp_matches,
+        )
+        .unwrap();
+        // Flush every row so a partial CSV is always readable on disk
+        // and `wc -l results/bound_sweep_n7.csv` reflects real progress.
+        w.flush().unwrap();
+      }
+
+      row_count.fetch_add(1, Ordering::Relaxed);
     }
-  }
-  w.flush().unwrap();
+
+    let done = progress.fetch_add(1, Ordering::Relaxed) + 1;
+    eprintln!(
+      "[{done}/{total}] {} N={n} V={v} ({:.1?})",
+      path.display(),
+      instance_started.elapsed()
+    );
+  });
+
+  // Drop the BufWriter mutex to flush any tail bytes (no-op given the
+  // per-row flush above, but explicit for clarity).
+  drop(writer);
+
   let elapsed = started_all.elapsed();
+  let total_rows = row_count.load(Ordering::Relaxed);
   println!(
-    "wrote {row_count} rows to {} in {:.2?}",
+    "wrote {total_rows} rows to {} in {:.2?} ({workers} workers)",
     args.output.display(),
     elapsed
   );
   println!();
   println!("=== summary ===");
+  let agg = agg.into_inner().unwrap();
   for (obj_name, a) in &agg {
     let mean_ratio = if a.lp_ratio_count > 0 {
       a.lp_ratio_sum / a.lp_ratio_count as f64

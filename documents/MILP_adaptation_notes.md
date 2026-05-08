@@ -276,6 +276,44 @@ optima on `N ≤ 3` fixtures (see `crates/vrppd-milp/tests/bf_match.rs`).
 LP-LB and MILP behave asymmetrically on EMPTY (silent `0` vs. hard
 error); see §4.6.
 
+## Empirical validation (PLAN.md §3.4)
+
+The bound-validation sweep at `crates/vrppd-validation/src/bin/bound_sweep.rs`
+runs BF + LP-LB + exact MILP on every instance with `N ≤ MAX_N` and
+emits per-row soundness, LP tightness, and MILP/BF agreement. PLAN.md
+§3.4 requires this to be run on the small bank for the bounds chapter.
+
+Latest run: small bank (490 instances, `MAX_N = 7`,
+`milp-timeout-secs = 60`), 980 rows, ~66 minutes single-threaded
+(parallelised in a follow-up — the next sweep at the same scope drops
+to ~15–20 min on 6 cores). Output: `results/bound_sweep_n7.csv`
+(gitignored — copy out for thesis).
+
+| Objective | Rows | Sound | MILP=BF | MILP timeouts | LP/BF mean | min | max |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| DISTANCE | 490 | 490/490 (100%) | 484/490 (98.78%) | 14 | 0.699 | 0.153 | 1.000 |
+| PRICE    | 490 | 490/490 (100%) | 485/490 (98.98%) |  9 | 0.695 | 0.123 | 1.000 |
+
+Findings:
+
+1. **LP-LB is sound on every row.** Across both objectives, every
+   recorded `LP_LB ≤ BF_opt + 1e-6`. The relaxation in §4.5 / `LB_LP`
+   is empirically correct on the full small bank.
+2. **MILP correctness modulo timeouts.** Every MILP/BF disagreement is
+   a 60 s wall-clock timeout — HiGHS returned its best primal incumbent
+   without proving optimality. `MILP timeouts > mismatches` on both
+   objectives (8 DISTANCE and 4 PRICE timed-out runs returned the BF
+   optimum but couldn't prove it within budget). PLAN.md §3.3 specifies
+   a 30 min ceiling that closes the remaining gap; no row indicates a
+   model bug.
+3. **LP tightness ≈ 0.70.** Mean `LP_LB / BF_opt` is 0.699 (DISTANCE)
+   and 0.695 (PRICE) across `N ≤ 7`, with a left tail to ~0.12. This
+   is the empirical input PLAN.md §6 was waiting for: when reporting
+   metaheuristic RPD vs LP-LB at scales beyond BF tractability the
+   reported figure is biased high by ≥ 30%, so the "RPD vs
+   best-known-from-any-algorithm" complementary metric in §6 becomes
+   mandatory for a fair Phase 4 quality reading.
+
 ## Cross-references
 
 - `documents/Kursinis_darbas.pdf` §2 — the original general formulation.

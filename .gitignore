@@ -5,7 +5,6 @@ data
 problems
 seed-dataset.csv
 temp-results
-results
 *.tex
 *.txt
 

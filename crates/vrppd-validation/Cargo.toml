@@ -13,6 +13,7 @@ vrppd-brute-force = { workspace = true }
 vrppd-bounds = { workspace = true }
 vrppd-milp = { workspace = true }
 serde_json = { workspace = true }
+rayon = "1"
 
 [[bin]]
 name = "bound-sweep"
