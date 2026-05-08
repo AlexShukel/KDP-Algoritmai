@@ -27,7 +27,17 @@ import {
     SingleTargetAlgorithm,
 } from '../../types';
 
-const DEFAULT_TIMEOUT_MS = 60_000;
+// Bug fix: MILP_TIMEOUT_MS env var was never wired; hardcoded 60 s ignored it.
+const DEFAULT_TIMEOUT_MS = (() => {
+    const raw = process.env.MILP_TIMEOUT_MS;
+    if (!raw) return 60_000;
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) {
+        console.warn(`Ignoring invalid MILP_TIMEOUT_MS="${raw}", using default 60000.`);
+        return 60_000;
+    }
+    return parsed;
+})();
 
 export class MilpExact implements SingleTargetAlgorithm {
     readonly type = 'single' as const;
