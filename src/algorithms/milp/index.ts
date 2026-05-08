@@ -32,6 +32,7 @@ const DEFAULT_TIMEOUT_MS = 60_000;
 export class MilpExact implements SingleTargetAlgorithm {
     readonly type = 'single' as const;
     readonly repetitions = 1;
+    readonly supportedTargets = [OptimizationTarget.DISTANCE, OptimizationTarget.PRICE] as const;
     name = 'milp-rust';
 
     constructor(private readonly timeoutMs: number = DEFAULT_TIMEOUT_MS) {}

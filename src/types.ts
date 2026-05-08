@@ -34,6 +34,13 @@ export interface Algorithm<T = any> {
      * `HEURISTIC_REPETITIONS` (intended for stochastic algorithms).
      */
     readonly repetitions?: number;
+    /**
+     * Optional whitelist of targets the algorithm supports. The harness
+     * skips any target not in this list. If omitted, all three targets
+     * are run. Used by MILP / LP-LB which don't define EMPTY (see
+     * `documents/MILP_adaptation_notes.md`).
+     */
+    readonly supportedTargets?: readonly OptimizationTarget[];
 }
 
 export interface AlgorithmResultWithMetadata<T> {

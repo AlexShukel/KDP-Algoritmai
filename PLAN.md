@@ -134,11 +134,7 @@ Estimates assume part-time work over ~6 months. Adjust to actual deadlines.
 
 ### Phase 1 — Infrastructure hardening (3 weeks)
 
-**1.1. Port p-SA to Rust (2 weeks).** Use `rayon` or raw `std::thread` with `crossbeam` channels for the island model. Match the existing NodeJS behavior bit-for-bit on fixed seeds (this is why you keep NodeJS alive during the port — it's the oracle). Validate:
-
-- Same initial solution given the same seed and RCRS input.
-- Same solution after N iterations given the same seed and operator weights.
-- Same final quality distribution on the 490-problem set.
+**1.1. Port p-SA to Rust (2 weeks).** Use `rayon` or raw `std::thread` with `crossbeam` channels for the island model. Validate distributionally against the existing NodeJS implementation on the 490-problem set: the Rust port must be statistically non-inferior on each of the three objectives (paired RPD, mean across 10 replications per problem).
 
 **1.2. Extend the generator (3 days).** Add size classes: 10×10, 20×10, 50×20, 100×30, 200×50, 500×100. Generate 20 instances per class. Total: ~140 large instances on top of the existing 490.
 
@@ -274,7 +270,7 @@ Writing pace: chapter per week roughly. Start writing Chapters 1–4 and 7 (meth
 | LP relaxation bound too loose to be useful    | Medium         | Medium                    | Have fallback: direct-sum bound is always available; document tightness as a thesis finding                          |
 | MILP solver integration eats too much time    | Medium         | Medium                    | Use `good_lp` which abstracts over CBC/HiGHS/CPLEX; can swap backend without code changes                            |
 | Parameter tuning explodes in time             | High           | Medium                    | Use irace or SMAC instead of grid search; budget explicitly (1 week per scale class max)                             |
-| Rust port of p-SA introduces subtle bugs      | Medium         | High                      | Keep NodeJS version as oracle; run parity tests on every commit                                                      |
+| Rust port of p-SA introduces subtle bugs      | Medium         | High                      | Keep NodeJS version as a cross-check; run distributional parity periodically (before major milestones, not per commit) |
 | Scope creep into other metaheuristics         | Medium         | Medium                    | Hard rule: no new algorithm after month 3. Other metaheuristics go in related-work only                              |
 | Large-scale experiments not finishing in time | Medium         | High                      | Start large runs early, in background. Have a "minimum viable result set" defined (e.g., skip N=500 if needed)       |
 | Thesis writing deferred until end             | High (classic) | High                      | Write methodology + literature chapters during Phase 2–3, not after                                                  |

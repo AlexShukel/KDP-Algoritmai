@@ -2,7 +2,11 @@ import fs from 'fs';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
 import { OptimizationTarget, Problem, SimulatedAnnealingConfig, ProblemSolution } from './types';
-import { ParallelSimulatedAnnealing } from './algorithms/p-sa';
+// Tuning runs against the Rust p-SA (the only p-SA implementation that
+// remains; the TS oracle was retired on 2026-05-07). The adapter exposes
+// the same `SingleTargetAlgorithm` interface as the previous TS class, so
+// only the constructor name needed to change in this script.
+import { ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
 import { BruteForceAlgorithmRust } from './algorithms/brute-force';
 import { greatCircleDistanceCalculator } from './utils/greatCircleDistanceCalculator';
 
@@ -58,7 +62,7 @@ async function main() {
     console.log(`Tuning on ${validationFiles.length} validation problems with ${paramGrid.length} configs...`);
 
     const bf = new BruteForceAlgorithmRust();
-    const psa = new ParallelSimulatedAnnealing();
+    const psa = new ParallelSimulatedAnnealingRust();
     const results: TuningResult[] = [];
 
     const groundTruth = new Map<string, Record<OptimizationTarget, number>>();

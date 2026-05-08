@@ -20,7 +20,7 @@ import { lowerBoundDirect, lowerBoundLp, solveCea, solveMilp, solvePSa } from 'n
 import type { Problem, ProblemSolution } from 'napi-bridge';
 
 const targets: Array<'EMPTY' | 'DISTANCE' | 'PRICE'> = ['EMPTY', 'DISTANCE', 'PRICE'];
-const FIXTURE = path.resolve('problems/problems/3_3');
+const FIXTURE = path.resolve('problems/3_3');
 
 function pickFixture(dir: string): string {
     if (!fs.existsSync(dir)) {
