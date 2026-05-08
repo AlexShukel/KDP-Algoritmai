@@ -1,4 +1,4 @@
-import type { AlgorithmSolution, Location, Problem, ProblemSolution } from 'rust-solver';
+import type { AlgorithmSolution, Location, Problem, ProblemSolution } from 'napi-bridge';
 
 export type DistanceCalculator = (from: Location, to: Location) => number;
 
@@ -26,6 +26,14 @@ export interface Algorithm<T = any> {
     name: string;
     solve: (problem: Problem, config: AlgorithmConfig) => Promise<T>;
     readonly type: 'multi' | 'single';
+    /**
+     * Optional override for the harness's repetition count on
+     * single-target algorithms. Set to `1` for deterministic algorithms
+     * (lower bounds, exact solvers) where re-running produces the
+     * identical result. If omitted, the harness uses its default
+     * `HEURISTIC_REPETITIONS` (intended for stochastic algorithms).
+     */
+    readonly repetitions?: number;
 }
 
 export interface AlgorithmResultWithMetadata<T> {
@@ -84,4 +92,4 @@ export type {
     VehicleRoute,
     AlgorithmSolution,
     RouteStop,
-} from 'rust-solver';
+} from 'napi-bridge';

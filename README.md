@@ -12,8 +12,14 @@ Prieš pradedant, įsitikinkite, kad jūsų sistemoje įdiegtos šios versijos:
 
 - `git clone https://github.com/AlexShukel/KDP-Algoritmai.git`
 - `cd KDP-Algoritmai`
-- `cd rust-solver`
+- `cd crates/napi-bridge`
 - `pnpm i && pnpm build`
-- `cd .. && pnpm i`
+- `cd ../.. && pnpm i`
 - Unzip `./sample_problems.zip` to `./problems` dir
 - `pnpm start`
+
+## Long-running benchmarks
+
+See [BENCHMARKS.md](./BENCHMARKS.md) for full step-by-step instructions on
+running the p-SA parity benchmark, generating problem instances at small
+and large scales, and the runtime expectations for each.

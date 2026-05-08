@@ -3,6 +3,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
     test: {
         includeSource: ['src/**/*.{js,ts}'],
-        exclude: ['node_modules', 'rust-solver'],
+        exclude: ['node_modules', 'crates'],
     },
 });

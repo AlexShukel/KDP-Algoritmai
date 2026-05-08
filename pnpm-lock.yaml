@@ -17,9 +17,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      rust-solver:
-        specifier: file:./rust-solver
-        version: file:rust-solver
+      napi-bridge:
+        specifier: file:./crates/napi-bridge
+        version: file:crates/napi-bridge
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -1473,6 +1473,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  napi-bridge@file:crates/napi-bridge:
+    resolution: {directory: crates/napi-bridge, type: directory}
+    engines: {node: '>= 12.22.0 < 13 || >= 14.17.0 < 15 || >= 15.12.0 < 16 || >= 16.0.0'}
+
   node-emoji@2.2.0:
     resolution: {integrity: sha512-Z3lTE9pLaJF47NyMhd4ww1yFTAP8YhYI8SleJiHzM46Fgpm5cnNzSl9XfzFNqbaz+VlJrIj3fXQ4DeN1Rjm6cw==}
     engines: {node: '>=18'}
@@ -1571,10 +1575,6 @@ packages:
     resolution: {integrity: sha512-3GuObel8h7Kqdjt0gxkEzaifHTqLVW56Y/bjN7PSQtkKr0w3V/QYSdt6QWYtd7A1xUtYQigtdUfgj1RvWVtorw==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
-
-  rust-solver@file:rust-solver:
-    resolution: {directory: rust-solver, type: directory}
-    engines: {node: '>= 12.22.0 < 13 || >= 14.17.0 < 15 || >= 15.12.0 < 16 || >= 16.0.0'}
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
@@ -3062,6 +3062,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  napi-bridge@file:crates/napi-bridge: {}
+
   node-emoji@2.2.0:
     dependencies:
       '@sindresorhus/is': 4.6.0
@@ -3169,8 +3171,6 @@ snapshots:
       '@rollup/rollup-win32-x64-gnu': 4.52.5
       '@rollup/rollup-win32-x64-msvc': 4.52.5
       fsevents: 2.3.3
-
-  rust-solver@file:rust-solver: {}
 
   safer-buffer@2.1.2: {}
 
