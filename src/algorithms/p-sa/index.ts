@@ -39,22 +39,20 @@ export class ParallelSimulatedAnnealingRust implements SingleTargetAlgorithm {
     name = 'p-sa-rust';
 
     async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
-        // Pull SA-specific knobs out of the harness config. Each is
-        // optional; when undefined, the Rust side falls back to its own
-        // defaults defined in `vrppd-psa::config`.
         const sa = config.saConfig ?? {};
 
+        // Params locked from R02 162×3 tuning sweep (avg gap 1.122%, ~8.6 ms/rep at N=14).
         // The napi binding is *flat* — operator weights are passed as
         // separate top-level fields rather than as a nested `weights`
         // object — so we hand-roll the mapping here. Keep this list in
         // sync with `napi-bridge`'s `PsaConfig` struct.
         const solved = solvePSa(problem, config.target, {
-            initialTemp: sa.initialTemp,
-            coolingRate: sa.coolingRate,
+            initialTemp: sa.initialTemp ?? 1500,
+            coolingRate: sa.coolingRate ?? 0.999,
             minTemp: sa.minTemp,
-            maxIterations: sa.maxIterations,
-            batchSize: sa.batchSize,
-            syncInterval: sa.syncInterval,
+            maxIterations: sa.maxIterations ?? 10000,
+            batchSize: sa.batchSize ?? 200,
+            syncInterval: sa.syncInterval ?? 10,
             weightShift: sa.weights?.shift,
             weightSwap: sa.weights?.swap,
             weightShuffle: sa.weights?.shuffle,
