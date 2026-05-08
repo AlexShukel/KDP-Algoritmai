@@ -67,6 +67,10 @@ export class LpLowerBound implements SingleTargetAlgorithm {
     readonly type = 'single' as const;
     readonly repetitions = 1;
     readonly supportedTargets = [OptimizationTarget.DISTANCE, OptimizationTarget.PRICE] as const;
+    // microlp simplex scales poorly on this dense formulation; the crate
+    // documents N ≤ 20 as the practical ceiling. Above that, fall back
+    // to the direct-sum bound. (`crates/vrppd-bounds/ALGORITHM.md` §4.1)
+    readonly maxProblemSize = 20;
     name = 'lb-lp';
 
     async solve(

@@ -117,6 +117,16 @@ async function main(): Promise<void> {
             const problem: Problem = JSON.parse(raw);
             const size = { vehicles: problem.vehicles.length, orders: problem.orders.length };
 
+            // Skip instances bigger than the algorithm declares it can
+            // usefully handle. BF blows up exponentially past N=14, MILP
+            // / LP-LB hit solver-scaling cliffs around N=20. Without this
+            // guard those algos still get launched per instance and burn
+            // the full timeout producing nothing useful (R01's MILP
+            // phase spent 24 minutes on 60 s timeouts at N=10..14 alone).
+            if (alg.maxProblemSize !== undefined && size.vehicles + size.orders > alg.maxProblemSize) {
+                continue;
+            }
+
             console.log(`Processing ${relativePath}`);
 
             if (isMultiTarget(alg)) {

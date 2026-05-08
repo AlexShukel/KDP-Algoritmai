@@ -11,10 +11,17 @@
  * harness's existing try/catch logs and continues.
  *
  * The adapter accepts a per-instance wall-clock timeout; the default
- * here is **deliberately tight (60 s)** for the benchmark harness, well
- * under PLAN.md §3.3's 30-min ceiling. Callers running a one-off
- * thesis-grade MILP sweep should pass a longer timeout via the
- * constructor.
+ * matches PLAN.md §3.3 (30 minutes) and the Rust crate's
+ * `DEFAULT_TIMEOUT`. Earlier R01 smoke runs used a tighter 60 s cap
+ * which produced ~24 timeouts at N=10..14 (most of the bank's upper
+ * tier); the 30 min default lets the comparison matrix surface
+ * provably-optimal numbers where HiGHS can find them. Callers running
+ * a fast smoke benchmark can shorten this via the constructor.
+ *
+ * The adapter also declares `maxProblemSize = 20`: PLAN.md §4.2 has
+ * MILP only at N ∈ {10, 14, 20} with "(try) at N=50". In practice
+ * every N>20 instance times out without producing a useful primal
+ * incumbent and just wastes the 30 min budget; the harness skips them.
  */
 
 import { solveMilp } from 'napi-bridge';
@@ -27,12 +34,13 @@ import {
     SingleTargetAlgorithm,
 } from '../../types';
 
-const DEFAULT_TIMEOUT_MS = 60_000;
+const DEFAULT_TIMEOUT_MS = 30 * 60 * 1_000;
 
 export class MilpExact implements SingleTargetAlgorithm {
     readonly type = 'single' as const;
     readonly repetitions = 1;
     readonly supportedTargets = [OptimizationTarget.DISTANCE, OptimizationTarget.PRICE] as const;
+    readonly maxProblemSize = 20;
     name = 'milp-rust';
 
     constructor(private readonly timeoutMs: number = DEFAULT_TIMEOUT_MS) {}
