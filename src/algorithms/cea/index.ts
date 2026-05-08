@@ -25,7 +25,13 @@ export class CoevolutionaryAlgorithmRust implements SingleTargetAlgorithm {
     name = 'cea-rust';
 
     async solve(problem: Problem, config: AlgorithmConfig): Promise<AlgorithmResultWithMetadata<ProblemSolution>> {
-        const solved = solveCea(problem, config.target);
+        // Params locked from R03 tuning sweep (mean gap 3.9994%, avg runtime ~2.8 s/call at N=14).
+        const solved = solveCea(problem, config.target, {
+            populationSize: 200,
+            convCount: 300,
+            pCrossover: 0.7,
+            pReinsertion: 0.3,
+        });
 
         const history: ConvergenceUpdate[] = solved.history.map(p => ({
             timeMs: p.timeMs,
