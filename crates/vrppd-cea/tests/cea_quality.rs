@@ -91,3 +91,19 @@ fn cea_history_is_monotone_improving() {
     prev = e;
   }
 }
+
+#[test]
+fn parallel_cea_produces_valid_solution() {
+  let problem = load_fixture("two_vehicles_three_orders.json");
+  let mut config = CeaConfig::small_for_tests();
+  config.threads = 4; // force parallel path
+  config.wall_time_cap_ms = Some(5_000);
+
+  for seed in [0_u64, 1, 2] {
+    let solved = solve_cea_seeded(&problem, Objective::Distance, config, seed);
+    assert!(
+      solved.solution.total_distance > 0.0,
+      "parallel CEA returned zero distance for seed {seed}"
+    );
+  }
+}

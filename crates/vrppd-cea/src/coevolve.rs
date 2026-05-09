@@ -16,6 +16,7 @@ use std::time::Instant;
 
 use rand::{thread_rng, Rng, SeedableRng};
 use rand_xoshiro::Xoshiro256StarStar;
+use rayon::prelude::*;
 
 use vrppd_core::{
   Objective, OrderMatrix, Problem, ProblemSolution, VehicleStartMatrix, WorkingSolution,
@@ -194,9 +195,26 @@ fn best_individual<'a>(
   }
 }
 
-/// Evolve Population I: Reproduction (elitism) + Recombination → 2N
-/// offspring → roulette survival to N.
+/// Evolve Population I — dispatches to sequential or parallel offspring
+/// generation based on `config.threads`.
 fn evolve_pop1<R: Rng + ?Sized>(
+  pop: &Population,
+  problem: &Problem,
+  order_mat: &OrderMatrix,
+  vstart_mat: &VehicleStartMatrix,
+  target: Objective,
+  config: &CeaConfig,
+  rng: &mut R,
+) -> Population {
+  if config.threads > 1 {
+    evolve_pop1_parallel(pop, problem, order_mat, vstart_mat, target, config, rng)
+  } else {
+    evolve_pop1_sequential(pop, problem, order_mat, vstart_mat, target, config, rng)
+  }
+}
+
+/// Sequential Pop I evolution — original implementation.
+fn evolve_pop1_sequential<R: Rng + ?Sized>(
   pop: &Population,
   problem: &Problem,
   order_mat: &OrderMatrix,
@@ -213,7 +231,6 @@ fn evolve_pop1<R: Rng + ?Sized>(
     offspring.push(elite);
   }
 
-  // Score parents to drive roulette sampling for the rest of the offspring.
   let parent_fitness = fitness_values(&pop.individuals, target);
 
   while offspring.len() < target_offspring {
@@ -235,10 +252,78 @@ fn evolve_pop1<R: Rng + ?Sized>(
   survive_n(offspring, n, target, rng)
 }
 
-/// Evolve Population II: Reproduction (elitism) + migrated best of Pop I +
-/// Local Improvement / Crossover children → 2N → survival to N.
-#[allow(clippy::too_many_arguments)]
+/// Parallel Pop I evolution — generates elite sequentially, then produces
+/// the remaining offspring concurrently via rayon using pre-seeded RNGs.
+fn evolve_pop1_parallel<R: Rng + ?Sized>(
+  pop: &Population,
+  problem: &Problem,
+  order_mat: &OrderMatrix,
+  vstart_mat: &VehicleStartMatrix,
+  target: Objective,
+  config: &CeaConfig,
+  rng: &mut R,
+) -> Population {
+  let n = pop.len();
+  let target_offspring = 2 * n;
+
+  let mut offspring: Vec<Individual> = Vec::with_capacity(target_offspring);
+  if let Some(elite) = reproduce_elite(pop, target) {
+    offspring.push(elite);
+  }
+
+  let remaining = target_offspring - offspring.len();
+  let parent_fitness = fitness_values(&pop.individuals, target);
+
+  // Pre-generate one sub-seed per offspring slot (sequential, O(remaining)).
+  let base: u64 = rng.gen();
+  let sub_seeds: Vec<u64> = (0..remaining as u64).map(|i| base.wrapping_add(i)).collect();
+
+  let parallel_children: Vec<Individual> = sub_seeds
+    .into_par_iter()
+    .map(|seed| {
+      let mut local_rng = Xoshiro256StarStar::seed_from_u64(seed);
+      let picks = roulette_select(&parent_fitness, 1, &mut local_rng);
+      let parent = &pop.individuals[picks[0]];
+      let child = recombine(
+        &parent.solution,
+        problem,
+        order_mat,
+        vstart_mat,
+        target,
+        config.recombination_fraction_low,
+        config.recombination_fraction_high,
+        &mut local_rng,
+      );
+      Individual::new(child)
+    })
+    .collect();
+
+  offspring.extend(parallel_children);
+  survive_n(offspring, n, target, rng)
+}
+
+/// Evolve Population II — dispatches to sequential or parallel offspring
+/// generation based on `config.threads`.
 fn evolve_pop2<R: Rng + ?Sized>(
+  pop2: &Population,
+  pop1: &Population,
+  problem: &Problem,
+  order_mat: &OrderMatrix,
+  vstart_mat: &VehicleStartMatrix,
+  target: Objective,
+  config: &CeaConfig,
+  rng: &mut R,
+) -> Population {
+  if config.threads > 1 {
+    evolve_pop2_parallel(pop2, pop1, problem, order_mat, vstart_mat, target, config, rng)
+  } else {
+    evolve_pop2_sequential(pop2, pop1, problem, order_mat, vstart_mat, target, config, rng)
+  }
+}
+
+/// Sequential Pop II evolution — original implementation.
+#[allow(clippy::too_many_arguments)]
+fn evolve_pop2_sequential<R: Rng + ?Sized>(
   pop2: &Population,
   pop1: &Population,
   problem: &Problem,
@@ -255,8 +340,6 @@ fn evolve_pop2<R: Rng + ?Sized>(
   if let Some(elite) = reproduce_elite(pop2, target) {
     offspring.push(elite);
   }
-  // Migration: best of Pop I lands in Pop II offspring as a fresh source of
-  // diversity (WC13 §4.2).
   if let Some(migrant) = reproduce_elite(pop1, target) {
     offspring.push(migrant);
   }
@@ -288,6 +371,73 @@ fn evolve_pop2<R: Rng + ?Sized>(
     }
   }
 
+  survive_n(offspring, n, target, rng)
+}
+
+/// Parallel Pop II evolution — elite + migrant generated sequentially,
+/// remaining offspring generated concurrently via rayon.
+#[allow(clippy::too_many_arguments)]
+fn evolve_pop2_parallel<R: Rng + ?Sized>(
+  pop2: &Population,
+  pop1: &Population,
+  problem: &Problem,
+  order_mat: &OrderMatrix,
+  vstart_mat: &VehicleStartMatrix,
+  target: Objective,
+  config: &CeaConfig,
+  rng: &mut R,
+) -> Population {
+  let n = pop2.len();
+  let target_offspring = 2 * n;
+
+  let mut offspring: Vec<Individual> = Vec::with_capacity(target_offspring);
+  if let Some(elite) = reproduce_elite(pop2, target) {
+    offspring.push(elite);
+  }
+  if let Some(migrant) = reproduce_elite(pop1, target) {
+    offspring.push(migrant);
+  }
+
+  let remaining = target_offspring - offspring.len();
+  let parent_fitness = fitness_values(&pop2.individuals, target);
+  let p_crossover = config.p_crossover;
+  let p_reinsertion = config.p_reinsertion;
+  let can_cross = pop2.len() >= 2;
+  let individuals = &pop2.individuals;
+
+  let base: u64 = rng.gen();
+  let sub_seeds: Vec<u64> = (0..remaining as u64).map(|i| base.wrapping_add(i)).collect();
+
+  let parallel_children: Vec<Individual> = sub_seeds
+    .into_par_iter()
+    .map(|seed| {
+      let mut local_rng = Xoshiro256StarStar::seed_from_u64(seed);
+      let r: f64 = local_rng.gen();
+      if r < p_crossover && can_cross {
+        let picks = roulette_select(&parent_fitness, 2, &mut local_rng);
+        let p1 = &individuals[picks[0]].solution;
+        let p2 = &individuals[picks[1]].solution;
+        let child = crossover(p1, p2, problem, order_mat, vstart_mat, target, &mut local_rng);
+        Individual::new(child)
+      } else {
+        let picks = roulette_select(&parent_fitness, 1, &mut local_rng);
+        let parent = &individuals[picks[0]];
+        let mut child = parent.solution.clone();
+        local_improve(
+          &mut child,
+          problem,
+          order_mat,
+          vstart_mat,
+          target,
+          p_reinsertion,
+          &mut local_rng,
+        );
+        Individual::new(child)
+      }
+    })
+    .collect();
+
+  offspring.extend(parallel_children);
   survive_n(offspring, n, target, rng)
 }
 
