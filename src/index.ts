@@ -29,6 +29,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // (BENCHMARKS.md §p-SA parity benchmark §"To run on a subset only").
 const PROBLEMS_DIR = 'problems';
 
+// Comma-separated list of algorithm names to exclude from this run.
+// Useful for large-instance rounds where brute-force is not applicable:
+//   SKIP_ALGORITHMS=brute-force-rust pnpm start
+// Skipped algorithms do not write (or overwrite) their result file, so
+// existing results from a prior round are preserved.
+const SKIP_ALGORITHMS = (() => {
+    const raw = process.env.SKIP_ALGORITHMS;
+    if (!raw) return new Set<string>();
+    return new Set(raw.split(',').map(s => s.trim()).filter(Boolean));
+})();
+
 // Stochastic algorithms run this many independent replications per
 // (instance, target). Defaults to 10 (PLAN.md §4.2 main matrix); override
 // to 1–3 for the very large classes (30×100 and bigger) to keep wall-time
@@ -102,7 +113,15 @@ async function main(): Promise<void> {
         emptyDistance: solution.emptyDistance,
     });
 
-    for (const alg of algorithms) {
+    const activeAlgorithms = SKIP_ALGORITHMS.size
+        ? algorithms.filter(a => !SKIP_ALGORITHMS.has(a.name))
+        : algorithms;
+
+    if (SKIP_ALGORITHMS.size) {
+        console.log(`Skipping algorithms: ${[...SKIP_ALGORITHMS].join(', ')}`);
+    }
+
+    for (const alg of activeAlgorithms) {
         console.log(`\n========================================`);
         console.log(`Starting benchmark for: ${alg.name}`);
         console.log(`========================================`);
@@ -182,7 +201,9 @@ async function main(): Promise<void> {
         }
 
         const outputFilename = `benchmark-results-${alg.name}.json`;
-        const outputPath = path.resolve(process.cwd(), 'results', outputFilename);
+        const resultsDir = path.resolve(__dirname, '..', 'results');
+        fs.mkdirSync(resultsDir, { recursive: true });
+        const outputPath = path.join(resultsDir, outputFilename);
         fs.writeFileSync(outputPath, stringify(benchmarkRecords));
         console.log(`Saved ${benchmarkRecords.length} records to ${outputFilename}`);
     }

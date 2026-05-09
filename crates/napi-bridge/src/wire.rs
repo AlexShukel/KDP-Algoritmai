@@ -166,6 +166,7 @@ pub struct CeaConfig {
   pub p_reinsertion: Option<f64>,
   pub p_crossover: Option<f64>,
   pub seed: Option<f64>,
+  pub threads: Option<u32>,
 }
 
 impl From<vrppd_cea::ConvergencePoint> for CeaConvergencePoint {

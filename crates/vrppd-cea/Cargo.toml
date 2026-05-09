@@ -11,7 +11,8 @@ description = "Coevolutionary Algorithm (CEA) for the specific VRPPD variant. Tw
 vrppd-core = { workspace = true }
 rand = { workspace = true }
 rand_xoshiro = { workspace = true }
+rayon = { workspace = true }
+serde_json = { workspace = true }
 
 [dev-dependencies]
-serde_json = { workspace = true }
 vrppd-brute-force = { workspace = true }
