@@ -199,5 +199,8 @@ fn merge_cea_config(
   if let Some(v) = o.p_crossover {
     base.p_crossover = v;
   }
+  if let Some(v) = o.threads {
+    base.threads = (v as usize).max(1);
+  }
   base
 }
