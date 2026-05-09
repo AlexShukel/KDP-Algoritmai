@@ -63,9 +63,7 @@ fn main() {
     .map(|n| n.get())
     .unwrap_or(4);
 
-  println!(
-    "Running comparison: sequential (threads=1) vs parallel (threads={num_threads})"
-  );
+  println!("Running comparison: sequential (threads=1) vs parallel (threads={num_threads})");
   println!("Problems: {}", PROBLEMS.len());
   println!("Objectives: {}", OBJECTIVES.len());
   println!("Reps: {REPS}, wall cap: {WALL_CAP_MS}ms each\n");
@@ -94,14 +92,20 @@ fn main() {
         let seed = (pi as u64) * 1_000 + (oi as u64) * 100 + rep;
         print!("  {path} {} seq rep {rep}...", obj_label(obj));
         let s = run_cea(&problem, obj, 1, seed);
-        println!(" {:.0}ms  {:.4}  {} gens", s.time_ms, s.value, s.generations);
+        println!(
+          " {:.0}ms  {:.4}  {} gens",
+          s.time_ms, s.value, s.generations
+        );
         results[pi][oi].seq_times.push(s.time_ms);
         results[pi][oi].seq_gens.push(s.generations as f64);
         results[pi][oi].seq_vals.push(s.value);
 
         print!("  {path} {} par rep {rep}...", obj_label(obj));
         let p = run_cea(&problem, obj, num_threads, seed);
-        println!(" {:.0}ms  {:.4}  {} gens", p.time_ms, p.value, p.generations);
+        println!(
+          " {:.0}ms  {:.4}  {} gens",
+          p.time_ms, p.value, p.generations
+        );
         results[pi][oi].par_times.push(p.time_ms);
         results[pi][oi].par_gens.push(p.generations as f64);
         results[pi][oi].par_vals.push(p.value);

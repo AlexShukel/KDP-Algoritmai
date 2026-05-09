@@ -303,6 +303,7 @@ fn evolve_pop1_parallel<R: Rng + ?Sized>(
 
 /// Evolve Population II — dispatches to sequential or parallel offspring
 /// generation based on `config.threads`.
+#[allow(clippy::too_many_arguments)]
 fn evolve_pop2<R: Rng + ?Sized>(
   pop2: &Population,
   pop1: &Population,
@@ -314,9 +315,13 @@ fn evolve_pop2<R: Rng + ?Sized>(
   rng: &mut R,
 ) -> Population {
   if config.threads > 1 {
-    evolve_pop2_parallel(pop2, pop1, problem, order_mat, vstart_mat, target, config, rng)
+    evolve_pop2_parallel(
+      pop2, pop1, problem, order_mat, vstart_mat, target, config, rng,
+    )
   } else {
-    evolve_pop2_sequential(pop2, pop1, problem, order_mat, vstart_mat, target, config, rng)
+    evolve_pop2_sequential(
+      pop2, pop1, problem, order_mat, vstart_mat, target, config, rng,
+    )
   }
 }
 
@@ -419,7 +424,15 @@ fn evolve_pop2_parallel<R: Rng + ?Sized>(
         let picks = roulette_select(&parent_fitness, 2, &mut local_rng);
         let p1 = &individuals[picks[0]].solution;
         let p2 = &individuals[picks[1]].solution;
-        let child = crossover(p1, p2, problem, order_mat, vstart_mat, target, &mut local_rng);
+        let child = crossover(
+          p1,
+          p2,
+          problem,
+          order_mat,
+          vstart_mat,
+          target,
+          &mut local_rng,
+        );
         Individual::new(child)
       } else {
         let picks = roulette_select(&parent_fitness, 1, &mut local_rng);

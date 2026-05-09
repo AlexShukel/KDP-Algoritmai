@@ -142,10 +142,7 @@ pub fn solve_milp(
 }
 
 /// Convenience wrapper using `DEFAULT_TIMEOUT` (30 minutes).
-pub fn solve_milp_default(
-  problem: &Problem,
-  target: Objective,
-) -> Result<MilpResult, MilpError> {
+pub fn solve_milp_default(problem: &Problem, target: Objective) -> Result<MilpResult, MilpError> {
   solve_milp(problem, target, DEFAULT_TIMEOUT)
 }
 
@@ -352,13 +349,14 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
 
         // Δ_i contribution: +w_o on pickup of o, −w_o on delivery of o.
         // w_o = 1 / load_factor_o; folded into the y_ov coefficient.
-        let (delta_y_col, delta_y_coef): (Option<highs::Col>, f64) = if let Some(o) = ix.is_pickup(i) {
-          (Some(y[&(o, v)]), 1.0 / problem.orders[o].load_factor)
-        } else if let Some(o) = ix.is_delivery(i) {
-          (Some(y[&(o, v)]), -1.0 / problem.orders[o].load_factor)
-        } else {
-          (None, 0.0)
-        };
+        let (delta_y_col, delta_y_coef): (Option<highs::Col>, f64) =
+          if let Some(o) = ix.is_pickup(i) {
+            (Some(y[&(o, v)]), 1.0 / problem.orders[o].load_factor)
+          } else if let Some(o) = ix.is_delivery(i) {
+            (Some(y[&(o, v)]), -1.0 / problem.orders[o].load_factor)
+          } else {
+            (None, 0.0)
+          };
 
         // Lower side: q_j − q_i − Δ_i − M_q · x_ij ≥ −M_q
         // Upper side: q_j − q_i − Δ_i + M_q · x_ij ≤ M_q
