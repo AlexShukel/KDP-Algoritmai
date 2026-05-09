@@ -32,6 +32,11 @@ pub struct CeaConfig {
   /// Improvement on a single parent). Not pinned by WC13; default 0.5
   /// gives equal weight to both pathways.
   pub p_crossover: f64,
+
+  /// Number of rayon threads used for parallel offspring generation.
+  /// `1` disables parallelism entirely (sequential loop, no rayon overhead).
+  /// `>1` uses the rayon global thread pool (all available cores are used).
+  pub threads: usize,
 }
 
 impl Default for CeaConfig {
@@ -44,19 +49,29 @@ impl Default for CeaConfig {
       recombination_fraction_high: 0.5,
       p_reinsertion: 0.5,
       p_crossover: 0.5,
+      threads: num_cpus_or(2),
     }
   }
 }
 
 impl CeaConfig {
   /// A small-budget variant intended for tests and the small-instance
-  /// fixtures: tiny populations, short convergence horizon.
+  /// fixtures: tiny populations, short convergence horizon, single thread
+  /// for deterministic sequential behaviour.
   pub fn small_for_tests() -> Self {
     Self {
       population_size: 10,
       conv_count: 50,
       wall_time_cap_ms: Some(5_000),
+      threads: 1,
       ..Self::default()
     }
   }
+}
+
+#[inline]
+fn num_cpus_or(min: usize) -> usize {
+  std::thread::available_parallelism()
+    .map(|n| n.get().max(min))
+    .unwrap_or(min)
 }
