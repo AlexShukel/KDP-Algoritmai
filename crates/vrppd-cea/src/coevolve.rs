@@ -276,12 +276,11 @@ fn evolve_pop1_parallel<R: Rng + ?Sized>(
 
   // Pre-generate one sub-seed per offspring slot (sequential, O(remaining)).
   let base: u64 = rng.gen();
-  let sub_seeds: Vec<u64> = (0..remaining as u64).map(|i| base.wrapping_add(i)).collect();
 
-  let parallel_children: Vec<Individual> = sub_seeds
+  let parallel_children: Vec<Individual> = (0..remaining)
     .into_par_iter()
-    .map(|seed| {
-      let mut local_rng = Xoshiro256StarStar::seed_from_u64(seed);
+    .map(|i| {
+      let mut local_rng = Xoshiro256StarStar::seed_from_u64(base.wrapping_add(i as u64));
       let picks = roulette_select(&parent_fitness, 1, &mut local_rng);
       let parent = &pop.individuals[picks[0]];
       let child = recombine(
@@ -340,6 +339,8 @@ fn evolve_pop2_sequential<R: Rng + ?Sized>(
   if let Some(elite) = reproduce_elite(pop2, target) {
     offspring.push(elite);
   }
+  // Migration: best of Pop I lands in Pop II offspring as a fresh source of
+  // diversity (WC13 §4.2).
   if let Some(migrant) = reproduce_elite(pop1, target) {
     offspring.push(migrant);
   }
@@ -394,6 +395,8 @@ fn evolve_pop2_parallel<R: Rng + ?Sized>(
   if let Some(elite) = reproduce_elite(pop2, target) {
     offspring.push(elite);
   }
+  // Migration: best of Pop I lands in Pop II offspring as a fresh source of
+  // diversity (WC13 §4.2).
   if let Some(migrant) = reproduce_elite(pop1, target) {
     offspring.push(migrant);
   }
@@ -406,12 +409,11 @@ fn evolve_pop2_parallel<R: Rng + ?Sized>(
   let individuals = &pop2.individuals;
 
   let base: u64 = rng.gen();
-  let sub_seeds: Vec<u64> = (0..remaining as u64).map(|i| base.wrapping_add(i)).collect();
 
-  let parallel_children: Vec<Individual> = sub_seeds
+  let parallel_children: Vec<Individual> = (0..remaining)
     .into_par_iter()
-    .map(|seed| {
-      let mut local_rng = Xoshiro256StarStar::seed_from_u64(seed);
+    .map(|i| {
+      let mut local_rng = Xoshiro256StarStar::seed_from_u64(base.wrapping_add(i as u64));
       let r: f64 = local_rng.gen();
       if r < p_crossover && can_cross {
         let picks = roulette_select(&parent_fitness, 2, &mut local_rng);
