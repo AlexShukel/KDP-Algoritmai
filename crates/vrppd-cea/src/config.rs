@@ -33,9 +33,11 @@ pub struct CeaConfig {
   /// gives equal weight to both pathways.
   pub p_crossover: f64,
 
-  /// Number of rayon threads used for parallel offspring generation.
-  /// `1` disables parallelism entirely (sequential loop, no rayon overhead).
-  /// `>1` uses the rayon global thread pool (all available cores are used).
+  /// Parallelism gate for offspring generation.
+  /// `1` runs the sequential loop with no rayon overhead.
+  /// `>1` dispatches offspring via the rayon global thread pool (pool size is
+  /// determined by the OS, not by this value — setting `threads: 4` on a
+  /// 32-core machine still uses all 32 rayon workers).
   pub threads: usize,
 }
 
