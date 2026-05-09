@@ -182,7 +182,7 @@ async function main(): Promise<void> {
         }
 
         const outputFilename = `benchmark-results-${alg.name}.json`;
-        const outputPath = path.resolve(__dirname, outputFilename);
+        const outputPath = path.resolve(process.cwd(), 'results', outputFilename);
         fs.writeFileSync(outputPath, stringify(benchmarkRecords));
         console.log(`Saved ${benchmarkRecords.length} records to ${outputFilename}`);
     }

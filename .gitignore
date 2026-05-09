@@ -16,3 +16,4 @@ target/
 # are intentionally NOT excluded — those belong to the project author.
 documents/WC13_*.pdf
 .DS_Store
+results/benchmark-results-*.json
