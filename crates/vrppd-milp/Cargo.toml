@@ -21,3 +21,4 @@ highs = "2"
 serde_json = { workspace = true }
 vrppd-brute-force = { workspace = true }
 vrppd-psa = { workspace = true }
+paste = "1"
