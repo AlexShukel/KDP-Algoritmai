@@ -342,3 +342,39 @@ impl From<vrppd_core::AlgorithmSolution> for AlgorithmSolution {
     }
   }
 }
+
+impl From<RouteStop> for vrppd_core::RouteStop {
+  fn from(w: RouteStop) -> Self {
+    let kind = match w.type_.as_str() {
+      "pickup" => vrppd_core::StopKind::Pickup,
+      "delivery" => vrppd_core::StopKind::Delivery,
+      other => panic!("RouteStop type must be 'pickup' or 'delivery', got {other:?}"),
+    };
+    Self {
+      order_id: w.order_id,
+      kind,
+    }
+  }
+}
+
+impl From<VehicleRoute> for vrppd_core::VehicleRoute {
+  fn from(w: VehicleRoute) -> Self {
+    Self {
+      stops: w.stops.into_iter().map(Into::into).collect(),
+      total_distance: w.total_distance,
+      empty_distance: w.empty_distance,
+      total_price: w.total_price,
+    }
+  }
+}
+
+impl From<ProblemSolution> for vrppd_core::ProblemSolution {
+  fn from(w: ProblemSolution) -> Self {
+    Self {
+      routes: w.routes.into_iter().map(|(k, v)| (k, v.into())).collect(),
+      total_distance: w.total_distance,
+      empty_distance: w.empty_distance,
+      total_price: w.total_price,
+    }
+  }
+}

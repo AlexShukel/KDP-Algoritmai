@@ -125,6 +125,61 @@ pub fn solve_milp_both(problem: Problem, config: Option<MilpConfig>) -> Result<M
   })
 }
 
+/// Same as `solve_milp_both` but seeds each per-target HiGHS solve with the
+/// supplied PSA solution as a starting incumbent. Caller must pass the PSA
+/// solution computed for the matching target (DISTANCE warm-start for the
+/// DISTANCE solve, PRICE warm-start for the PRICE solve).
+#[napi]
+pub fn solve_milp_both_warm_start(
+  problem: Problem,
+  distance_warm_start: ProblemSolution,
+  price_warm_start: ProblemSolution,
+  config: Option<MilpConfig>,
+) -> Result<MilpBothResult> {
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_milp::DEFAULT_TIMEOUT,
+  };
+  let threads_each = std::thread::available_parallelism()
+    .map(|n| (n.get() / 2).max(1))
+    .unwrap_or(1);
+
+  let p_dist = core_problem.clone();
+  let p_price = core_problem;
+  let dist_ws: vrppd_core::ProblemSolution = distance_warm_start.into();
+  let price_ws: vrppd_core::ProblemSolution = price_warm_start.into();
+
+  let h_dist = std::thread::spawn(move || {
+    vrppd_milp::solve_milp_with_warm_start(&p_dist, Objective::Distance, timeout, threads_each, &dist_ws)
+  });
+  let h_price = std::thread::spawn(move || {
+    vrppd_milp::solve_milp_with_warm_start(&p_price, Objective::Price, timeout, threads_each, &price_ws)
+  });
+
+  let dist = h_dist
+    .join()
+    .map_err(|_| Error::new(Status::GenericFailure, "MILP DISTANCE thread panicked"))?
+    .map_err(|e| Error::new(Status::GenericFailure, format!("MILP DISTANCE: {e}")))?;
+  let price = h_price
+    .join()
+    .map_err(|_| Error::new(Status::GenericFailure, "MILP PRICE thread panicked"))?
+    .map_err(|e| Error::new(Status::GenericFailure, format!("MILP PRICE: {e}")))?;
+
+  Ok(MilpBothResult {
+    distance: MilpResult {
+      value: dist.objective_value,
+      status: milp_status_str(dist.status),
+      solve_time_ms: dist.solve_time_ms as f64,
+    },
+    price: MilpResult {
+      value: price.objective_value,
+      status: milp_status_str(price.status),
+      solve_time_ms: price.solve_time_ms as f64,
+    },
+  })
+}
+
 fn milp_status_str(s: vrppd_milp::MilpStatus) -> String {
   match s {
     vrppd_milp::MilpStatus::Optimal => "OPTIMAL".to_string(),

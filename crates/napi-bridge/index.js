@@ -582,4 +582,5 @@ module.exports.solveBruteForce = nativeBinding.solveBruteForce
 module.exports.solveCea = nativeBinding.solveCea
 module.exports.solveMilp = nativeBinding.solveMilp
 module.exports.solveMilpBoth = nativeBinding.solveMilpBoth
+module.exports.solveMilpBothWarmStart = nativeBinding.solveMilpBothWarmStart
 module.exports.solvePSa = nativeBinding.solvePSa

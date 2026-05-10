@@ -190,6 +190,14 @@ export declare function solveMilp(problem: Problem, target: string, config?: Mil
 export declare function solveMilpBoth(problem: Problem, config?: MilpConfig | undefined | null): MilpBothResult
 
 /**
+ * Same as `solve_milp_both` but seeds each per-target HiGHS solve with the
+ * supplied PSA solution as a starting incumbent. Caller must pass the PSA
+ * solution computed for the matching target (DISTANCE warm-start for the
+ * DISTANCE solve, PRICE warm-start for the PRICE solve).
+ */
+export declare function solveMilpBothWarmStart(problem: Problem, distanceWarmStart: ProblemSolution, priceWarmStart: ProblemSolution, config?: MilpConfig | undefined | null): MilpBothResult
+
+/**
  * Run the multi-thread p-SA pipeline. `target` accepts the same SCREAMING_CASE
  * strings as the TS `OptimizationTarget` enum: "EMPTY", "DISTANCE", "PRICE".
  */

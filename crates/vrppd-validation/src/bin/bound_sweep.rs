@@ -181,7 +181,7 @@ fn main() {
           continue;
         }
       };
-      let milp = match solve_milp(&problem, obj, args.milp_timeout) {
+      let milp = match solve_milp(&problem, obj, args.milp_timeout, std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1)) {
         Ok(r) => r,
         Err(e) => {
           eprintln!("MILP failed on {} {obj_name}: {e}", path.display());
