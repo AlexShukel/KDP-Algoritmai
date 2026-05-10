@@ -38,13 +38,12 @@ LOG_FILE="$RESULTS_DIR/R05-$TIMESTAMP.log"
 mkdir -p "$STASH_DIR"
 
 # Classes to benchmark, paired with their repetition counts.
-# Remaining-sweep pass (2026-05-10): 20_50/30_100/50_200/100_500 with
-# reps 3/2/1/1. 10_20 was completed in an earlier pass.
-# Previous full-suite config (restore when doing a complete sweep):
-#   CLASSES=("10_20" "20_50" "30_100" "50_200" "100_500")
-#   REPS=(5 3 2 1 1)
-declare -a CLASSES=("20_50" "30_100" "50_200" "100_500")
-declare -a REPS=(3 2 1 1)
+# Default full-suite config covering every R05 size class. Narrow when
+# running a targeted re-pass (e.g. MILP-only after a warm-start change):
+#   declare -a CLASSES=("10_20")
+#   declare -a REPS=(1)
+declare -a CLASSES=("10_20" "20_50" "30_100" "50_200" "100_500")
+declare -a REPS=(5 3 2 1 1)
 
 cleanup() {
     echo "[R05] Restoring all stashed problem classes..."
