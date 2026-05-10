@@ -19,6 +19,7 @@ export interface CeaConfig {
   pReinsertion?: number
   pCrossover?: number
   seed?: number
+  threads?: number
 }
 
 export interface CeaConvergencePoint {
@@ -34,6 +35,11 @@ export interface CeaSolved {
   solution: ProblemSolution
   history: Array<CeaConvergencePoint>
   generations: number
+  /**
+   * `"converged"` when `conv_count` stagnant generations fired; `"wall_time_cap"` when the
+   * wall-time budget was exhausted first.
+   */
+  exitReason: string
 }
 
 export interface Location {
@@ -67,6 +73,12 @@ export interface LowerBoundsResult {
   empty: number
   distance: number
   price: number
+}
+
+/** Paired DISTANCE + PRICE MILP results from a single concurrent solve. */
+export interface MilpBothResult {
+  distance: MilpResult
+  price: MilpResult
 }
 
 /**
@@ -155,6 +167,10 @@ export declare function solveBruteForce(problem: Problem): AlgorithmSolution
 /**
  * Run the Coevolutionary Algorithm. `target` accepts the same strings as
  * `solve_p_sa`. `config.seed` (if provided) gives a reproducible run.
+ *
+ * The computation is dispatched onto a fresh OS thread so that rayon's
+ * work-stealing thread pool initialises and operates normally — rayon does
+ * not spawn worker threads when called directly from Node.js's main thread.
  */
 export declare function solveCea(problem: Problem, target: string, config?: CeaConfig | undefined | null): CeaSolved
 
@@ -165,6 +181,13 @@ export declare function solveCea(problem: Problem, target: string, config?: CeaC
  * implementation (see `documents/MILP_adaptation_notes.md`).
  */
 export declare function solveMilp(problem: Problem, target: string, config?: MilpConfig | undefined | null): MilpResult
+
+/**
+ * Solve DISTANCE and PRICE concurrently on two OS threads, each using
+ * HiGHS's internal multi-thread B&B. Returns both results in one call so
+ * the TS adapter can treat MILP as a `MultiTargetAlgorithm`.
+ */
+export declare function solveMilpBoth(problem: Problem, config?: MilpConfig | undefined | null): MilpBothResult
 
 /**
  * Run the multi-thread p-SA pipeline. `target` accepts the same SCREAMING_CASE

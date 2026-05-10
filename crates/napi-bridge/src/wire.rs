@@ -151,6 +151,9 @@ pub struct CeaSolved {
   pub solution: ProblemSolution,
   pub history: Vec<CeaConvergencePoint>,
   pub generations: f64,
+  /// `"converged"` when `conv_count` stagnant generations fired; `"wall_time_cap"` when the
+  /// wall-time budget was exhausted first.
+  pub exit_reason: String,
 }
 
 /// Optional per-call overrides for CEA. Any field left undefined falls back
@@ -187,6 +190,10 @@ impl From<vrppd_cea::Solved> for CeaSolved {
       solution: s.solution.into(),
       history: s.history.into_iter().map(Into::into).collect(),
       generations: s.generations as f64,
+      exit_reason: match s.exit_reason {
+        vrppd_cea::ExitReason::Converged => "converged".to_string(),
+        vrppd_cea::ExitReason::WallTimeCap => "wall_time_cap".to_string(),
+      },
     }
   }
 }
@@ -231,6 +238,14 @@ pub struct MilpResult {
   pub value: f64,
   pub status: String,
   pub solve_time_ms: f64,
+}
+
+/// Paired DISTANCE + PRICE MILP results from a single concurrent solve.
+#[napi(object)]
+#[derive(Clone, Debug)]
+pub struct MilpBothResult {
+  pub distance: MilpResult,
+  pub price: MilpResult,
 }
 
 // --- conversions: wire -> core ---

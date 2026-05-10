@@ -55,11 +55,18 @@ impl ConvergencePoint {
   }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ExitReason {
+  Converged,
+  WallTimeCap,
+}
+
 #[derive(Clone, Debug)]
 pub struct Solved {
   pub solution: ProblemSolution,
   pub history: Vec<ConvergencePoint>,
   pub generations: u64,
+  pub exit_reason: ExitReason,
 }
 
 /// Run CEA from a fresh OS-seeded PRNG.
@@ -108,13 +115,16 @@ pub fn solve_cea_seeded(
 
   let mut stagnant: usize = 0;
   let mut generation: u64 = 0;
+  let exit_reason;
 
   loop {
     if stagnant >= config.conv_count {
+      exit_reason = ExitReason::Converged;
       break;
     }
     if let Some(cap) = config.wall_time_cap_ms {
       if started.elapsed().as_millis() as u64 >= cap {
+        exit_reason = ExitReason::WallTimeCap;
         break;
       }
     }
@@ -164,6 +174,7 @@ pub fn solve_cea_seeded(
     solution: best.solution.into_problem_solution(problem),
     history,
     generations: generation,
+    exit_reason,
   }
 }
 

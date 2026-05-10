@@ -16,7 +16,7 @@ pub mod recombination;
 pub mod reproduction;
 pub mod rscim;
 
-pub use coevolve::{solve_cea, solve_cea_seeded, ConvergencePoint, Solved};
+pub use coevolve::{solve_cea, solve_cea_seeded, ConvergencePoint, ExitReason, Solved};
 pub use config::CeaConfig;
 pub use crossover::crossover;
 pub use fitness::{fitness_values, roulette_select, Fitness};

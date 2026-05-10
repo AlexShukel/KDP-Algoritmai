@@ -18,8 +18,8 @@ use vrppd_psa::{default_config_for, OperatorWeights, SaConfig};
 
 pub use wire::{
   AlgorithmSolution, CeaConfig, CeaConvergencePoint, CeaSolved, Location, LowerBoundsResult,
-  MilpConfig, MilpResult, Order, Problem, ProblemSolution, PsaConfig, PsaConvergencePoint,
-  PsaSolved, RouteStop, Vehicle, VehicleRoute,
+  MilpBothResult, MilpConfig, MilpResult, Order, Problem, ProblemSolution, PsaConfig,
+  PsaConvergencePoint, PsaSolved, RouteStop, Vehicle, VehicleRoute,
 };
 
 #[napi]
@@ -54,18 +54,82 @@ pub fn solve_p_sa(
 
 /// Run the Coevolutionary Algorithm. `target` accepts the same strings as
 /// `solve_p_sa`. `config.seed` (if provided) gives a reproducible run.
+///
+/// The computation is dispatched onto a fresh OS thread so that rayon's
+/// work-stealing thread pool initialises and operates normally — rayon does
+/// not spawn worker threads when called directly from Node.js's main thread.
 #[napi]
 pub fn solve_cea(problem: Problem, target: String, config: Option<CeaConfig>) -> Result<CeaSolved> {
   let objective = parse_target(&target)?;
   let core_problem: vrppd_core::Problem = problem.into();
   let merged_config = merge_cea_config(vrppd_cea::CeaConfig::default(), &config);
+  let seed = config.as_ref().and_then(|c| c.seed).map(|s| s as u64);
 
-  let solved = match config.as_ref().and_then(|c| c.seed) {
-    Some(seed) => vrppd_cea::solve_cea_seeded(&core_problem, objective, merged_config, seed as u64),
+  let solved = std::thread::spawn(move || match seed {
+    Some(s) => vrppd_cea::solve_cea_seeded(&core_problem, objective, merged_config, s),
     None => vrppd_cea::solve_cea(&core_problem, objective, merged_config),
-  };
+  })
+  .join()
+  .map_err(|_| Error::new(Status::GenericFailure, "CEA thread panicked"))?;
 
   Ok(solved.into())
+}
+
+/// Solve DISTANCE and PRICE concurrently on two OS threads, each using
+/// HiGHS's internal multi-thread B&B. Returns both results in one call so
+/// the TS adapter can treat MILP as a `MultiTargetAlgorithm`.
+#[napi]
+pub fn solve_milp_both(problem: Problem, config: Option<MilpConfig>) -> Result<MilpBothResult> {
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_milp::DEFAULT_TIMEOUT,
+  };
+
+  // Split the thread budget evenly: each HiGHS instance gets half the available
+  // CPUs so the two concurrent solves don't over-subscribe the machine.
+  let threads_each = std::thread::available_parallelism()
+    .map(|n| (n.get() / 2).max(1))
+    .unwrap_or(1);
+
+  let p_dist = core_problem.clone();
+  let p_price = core_problem;
+
+  let h_dist = std::thread::spawn(move || {
+    vrppd_milp::solve_milp(&p_dist, Objective::Distance, timeout, threads_each)
+  });
+  let h_price = std::thread::spawn(move || {
+    vrppd_milp::solve_milp(&p_price, Objective::Price, timeout, threads_each)
+  });
+
+  let dist = h_dist
+    .join()
+    .map_err(|_| Error::new(Status::GenericFailure, "MILP DISTANCE thread panicked"))?
+    .map_err(|e| Error::new(Status::GenericFailure, format!("MILP DISTANCE: {e}")))?;
+  let price = h_price
+    .join()
+    .map_err(|_| Error::new(Status::GenericFailure, "MILP PRICE thread panicked"))?
+    .map_err(|e| Error::new(Status::GenericFailure, format!("MILP PRICE: {e}")))?;
+
+  Ok(MilpBothResult {
+    distance: MilpResult {
+      value: dist.objective_value,
+      status: milp_status_str(dist.status),
+      solve_time_ms: dist.solve_time_ms as f64,
+    },
+    price: MilpResult {
+      value: price.objective_value,
+      status: milp_status_str(price.status),
+      solve_time_ms: price.solve_time_ms as f64,
+    },
+  })
+}
+
+fn milp_status_str(s: vrppd_milp::MilpStatus) -> String {
+  match s {
+    vrppd_milp::MilpStatus::Optimal => "OPTIMAL".to_string(),
+    vrppd_milp::MilpStatus::TimedOut => "TIMEDOUT".to_string(),
+  }
 }
 
 /// Direct-sum lower bound for all three objectives in one O(N) pass.
@@ -108,7 +172,10 @@ pub fn solve_milp(
     _ => vrppd_milp::DEFAULT_TIMEOUT,
   };
 
-  match vrppd_milp::solve_milp(&core_problem, objective, timeout) {
+  let threads = std::thread::available_parallelism()
+    .map(|n| n.get())
+    .unwrap_or(1);
+  match vrppd_milp::solve_milp(&core_problem, objective, timeout, threads) {
     Ok(r) => Ok(MilpResult {
       value: r.objective_value,
       status: match r.status {

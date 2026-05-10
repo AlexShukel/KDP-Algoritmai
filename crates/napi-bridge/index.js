@@ -581,4 +581,5 @@ module.exports.lowerBoundLp = nativeBinding.lowerBoundLp
 module.exports.solveBruteForce = nativeBinding.solveBruteForce
 module.exports.solveCea = nativeBinding.solveCea
 module.exports.solveMilp = nativeBinding.solveMilp
+module.exports.solveMilpBoth = nativeBinding.solveMilpBoth
 module.exports.solvePSa = nativeBinding.solvePSa

@@ -31,7 +31,14 @@ export class CoevolutionaryAlgorithmRust implements SingleTargetAlgorithm {
             convCount: 300,
             pCrossover: 0.7,
             pReinsertion: 0.3,
+            wallTimeCapMs: 60_000,
         });
+
+        if (solved.exitReason === 'wall_time_cap') {
+            console.warn(
+                `[cea] wall-time cap hit after ${solved.generations} generations (conv_count=300 not reached)`,
+            );
+        }
 
         const history: ConvergenceUpdate[] = solved.history.map(p => ({
             timeMs: p.timeMs,

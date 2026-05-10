@@ -28,7 +28,7 @@ fn load_fixture(name: &str) -> Problem {
 
 fn assert_matches_bf(fixture: &str, objective: Objective, bf_optimum: f64, tolerance: f64) {
   let problem = load_fixture(fixture);
-  let result = solve_milp(&problem, objective, Duration::from_secs(60))
+  let result = solve_milp(&problem, objective, Duration::from_secs(60), 1)
     .unwrap_or_else(|e| panic!("MILP failed on {fixture}/{objective:?}: {e}"));
   assert_eq!(
     result.status,

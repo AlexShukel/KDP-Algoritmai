@@ -95,10 +95,15 @@ pub struct MilpResult {
 }
 
 /// Solve the adapted MILP for `target` with a wall-clock `timeout`.
+///
+/// `threads` controls both the parallel B&B node count and the concurrent-simplex
+/// thread count (strategy 4). Pass `available_parallelism() / 2` when two instances
+/// run concurrently so they don't over-subscribe the CPU.
 pub fn solve_milp(
   problem: &Problem,
   target: Objective,
   timeout: Duration,
+  threads: usize,
 ) -> Result<MilpResult, MilpError> {
   if matches!(target, Objective::Empty) {
     return Err(MilpError::UnsupportedObjective(target));
@@ -115,9 +120,8 @@ pub fn solve_milp(
   let model = build_milp(problem, target);
   let mut hm = model.problem.optimise(Sense::Minimise);
   hm.set_option("time_limit", timeout.as_secs_f64());
-  // Silence the solver's stdout chatter; the result struct carries
-  // everything callers need.
   hm.set_option("output_flag", false);
+  hm.set_option("threads", threads.max(1) as i32);
 
   let solved = hm.solve();
   let status = match solved.status() {
@@ -141,9 +145,12 @@ pub fn solve_milp(
   })
 }
 
-/// Convenience wrapper using `DEFAULT_TIMEOUT` (30 minutes).
+/// Convenience wrapper using `DEFAULT_TIMEOUT` (30 minutes) and all available threads.
 pub fn solve_milp_default(problem: &Problem, target: Objective) -> Result<MilpResult, MilpError> {
-  solve_milp(problem, target, DEFAULT_TIMEOUT)
+  let threads = std::thread::available_parallelism()
+    .map(|n| n.get())
+    .unwrap_or(1);
+  solve_milp(problem, target, DEFAULT_TIMEOUT, threads)
 }
 
 struct MilpModel {
