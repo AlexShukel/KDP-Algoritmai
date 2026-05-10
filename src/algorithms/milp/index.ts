@@ -1,11 +1,11 @@
 /**
  * @module milp-solver
  * @description
- * TS adapter wrapping the bundled HiGHS MILP solver (`vrppd-milp` crate,
- * exposed via `napi-bridge::solveMilpBoth`). Conforms to the harness's
- * `MultiTargetAlgorithm` interface so DISTANCE and PRICE are solved
- * concurrently on two OS threads, each using HiGHS's internal multi-thread
- * B&B.
+ * TS adapter wrapping the bundled HiGHS MILP solver, seeded with a PSA
+ * warm-start per target. Conforms to the harness's `MultiTargetAlgorithm`
+ * interface so DISTANCE and PRICE are solved concurrently on two OS
+ * threads, each using HiGHS's internal multi-thread B&B starting from
+ * PSA's solution as the initial primal incumbent.
  *
  * EMPTY is not supported by the MILP formulation (§2.4 mismatch — see
  * `documents/MILP_adaptation_notes.md`). The harness records zeros for the
@@ -18,7 +18,7 @@
  * constructor.
  */
 
-import { solveMilpBoth } from 'napi-bridge';
+import { solveMilpBothWarmStart, solvePSa } from 'napi-bridge';
 import type { AlgorithmSolution, ProblemSolution } from 'napi-bridge';
 import {
     AlgorithmConfig,
@@ -46,7 +46,15 @@ export class MilpExact implements MultiTargetAlgorithm {
         problem: Problem,
         _config: AlgorithmConfig,
     ): Promise<AlgorithmResultWithMetadata<AlgorithmSolution>> {
-        const result = solveMilpBoth(problem, { timeoutMs: this.timeoutMs });
+        const psaDistance = solvePSa(problem, 'DISTANCE', undefined);
+        const psaPrice = solvePSa(problem, 'PRICE', undefined);
+
+        const result = solveMilpBothWarmStart(
+            problem,
+            psaDistance.solution,
+            psaPrice.solution,
+            { timeoutMs: this.timeoutMs },
+        );
 
         if (result.distance.status !== 'OPTIMAL') {
             console.warn(
