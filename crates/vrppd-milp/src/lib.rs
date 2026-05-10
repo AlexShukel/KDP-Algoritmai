@@ -482,7 +482,7 @@ mod tests {
       vehicles: vec![],
       orders: vec![],
     };
-    let r = solve_milp(&problem, Objective::Distance, Duration::from_secs(10)).unwrap();
+    let r = solve_milp(&problem, Objective::Distance, Duration::from_secs(10), 1).unwrap();
     assert_eq!(r.objective_value, 0.0);
     assert_eq!(r.status, MilpStatus::Optimal);
   }
@@ -494,7 +494,7 @@ mod tests {
       orders: vec![order(1, (0.0, 0.0), (0.0, 1.0))],
     };
     assert!(matches!(
-      solve_milp(&problem, Objective::Empty, Duration::from_secs(10)),
+      solve_milp(&problem, Objective::Empty, Duration::from_secs(10), 1),
       Err(MilpError::UnsupportedObjective(Objective::Empty))
     ));
   }
