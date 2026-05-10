@@ -24,6 +24,7 @@ import {
     AlgorithmConfig,
     AlgorithmResultWithMetadata,
     MultiTargetAlgorithm,
+    OptimizationTarget,
     Problem,
 } from '../../types';
 
@@ -46,8 +47,8 @@ export class MilpExact implements MultiTargetAlgorithm {
         problem: Problem,
         _config: AlgorithmConfig,
     ): Promise<AlgorithmResultWithMetadata<AlgorithmSolution>> {
-        const psaDistance = solvePSa(problem, 'DISTANCE', undefined);
-        const psaPrice = solvePSa(problem, 'PRICE', undefined);
+        const psaDistance = solvePSa(problem, OptimizationTarget.DISTANCE, undefined);
+        const psaPrice = solvePSa(problem, OptimizationTarget.PRICE, undefined);
 
         const result = solveMilpBothWarmStart(
             problem,
