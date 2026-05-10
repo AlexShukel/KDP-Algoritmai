@@ -1,0 +1,595 @@
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    7.71 kB │ gzip:  2.82 kB │ map:  27.13 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 384ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 590ms
+
+========================================
+Starting benchmark for: brute-force-rust
+========================================
+Processing problems/10_10/9_1778169862263.json
+Error solving problems/10_10/9_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/8_1778169862263.json
+Error solving problems/10_10/8_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/7_1778169862263.json
+Error solving problems/10_10/7_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/6_1778169862263.json
+Error solving problems/10_10/6_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/5_1778169862263.json
+Error solving problems/10_10/5_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/4_1778169862263.json
+Error solving problems/10_10/4_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/3_1778169862263.json
+Error solving problems/10_10/3_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/2_1778169862263.json
+Error solving problems/10_10/2_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/1_1778169862263.json
+Error solving problems/10_10/1_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/19_1778169862263.json
+Error solving problems/10_10/19_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/18_1778169862263.json
+Error solving problems/10_10/18_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/17_1778169862263.json
+Error solving problems/10_10/17_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/16_1778169862263.json
+Error solving problems/10_10/16_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/15_1778169862263.json
+Error solving problems/10_10/15_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/14_1778169862263.json
+Error solving problems/10_10/14_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/13_1778169862263.json
+Error solving problems/10_10/13_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/12_1778169862263.json
+Error solving problems/10_10/12_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/11_1778169862263.json
+Error solving problems/10_10/11_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/10_1778169862263.json
+Error solving problems/10_10/10_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/0_1778169862263.json
+Error solving problems/10_10/0_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:182:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:235:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Saved 0 records to benchmark-results-brute-force-rust.json
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+Processing problems/10_10/4_1778169862263.json
+Processing problems/10_10/3_1778169862263.json
+Processing problems/10_10/2_1778169862263.json
+Processing problems/10_10/1_1778169862263.json
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+Processing problems/10_10/12_1778169862263.json
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+Processing problems/10_10/4_1778169862263.json
+Processing problems/10_10/3_1778169862263.json
+Processing problems/10_10/2_1778169862263.json
+Processing problems/10_10/1_1778169862263.json
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+Processing problems/10_10/12_1778169862263.json
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_10/9_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+Processing problems/10_10/8_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+Processing problems/10_10/7_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_10/6_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_10/5_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_10/4_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_10/3_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_10/2_1778169862263.json
+sh: line 1: 51322 Terminated: 15          node --max-old-space-size=12288 vrp.es.mjs
+ ELIFECYCLE  Command failed with exit code 143.
+[R04 restore] non-10x10 classes restored at Fri May  8 20:41:50 EEST 2026
+[R04] Stashed non-10x10 classes. problems/ now contains:
+10_10
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    7.95 kB │ gzip:  2.85 kB │ map:  27.73 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 398ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 640ms
+
+========================================
+Starting benchmark for: brute-force-rust
+========================================
+Processing problems/10_10/9_1778169862263.json
+Error solving problems/10_10/9_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/8_1778169862263.json
+Error solving problems/10_10/8_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/7_1778169862263.json
+Error solving problems/10_10/7_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/6_1778169862263.json
+Error solving problems/10_10/6_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/5_1778169862263.json
+Error solving problems/10_10/5_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/4_1778169862263.json
+Error solving problems/10_10/4_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/3_1778169862263.json
+Error solving problems/10_10/3_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/2_1778169862263.json
+Error solving problems/10_10/2_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/1_1778169862263.json
+Error solving problems/10_10/1_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/19_1778169862263.json
+Error solving problems/10_10/19_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/18_1778169862263.json
+Error solving problems/10_10/18_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/17_1778169862263.json
+Error solving problems/10_10/17_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/16_1778169862263.json
+Error solving problems/10_10/16_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/15_1778169862263.json
+Error solving problems/10_10/15_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/14_1778169862263.json
+Error solving problems/10_10/14_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/13_1778169862263.json
+Error solving problems/10_10/13_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/12_1778169862263.json
+Error solving problems/10_10/12_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/11_1778169862263.json
+Error solving problems/10_10/11_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/10_1778169862263.json
+Error solving problems/10_10/10_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Processing problems/10_10/0_1778169862263.json
+Error solving problems/10_10/0_1778169862263.json: Error: Problem too large for brute-force-rust implementation.
+    at sn.solve (file:///Users/srv/Git/KDP-Algoritmai/dist/greatCircleDistanceCalculator-B1xbCdPL.mjs:4548:13)
+    at X (file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:187:43)
+    at file:///Users/srv/Git/KDP-Algoritmai/dist/vrp.es.mjs:240:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Saved 0 records to benchmark-results-brute-force-rust.json
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+Processing problems/10_10/4_1778169862263.json
+Processing problems/10_10/3_1778169862263.json
+Processing problems/10_10/2_1778169862263.json
+Processing problems/10_10/1_1778169862263.json
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+Processing problems/10_10/12_1778169862263.json
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+Processing problems/10_10/4_1778169862263.json
+Processing problems/10_10/3_1778169862263.json
+Processing problems/10_10/2_1778169862263.json
+Processing problems/10_10/1_1778169862263.json
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+Processing problems/10_10/12_1778169862263.json
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+milp-rust: timed out on 10v×10o target=PRICE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/4_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/3_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/2_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+milp-rust: timed out on 10v×10o target=PRICE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/1_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+milp-rust: timed out on 10v×10o target=DISTANCE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/12_1778169862263.json
+milp-rust: timed out on 10v×10o target=PRICE after 1800000ms — recording best primal incumbent
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 40 records to benchmark-results-milp-rust.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+Processing problems/10_10/4_1778169862263.json
+Processing problems/10_10/3_1778169862263.json
+Processing problems/10_10/2_1778169862263.json
+Processing problems/10_10/1_1778169862263.json
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+Processing problems/10_10/12_1778169862263.json
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 600 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/10_10/9_1778169862263.json
+Processing problems/10_10/8_1778169862263.json
+Processing problems/10_10/7_1778169862263.json
+Processing problems/10_10/6_1778169862263.json
+Processing problems/10_10/5_1778169862263.json
+Processing problems/10_10/4_1778169862263.json
+Processing problems/10_10/3_1778169862263.json
+Processing problems/10_10/2_1778169862263.json
+Processing problems/10_10/1_1778169862263.json
+Processing problems/10_10/19_1778169862263.json
+Processing problems/10_10/18_1778169862263.json
+Processing problems/10_10/17_1778169862263.json
+Processing problems/10_10/16_1778169862263.json
+Processing problems/10_10/15_1778169862263.json
+Processing problems/10_10/14_1778169862263.json
+Processing problems/10_10/13_1778169862263.json
+Processing problems/10_10/12_1778169862263.json
+Processing problems/10_10/11_1778169862263.json
+Processing problems/10_10/10_1778169862263.json
+Processing problems/10_10/0_1778169862263.json
+Saved 600 records to benchmark-results-cea-rust.json
+[R04] pnpm start exited with status 0
+[R04] Restored all classes. Restore complete.

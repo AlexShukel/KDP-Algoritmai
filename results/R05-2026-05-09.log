@@ -1,0 +1,1213 @@
+
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=10) =====
+[R05] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.42 kB │ gzip:  3.17 kB │ map:  28.62 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 308ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 471ms
+Skipping algorithms: brute-force-rust
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/8_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/7_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/6_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/5_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/4_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/3_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/2_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/1_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/19_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/18_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/17_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/16_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/15_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/14_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/13_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/12_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/11_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/10_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/0_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Saved 60 records to benchmark-results-milp-rust.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 600 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] problems/ now contains only: 10_20
+[R05] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+vite v7.2.0 building client environment for production...
+transforming...
+transforming...
+✓ 31 modules transformed.
+✓ 31 modules transformed.
+rendering chunks...
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+
+[vite:dts] Start generate declaration files...
+[96msrc/algorithms/cea/index.ts[0m:[93m37[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'exitReason' does not exist on type 'CeaSolved'.
+
+[7m37[0m         if (solved.exitReason === 'wall_time_cap') {
+[7m  [0m [91m                   ~~~~~~~~~~[0m
+
+[96msrc/algorithms/cea/index.ts[0m:[93m37[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'exitReason' does not exist on type 'CeaSolved'.
+
+[7m37[0m         if (solved.exitReason === 'wall_time_cap') {
+[7m  [0m [91m                   ~~~~~~~~~~[0m
+
+computing gzip size...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 329ms.
+
+[vite:dts] Declaration files built in 329ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 497ms
+✓ built in 497ms
+Skipping algorithms: brute-force-rust
+Skipping algorithms: brute-force-rust
+
+========================================
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+[R05] Restoring all stashed problem classes...
+ ELIFECYCLE  Command failed.
+ ELIFECYCLE  Command failed.
+[R05] Restore complete.
+
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] problems/ now contains only: 10_20
+[R05] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+vite v7.2.0 building client environment for production...
+transforming...
+transforming...
+✓ 31 modules transformed.
+✓ 31 modules transformed.
+rendering chunks...
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+
+[vite:dts] Start generate declaration files...
+[96msrc/algorithms/cea/index.ts[0m:[93m37[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'exitReason' does not exist on type 'CeaSolved'.
+
+[7m37[0m         if (solved.exitReason === 'wall_time_cap') {
+[7m  [0m [91m                   ~~~~~~~~~~[0m
+
+[96msrc/algorithms/cea/index.ts[0m:[93m37[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'exitReason' does not exist on type 'CeaSolved'.
+
+[7m37[0m         if (solved.exitReason === 'wall_time_cap') {
+[7m  [0m [91m                   ~~~~~~~~~~[0m
+
+computing gzip size...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 324ms.
+
+[vite:dts] Declaration files built in 324ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 486ms
+✓ built in 486ms
+Skipping algorithms: brute-force-rust, milp-rust
+Skipping algorithms: brute-force-rust, milp-rust
+
+========================================
+Starting benchmark for: lb-direct
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 300 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Saved 300 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+[R05] Restoring all stashed problem classes...
+ ELIFECYCLE  Command failed.
+ ELIFECYCLE  Command failed.
+[R05] Restore complete.
+
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] problems/ now contains only: 10_20
+[R05] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+vite v7.2.0 building client environment for production...
+transforming...
+transforming...
+✓ 31 modules transformed.
+✓ 31 modules transformed.
+rendering chunks...
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+
+[vite:dts] Start generate declaration files...
+[96msrc/algorithms/cea/index.ts[0m:[93m37[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'exitReason' does not exist on type 'CeaSolved'.
+
+[7m37[0m         if (solved.exitReason === 'wall_time_cap') {
+[7m  [0m [91m                   ~~~~~~~~~~[0m
+
+[96msrc/algorithms/cea/index.ts[0m:[93m37[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'exitReason' does not exist on type 'CeaSolved'.
+
+[7m37[0m         if (solved.exitReason === 'wall_time_cap') {
+[7m  [0m [91m                   ~~~~~~~~~~[0m
+
+computing gzip size...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 301ms.
+
+[vite:dts] Declaration files built in 301ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 470ms
+✓ built in 470ms
+Skipping algorithms: brute-force-rust
+Skipping algorithms: brute-force-rust
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_20/9_1778169862263.json
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+[R05] Restoring all stashed problem classes...
+ ELIFECYCLE  Command failed.
+ ELIFECYCLE  Command failed.
+[R05] Restore complete.
+
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] problems/ now contains only: 10_20
+[R05] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+vite v7.2.0 building client environment for production...
+transforming...
+transforming...
+✓ 31 modules transformed.
+✓ 31 modules transformed.
+rendering chunks...
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 313ms.
+
+[vite:dts] Declaration files built in 313ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 472ms
+✓ built in 472ms
+Skipping algorithms: brute-force-rust
+Skipping algorithms: brute-force-rust
+
+========================================
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/9_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/4_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/4_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+[R05] Restoring all stashed problem classes...
+ ELIFECYCLE  Command failed.
+ ELIFECYCLE  Command failed.
+[R05] Restore complete.
+
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.31 kB │ gzip:  3.09 kB │ map:  28.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 291ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 462ms
+Skipping algorithms: brute-force-rust
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: lb-lp
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 40 records to benchmark-results-lb-lp.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/8_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/7_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/6_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/5_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/4_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/3_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/2_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/1_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/19_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/18_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/17_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/16_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/15_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/14_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/13_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/12_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/11_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/10_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/10_20/0_1778169862263.json
+milp-rust: timed out on 10v×20o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 10v×20o target=PRICE after 60000ms — recording best primal incumbent
+Saved 60 records to benchmark-results-milp-rust.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 300 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/10_20/9_1778169862263.json
+Processing problems/10_20/8_1778169862263.json
+Processing problems/10_20/7_1778169862263.json
+Processing problems/10_20/6_1778169862263.json
+Processing problems/10_20/5_1778169862263.json
+Processing problems/10_20/4_1778169862263.json
+Processing problems/10_20/3_1778169862263.json
+Processing problems/10_20/2_1778169862263.json
+Processing problems/10_20/1_1778169862263.json
+Processing problems/10_20/19_1778169862263.json
+Processing problems/10_20/18_1778169862263.json
+Processing problems/10_20/17_1778169862263.json
+Processing problems/10_20/16_1778169862263.json
+Processing problems/10_20/15_1778169862263.json
+Processing problems/10_20/14_1778169862263.json
+Processing problems/10_20/13_1778169862263.json
+Processing problems/10_20/12_1778169862263.json
+Processing problems/10_20/11_1778169862263.json
+Processing problems/10_20/10_1778169862263.json
+Processing problems/10_20/0_1778169862263.json
+Saved 300 records to benchmark-results-cea-rust.json
+[R05] 10_20 pass complete, copying results...
+[R05] Results saved to /Users/srv/Git/KDP-Algoritmai/results/R05-10_20
+[R05] All classes restored.
+
+[R05] All passes complete. Per-class results under results/R05-*/
+[R05] Full log: /Users/srv/Git/KDP-Algoritmai/results/R05-2026-05-10.log
+[R05] Restoring all stashed problem classes...
+[R05] Restore complete.

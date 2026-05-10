@@ -1,0 +1,814 @@
+
+> kdp-algoritmai@1.0.0 tune-cea /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node tuneCea.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-B4kmSEVQ.mjs                            0.84 kB │ gzip:  0.42 kB │ map:   4.34 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    7.60 kB │ gzip:  2.76 kB │ map:  26.81 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 359ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 745ms
+Tuning on 5 validation problems with 108 configs...
+Calculating Ground Truths...
+Testing Config 1/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 2/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 3/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 4/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 5/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 6/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 7/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 8/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 9/108: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 10/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 11/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 12/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 13/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 14/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 15/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 16/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 17/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 18/108: {
+  populationSize: 25,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 19/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 20/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 21/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 22/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 23/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 24/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 25/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 26/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 27/108: {
+  populationSize: 25,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 28/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 29/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 30/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 31/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 32/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 33/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 34/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 35/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 36/108: {
+  populationSize: 50,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 37/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 38/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 39/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 40/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 41/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 42/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 43/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 44/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 45/108: {
+  populationSize: 50,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 46/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 47/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 48/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 49/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 50/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 51/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 52/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 53/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 54/108: {
+  populationSize: 50,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 55/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 56/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 57/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 58/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 59/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 60/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 61/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 62/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 63/108: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 64/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 65/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 66/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 67/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 68/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 69/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 70/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 71/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 72/108: {
+  populationSize: 100,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 73/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 74/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 75/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 76/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 77/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 78/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 79/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 80/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 81/108: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 82/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 83/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 84/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 85/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 86/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 87/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 88/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 89/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 90/108: {
+  populationSize: 200,
+  convCount: 100,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 91/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 92/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 93/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 94/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 95/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 96/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 97/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 98/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 99/108: {
+  populationSize: 200,
+  convCount: 300,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 100/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 101/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 102/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 103/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 104/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 105/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.5,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+Testing Config 106/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}
+Testing Config 107/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+Testing Config 108/108: {
+  populationSize: 200,
+  convCount: 500,
+  pCrossover: 0.7,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+
+--- BEST CONFIGURATIONS ---
+
+Target: EMPTY
+Gap: 11.2985% | Time: 1183ms
+Config: {
+  populationSize: 100,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.5,
+  wallTimeCapMs: 30000
+}
+
+Target: DISTANCE
+Gap: 0.6999% | Time: 6961ms
+Config: {
+  populationSize: 100,
+  convCount: 500,
+  pCrossover: 0.3,
+  pReinsertion: 0.7,
+  wallTimeCapMs: 30000
+}
+
+Target: PRICE
+Gap: 0.0000% | Time: 184ms
+Config: {
+  populationSize: 25,
+  convCount: 100,
+  pCrossover: 0.3,
+  pReinsertion: 0.3,
+  wallTimeCapMs: 30000
+}

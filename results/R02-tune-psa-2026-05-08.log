@@ -1,0 +1,1191 @@
+[2026-05-08T08:55:40Z] R02 launch: pnpm tune-psa (N=14 small bank, 162 configs × 3 targets × 5 problems × 5 reps)
+
+> kdp-algoritmai@1.0.0 tune-psa /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node tunePsa.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 30 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/tunePsa.es.mjs        2.92 kB │ gzip:  1.29 kB │ map:   9.85 kB
+dist/vrp.es.mjs            8.36 kB │ gzip:  3.03 kB │ map:  30.33 kB
+dist/index-CHMC_-wk.mjs  152.40 kB │ gzip: 40.48 kB │ map: 438.36 kB
+[vite:dts] Declaration files built in 352ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 719ms
+Tuning on 5 validation problems with 162 configs...
+Calculating Ground Truths...
+Testing Config 1/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 2/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 3/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 4/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 5/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 6/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 7/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 8/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 9/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 10/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 11/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 12/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 13/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 14/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 15/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 16/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 17/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 18/162: {
+  initialTemp: 500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 19/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 20/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 21/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 22/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 23/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 24/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 25/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 26/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 27/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 28/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 29/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 30/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 31/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 32/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 33/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 34/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 35/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 36/162: {
+  initialTemp: 500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 37/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 38/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 39/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 40/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 41/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 42/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 43/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 44/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 45/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 46/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 47/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 48/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 49/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 50/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 51/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 52/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 53/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 54/162: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 55/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 56/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 57/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 58/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 59/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 60/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 61/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 62/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 63/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 64/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 65/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 66/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 67/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 68/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 69/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 70/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 71/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 72/162: {
+  initialTemp: 1500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 73/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 74/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 75/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 76/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 77/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 78/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 79/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 80/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 81/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 82/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 83/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 84/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 85/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 86/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 87/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 88/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 89/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 90/162: {
+  initialTemp: 1500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 91/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 92/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 93/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 94/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 95/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 96/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 97/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 98/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 99/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 100/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 101/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 102/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 103/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 104/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 105/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 106/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 107/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 108/162: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 109/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 110/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 111/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 112/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 113/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 114/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 115/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 116/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 117/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 118/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 119/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 120/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 121/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 122/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 123/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 124/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 125/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 126/162: {
+  initialTemp: 2500,
+  coolingRate: 0.95,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 127/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 128/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 129/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 130/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 131/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 132/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 133/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 134/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 135/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 136/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 137/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 138/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 139/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 140/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 141/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 142/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 143/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 144/162: {
+  initialTemp: 2500,
+  coolingRate: 0.99,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 145/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 146/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 147/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 148/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 149/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 150/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 1000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 151/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 152/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 153/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 154/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 155/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 156/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 200,
+  syncInterval: 10
+}
+Testing Config 157/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 4
+}
+Testing Config 158/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 50,
+  syncInterval: 10
+}
+Testing Config 159/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
+Testing Config 160/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 10
+}
+Testing Config 161/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+Testing Config 162/162: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 10
+}
+
+--- BEST CONFIGURATIONS ---
+
+Target: EMPTY
+Gap: 0.0000% | Time: 5ms
+Config: {
+  initialTemp: 500,
+  coolingRate: 0.999,
+  maxIterations: 5000,
+  batchSize: 50,
+  syncInterval: 10
+}
+
+Target: DISTANCE
+Gap: 2.1240% | Time: 10ms
+Config: {
+  initialTemp: 2500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 200,
+  syncInterval: 4
+}
+
+Target: PRICE
+Gap: 0.4458% | Time: 8ms
+Config: {
+  initialTemp: 1500,
+  coolingRate: 0.999,
+  maxIterations: 10000,
+  batchSize: 100,
+  syncInterval: 4
+}
