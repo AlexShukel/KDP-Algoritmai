@@ -38,8 +38,13 @@ LOG_FILE="$RESULTS_DIR/R05-$TIMESTAMP.log"
 mkdir -p "$STASH_DIR"
 
 # Classes to benchmark, paired with their repetition counts.
-declare -a CLASSES=("10_20" "20_50" "30_100" "50_200" "100_500")
-declare -a REPS=(10 5 3 2 1)
+# Remaining-sweep pass (2026-05-10): 20_50/30_100/50_200/100_500 with
+# reps 3/2/1/1. 10_20 was completed in an earlier pass.
+# Previous full-suite config (restore when doing a complete sweep):
+#   CLASSES=("10_20" "20_50" "30_100" "50_200" "100_500")
+#   REPS=(5 3 2 1 1)
+declare -a CLASSES=("20_50" "30_100" "50_200" "100_500")
+declare -a REPS=(3 2 1 1)
 
 cleanup() {
     echo "[R05] Restoring all stashed problem classes..."
@@ -89,10 +94,18 @@ for i in "${!CLASSES[@]}"; do
     CLASS_RESULTS="$RESULTS_DIR/R05-$CLASS"
     mkdir -p "$CLASS_RESULTS"
 
+    # lb-lp uses microlp (simplex, pure Rust) whose practical ceiling is
+    # N ≤ 20 orders. Skip it for every class beyond 10×20.
+    if [[ "$CLASS" == "10_20" ]]; then
+        SKIP_LIST="brute-force-rust"
+    else
+        SKIP_LIST="brute-force-rust,lb-lp"
+    fi
+
     # Run the harness.
     (
         cd "$REPO_ROOT"
-        SKIP_ALGORITHMS=brute-force-rust \
+        SKIP_ALGORITHMS="$SKIP_LIST" \
         HEURISTIC_REPETITIONS="$REPS_COUNT" \
         pnpm start 2>&1
     ) | tee -a "$LOG_FILE"
