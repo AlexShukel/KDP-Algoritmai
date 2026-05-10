@@ -44,6 +44,8 @@ use std::time::{Duration, Instant};
 use highs::{HighsModelStatus, RowProblem, Sense};
 use vrppd_core::{haversine_km, Objective, Problem};
 
+mod warm_start;
+
 /// 30-minute default budget per instance — matches PLAN.md §3.3.
 pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30 * 60);
 
@@ -153,6 +155,59 @@ pub fn solve_milp_default(problem: &Problem, target: Objective) -> Result<MilpRe
   solve_milp(problem, target, DEFAULT_TIMEOUT, threads)
 }
 
+/// Solve the adapted MILP for `target` using `warm_start` as the initial
+/// primal incumbent. Decodes `warm_start.routes` into HiGHS column primal
+/// values `(y_ov, x_ijv, q_iv, u_iv)` and passes them via `set_solution`
+/// before solving. If the warm-start is infeasible HiGHS silently discards
+/// it and behaves identically to `solve_milp`.
+pub fn solve_milp_with_warm_start(
+  problem: &Problem,
+  target: Objective,
+  timeout: Duration,
+  threads: usize,
+  warm_start: &vrppd_core::ProblemSolution,
+) -> Result<MilpResult, MilpError> {
+  if matches!(target, Objective::Empty) {
+    return Err(MilpError::UnsupportedObjective(target));
+  }
+  if problem.orders.is_empty() || problem.vehicles.is_empty() {
+    return Ok(MilpResult {
+      objective_value: 0.0,
+      status: MilpStatus::Optimal,
+      solve_time_ms: 0,
+    });
+  }
+
+  let started = Instant::now();
+  let model = build_milp(problem, target);
+  let mut hm = model.problem.optimise(Sense::Minimise);
+  hm.set_option("time_limit", timeout.as_secs_f64());
+  hm.set_option("output_flag", false);
+  hm.set_option("threads", threads.max(1) as i32);
+
+  let col_values = warm_start::decode(problem, warm_start, &model.layout);
+  hm.set_solution(Some(&col_values), None, None, None);
+
+  let solved = hm.solve();
+  let status = match solved.status() {
+    HighsModelStatus::Optimal => MilpStatus::Optimal,
+    HighsModelStatus::ReachedTimeLimit => MilpStatus::TimedOut,
+    HighsModelStatus::Infeasible => return Err(MilpError::Infeasible),
+    other => return Err(MilpError::SolverFailed(format!("status={other:?}"))),
+  };
+
+  let solution = solved.get_solution();
+  let mut z = 0.0;
+  for (col, coef) in &model.objective_coeffs {
+    z += coef * solution[*col];
+  }
+  Ok(MilpResult {
+    objective_value: z.max(0.0),
+    status,
+    solve_time_ms: started.elapsed().as_millis() as u64,
+  })
+}
+
 struct MilpModel {
   problem: RowProblem,
   /// `(column, coefficient)` pairs reproducing the objective so we can
@@ -161,38 +216,58 @@ struct MilpModel {
   /// the `Index<Col> for Solution` impl lets us read each column's value
   /// without leaking the column's internal index.
   objective_coeffs: Vec<(highs::Col, f64)>,
+  layout: ModelLayout,
+}
+
+/// Column-index maps for the four variable families, used by the warm-start
+/// decoder to build the flat primal vector that `set_solution` expects.
+/// Column indices are stored as `usize` because `highs::Col(pub(crate) usize)`
+/// is not accessible outside the `highs` crate; we capture the index from
+/// `pb.num_cols()` immediately before each `add_*_column` call.
+pub(crate) struct ModelLayout {
+  pub(crate) ix: NodeIndex,
+  /// y_ov: (order_idx, vehicle_idx) → column index
+  pub(crate) y: HashMap<(usize, usize), usize>,
+  /// x_ijv: (node_i, node_j, vehicle_idx) → column index
+  pub(crate) x: HashMap<(usize, usize, usize), usize>,
+  /// q_iv: (node_i, vehicle_idx) → column index
+  pub(crate) q: HashMap<(usize, usize), usize>,
+  /// u_iv: (node_i, vehicle_idx) → column index
+  pub(crate) u: HashMap<(usize, usize), usize>,
+  /// Total number of columns in the model.
+  pub(crate) num_cols: usize,
 }
 
 #[derive(Clone, Copy)]
-struct NodeIndex {
-  num_vehicles: usize,
-  num_orders: usize,
+pub(crate) struct NodeIndex {
+  pub(crate) num_vehicles: usize,
+  pub(crate) num_orders: usize,
 }
 
 impl NodeIndex {
-  fn start(&self, v: usize) -> usize {
+  pub(crate) fn start(&self, v: usize) -> usize {
     v
   }
-  fn pickup(&self, o: usize) -> usize {
+  pub(crate) fn pickup(&self, o: usize) -> usize {
     self.num_vehicles + o
   }
-  fn delivery(&self, o: usize) -> usize {
+  pub(crate) fn delivery(&self, o: usize) -> usize {
     self.num_vehicles + self.num_orders + o
   }
-  fn is_pickup(&self, node: usize) -> Option<usize> {
+  pub(crate) fn is_pickup(&self, node: usize) -> Option<usize> {
     let lo = self.num_vehicles;
     let hi = lo + self.num_orders;
     (lo..hi).contains(&node).then(|| node - lo)
   }
-  fn is_delivery(&self, node: usize) -> Option<usize> {
+  pub(crate) fn is_delivery(&self, node: usize) -> Option<usize> {
     let lo = self.num_vehicles + self.num_orders;
     let hi = lo + self.num_orders;
     (lo..hi).contains(&node).then(|| node - lo)
   }
-  fn service_nodes(&self) -> impl Iterator<Item = usize> {
+  pub(crate) fn service_nodes(&self) -> impl Iterator<Item = usize> {
     self.num_vehicles..self.num_vehicles + 2 * self.num_orders
   }
-  fn vehicle_nodes(&self, v: usize) -> impl Iterator<Item = usize> {
+  pub(crate) fn vehicle_nodes(&self, v: usize) -> impl Iterator<Item = usize> {
     std::iter::once(self.start(v)).chain(self.service_nodes())
   }
 }
@@ -207,13 +282,23 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
 
   let mut pb = RowProblem::default();
 
-  // Track the column index for every logical variable family. HiGHS gives
-  // us a `Col` handle on add; we store the underlying `usize` index so
-  // we can read the primal solution back later.
-  let mut y: HashMap<(usize, usize), highs::Col> = HashMap::new();
-  let mut x: HashMap<(usize, usize, usize), highs::Col> = HashMap::new();
-  let mut q: HashMap<(usize, usize), highs::Col> = HashMap::new();
-  let mut u: HashMap<(usize, usize), highs::Col> = HashMap::new();
+  // Track the column index for every logical variable family. We keep two
+  // parallel maps:
+  //  - `highs::Col` handles for building constraints (pb.add_row needs them)
+  //  - `usize` indices for the layout / warm-start decoder
+  //
+  // We capture the `usize` index from `pb.num_cols()` immediately *before*
+  // each add_*_column call because `highs::Col(pub(crate) usize)` is not
+  // accessible outside the highs crate.
+  let mut y_col: HashMap<(usize, usize), highs::Col> = HashMap::new();
+  let mut x_col: HashMap<(usize, usize, usize), highs::Col> = HashMap::new();
+  let mut q_col: HashMap<(usize, usize), highs::Col> = HashMap::new();
+  let mut u_col: HashMap<(usize, usize), highs::Col> = HashMap::new();
+
+  let mut y_idx: HashMap<(usize, usize), usize> = HashMap::new();
+  let mut x_idx: HashMap<(usize, usize, usize), usize> = HashMap::new();
+  let mut q_idx: HashMap<(usize, usize), usize> = HashMap::new();
+  let mut u_idx: HashMap<(usize, usize), usize> = HashMap::new();
 
   let mut objective_coeffs: Vec<(highs::Col, f64)> = Vec::new();
 
@@ -221,8 +306,10 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
   // supported objectives — DISTANCE and PRICE).
   for o in 0..n_count {
     for v in 0..v_count {
+      let idx = pb.num_cols();
       let col = pb.add_integer_column(0.0, 0.0..=1.0);
-      y.insert((o, v), col);
+      y_col.insert((o, v), col);
+      y_idx.insert((o, v), idx);
     }
   }
 
@@ -244,8 +331,10 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
         } else {
           arc_distance(problem, &ix, v, i, j) * objective_weight(problem, target, v)
         };
+        let idx = pb.num_cols();
         let col = pb.add_integer_column(cost, 0.0..=1.0);
-        x.insert((i, j, v), col);
+        x_col.insert((i, j, v), col);
+        x_idx.insert((i, j, v), idx);
         if cost != 0.0 {
           objective_coeffs.push((col, cost));
         }
@@ -255,10 +344,15 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
 
   // q_iv ∈ [0, MAX_LOAD] on service nodes; pinned to 0 at the start.
   for v in 0..v_count {
+    let idx = pb.num_cols();
     let s_col = pb.add_column(0.0, 0.0..=0.0);
-    q.insert((ix.start(v), v), s_col);
+    q_col.insert((ix.start(v), v), s_col);
+    q_idx.insert((ix.start(v), v), idx);
     for i in ix.service_nodes() {
-      q.insert((i, v), pb.add_column(0.0, 0.0..=1.0));
+      let idx = pb.num_cols();
+      let col = pb.add_column(0.0, 0.0..=1.0);
+      q_col.insert((i, v), col);
+      q_idx.insert((i, v), idx);
     }
   }
 
@@ -266,13 +360,17 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
   let mtz_max = 2.0 * n_count as f64;
   for v in 0..v_count {
     for i in ix.service_nodes() {
-      u.insert((i, v), pb.add_column(0.0, 0.0..=mtz_max));
+      let idx = pb.num_cols();
+      let col = pb.add_column(0.0, 0.0..=mtz_max);
+      u_col.insert((i, v), col);
+      u_idx.insert((i, v), idx);
     }
   }
 
   // 1. Order assignment: Σ_v y_ov = 1.
   for o in 0..n_count {
-    let factors: Vec<(highs::Col, f64)> = (0..v_count).map(|v| (y[&(o, v)], 1.0)).collect();
+    let factors: Vec<(highs::Col, f64)> =
+      (0..v_count).map(|v| (y_col[&(o, v)], 1.0)).collect();
     pb.add_row(1.0..=1.0, &factors);
   }
 
@@ -281,7 +379,7 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
     let s = ix.start(v);
     let factors: Vec<(highs::Col, f64)> = ix
       .service_nodes()
-      .filter_map(|j| x.get(&(s, j, v)).copied().map(|xv| (xv, 1.0)))
+      .filter_map(|j| x_col.get(&(s, j, v)).copied().map(|xv| (xv, 1.0)))
       .collect();
     if !factors.is_empty() {
       pb.add_row(f64::NEG_INFINITY..=1.0, &factors);
@@ -294,7 +392,7 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
     for v in 0..v_count {
       let p = ix.pickup(o);
       let d = ix.delivery(o);
-      let yov = y[&(o, v)];
+      let yov = y_col[&(o, v)];
       let nodes: Vec<usize> = ix.vehicle_nodes(v).collect();
 
       let mut into_p: Vec<(highs::Col, f64)> = Vec::new();
@@ -303,18 +401,18 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
       let mut out_d: Vec<(highs::Col, f64)> = Vec::new();
       for &k in &nodes {
         if k != p {
-          if let Some(&xv) = x.get(&(k, p, v)) {
+          if let Some(&xv) = x_col.get(&(k, p, v)) {
             into_p.push((xv, 1.0));
           }
-          if let Some(&xv) = x.get(&(p, k, v)) {
+          if let Some(&xv) = x_col.get(&(p, k, v)) {
             out_p.push((xv, 1.0));
           }
         }
         if k != d {
-          if let Some(&xv) = x.get(&(k, d, v)) {
+          if let Some(&xv) = x_col.get(&(k, d, v)) {
             into_d.push((xv, 1.0));
           }
-          if let Some(&xv) = x.get(&(d, k, v)) {
+          if let Some(&xv) = x_col.get(&(d, k, v)) {
             out_d.push((xv, 1.0));
           }
         }
@@ -333,7 +431,11 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
     for v in 0..v_count {
       let p = ix.pickup(o);
       let d = ix.delivery(o);
-      let factors = [(u[&(p, v)], 1.0), (u[&(d, v)], -1.0), (y[&(o, v)], m_n)];
+      let factors = [
+        (u_col[&(p, v)], 1.0),
+        (u_col[&(d, v)], -1.0),
+        (y_col[&(o, v)], m_n),
+      ];
       pb.add_row(f64::NEG_INFINITY..=(m_n - 1.0), factors);
     }
   }
@@ -351,16 +453,16 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
         if ix.is_pickup(j).is_none() && ix.is_delivery(j).is_none() {
           continue; // no flow into a start node
         }
-        let xij = x[&(i, j, v)];
-        let qj = q[&(j, v)];
+        let xij = x_col[&(i, j, v)];
+        let qj = q_col[&(j, v)];
 
         // Δ_i contribution: +w_o on pickup of o, −w_o on delivery of o.
         // w_o = 1 / load_factor_o; folded into the y_ov coefficient.
         let (delta_y_col, delta_y_coef): (Option<highs::Col>, f64) =
           if let Some(o) = ix.is_pickup(i) {
-            (Some(y[&(o, v)]), 1.0 / problem.orders[o].load_factor)
+            (Some(y_col[&(o, v)]), 1.0 / problem.orders[o].load_factor)
           } else if let Some(o) = ix.is_delivery(i) {
-            (Some(y[&(o, v)]), -1.0 / problem.orders[o].load_factor)
+            (Some(y_col[&(o, v)]), -1.0 / problem.orders[o].load_factor)
           } else {
             (None, 0.0)
           };
@@ -373,8 +475,8 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
         lower.push((qj, 1.0));
         upper.push((qj, 1.0));
         if i != ix.start(v) {
-          lower.push((q[&(i, v)], -1.0));
-          upper.push((q[&(i, v)], -1.0));
+          lower.push((q_col[&(i, v)], -1.0));
+          upper.push((q_col[&(i, v)], -1.0));
         }
         if let Some(yc) = delta_y_col {
           lower.push((yc, -delta_y_coef));
@@ -397,20 +499,26 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
         if i == j {
           continue;
         }
-        if let Some(&xij) = x.get(&(i, j, v)) {
-          let factors = [(u[&(i, v)], 1.0), (u[&(j, v)], -1.0), (xij, m_n)];
+        if let Some(&xij) = x_col.get(&(i, j, v)) {
+          let factors = [(u_col[&(i, v)], 1.0), (u_col[&(j, v)], -1.0), (xij, m_n)];
           pb.add_row(f64::NEG_INFINITY..=(m_n - 1.0), factors);
         }
       }
     }
   }
 
-  // `y`, `q`, `u` are intentionally dropped — only `x` (well, the column
-  // indices in `objective_coeffs`) is needed past this point.
-  let _ = (y, q, u);
+  let num_cols = pb.num_cols();
   MilpModel {
     problem: pb,
     objective_coeffs,
+    layout: ModelLayout {
+      ix,
+      y: y_idx,
+      x: x_idx,
+      q: q_idx,
+      u: u_idx,
+      num_cols,
+    },
   }
 }
 
@@ -497,5 +605,78 @@ mod tests {
       solve_milp(&problem, Objective::Empty, Duration::from_secs(10), 1),
       Err(MilpError::UnsupportedObjective(Objective::Empty))
     ));
+  }
+
+  #[test]
+  fn warm_start_n1_matches_cold() {
+    use vrppd_psa::{default_config_for, solve_pipeline_seeded};
+
+    let problem = Problem {
+      vehicles: vec![vehicle(1, 1.0, 0.0, 0.0)],
+      orders: vec![order(1, (0.0, 0.0), (0.0, 0.5))],
+    };
+
+    let cold =
+      solve_milp(&problem, Objective::Distance, Duration::from_secs(10), 1).unwrap();
+
+    let psa = solve_pipeline_seeded(
+      &problem,
+      Objective::Distance,
+      default_config_for(Objective::Distance),
+      42,
+    );
+    let warm = solve_milp_with_warm_start(
+      &problem,
+      Objective::Distance,
+      Duration::from_secs(10),
+      1,
+      &psa.solution,
+    )
+    .unwrap();
+
+    assert_eq!(warm.status, MilpStatus::Optimal);
+    assert!(
+      (warm.objective_value - cold.objective_value).abs() < 1e-6,
+      "warm-start objective {} differs from cold {}",
+      warm.objective_value,
+      cold.objective_value
+    );
+  }
+
+  #[test]
+  fn warm_start_n3_distance_matches_bf() {
+    use std::path::PathBuf;
+    use vrppd_psa::{default_config_for, solve_pipeline_seeded};
+
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push("../vrppd-bounds/tests/fixtures/two_vehicles_three_orders.json");
+    let raw = std::fs::read_to_string(&path).unwrap();
+    let problem: Problem = serde_json::from_str(&raw).unwrap();
+
+    let bf = vrppd_brute_force::solve(&problem);
+    let bf_optimum = bf.best_distance_solution.total_distance;
+
+    let psa = solve_pipeline_seeded(
+      &problem,
+      Objective::Distance,
+      default_config_for(Objective::Distance),
+      7,
+    );
+    let warm = solve_milp_with_warm_start(
+      &problem,
+      Objective::Distance,
+      Duration::from_secs(60),
+      1,
+      &psa.solution,
+    )
+    .unwrap();
+
+    assert_eq!(warm.status, MilpStatus::Optimal);
+    assert!(
+      (warm.objective_value - bf_optimum).abs() < 1e-3,
+      "warm MILP {} != BF {}",
+      warm.objective_value,
+      bf_optimum
+    );
   }
 }
