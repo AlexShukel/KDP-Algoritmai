@@ -27,7 +27,6 @@ pub(crate) fn decode(
 ) -> Vec<f64> {
   let mut vals = vec![0.0_f64; layout.num_cols];
 
-  // Build lookup tables: id → index in problem slices.
   let vehicle_index_for: std::collections::HashMap<u32, usize> = problem
     .vehicles
     .iter()
@@ -59,8 +58,8 @@ pub(crate) fn decode(
       continue;
     }
 
-    // Resolve stop nodes: (node_index, order_index) for each stop.
-    let stop_nodes: Vec<(usize, usize)> = route
+    // Resolve stop nodes: (node_index, order_index, StopKind) for each stop.
+    let stop_nodes: Vec<(usize, usize, StopKind)> = route
       .stops
       .iter()
       .filter_map(|s| {
@@ -69,7 +68,7 @@ pub(crate) fn decode(
           StopKind::Pickup => ix.pickup(o),
           StopKind::Delivery => ix.delivery(o),
         };
-        Some((node, o))
+        Some((node, o, s.kind))
       })
       .collect();
 
@@ -88,10 +87,6 @@ pub(crate) fn decode(
 
     // ----------------------------------------------------------------
     // x_ijv: arcs along the route.
-    // Arc from vehicle start → first service node.
-    // Arcs between consecutive service nodes.
-    // Arc from last service node → vehicle start (closing arc, zero cost
-    // but still a model variable).
     // ----------------------------------------------------------------
     if !stop_nodes.is_empty() {
       let s_node = ix.start(v);
@@ -125,20 +120,20 @@ pub(crate) fn decode(
     // ----------------------------------------------------------------
     {
       let mut load = 0.0_f64;
-      for &(node, o) in &stop_nodes {
+      for &(node, o, kind) in &stop_nodes {
         let delta = 1.0 / problem.orders[o].load_factor;
-        // Determine the stop kind from the node index.
-        let kind = if ix.is_pickup(node).is_some() {
-          StopKind::Pickup
-        } else {
-          StopKind::Delivery
-        };
         load += match kind {
           StopKind::Pickup => delta,
           StopKind::Delivery => -delta,
         };
         if let Some(&col) = layout.q.get(&(node, v)) {
-          vals[col] = load.max(0.0);
+          debug_assert!(
+            load >= -f64::EPSILON,
+            "warm-start route walk produced negative load {load} at node {node}; \
+             PSA returned a route with delivery before pickup or wrong load_factor"
+          );
+          let clamped_load = load.max(0.0);
+          vals[col] = clamped_load;
         }
       }
     }
@@ -146,7 +141,7 @@ pub(crate) fn decode(
     // ----------------------------------------------------------------
     // u_iv: 1-based MTZ position so u_p < u_d + 2N·y_ov (≤ 2N − 1).
     // ----------------------------------------------------------------
-    for (pos, &(node, _o)) in stop_nodes.iter().enumerate() {
+    for (pos, &(node, _o, _kind)) in stop_nodes.iter().enumerate() {
       // 1-based position: first stop gets u=1, second u=2, …
       let u_val = (pos + 1) as f64;
       if let Some(&col) = layout.u.get(&(node, v)) {
