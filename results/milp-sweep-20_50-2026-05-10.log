@@ -1,0 +1,193 @@
+[sweep] class=20_50  timeouts(s)=60 300  output_dir=/Users/srv/Git/KDP-Algoritmai/results/R05-20_50
+[sweep] log: /Users/srv/Git/KDP-Algoritmai/results/milp-sweep-20_50-2026-05-10.log
+
+[sweep] ===== timeout=60s (MILP_TIMEOUT_MS=60000) =====
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.61 kB │ gzip:  3.20 kB │ map:  29.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 351ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 515ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/20_50/9_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/8_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/7_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/6_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/5_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/4_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/3_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/2_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/1_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/19_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/18_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/17_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/16_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/15_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/14_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/13_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/12_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/11_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/10_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/20_50/0_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 60000ms — recording best primal incumbent
+Saved 60 records to benchmark-results-milp-rust.json
+[sweep] timeout=60s done in 1254s, saved /Users/srv/Git/KDP-Algoritmai/results/R05-20_50/benchmark-results-milp-rust.t60s.json
+
+[sweep] ===== timeout=300s (MILP_TIMEOUT_MS=300000) =====
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.61 kB │ gzip:  3.20 kB │ map:  29.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 377ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 560ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/20_50/9_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/8_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/7_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/6_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/5_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/4_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/3_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/2_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/1_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/19_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/18_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/17_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/16_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/15_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/14_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/13_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/12_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/11_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/10_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Processing problems/20_50/0_1778169862263.json
+milp-rust: timed out on 20v×50o target=DISTANCE after 300000ms — recording best primal incumbent
+milp-rust: timed out on 20v×50o target=PRICE after 300000ms — recording best primal incumbent
+Saved 60 records to benchmark-results-milp-rust.json
+[sweep] timeout=300s done in 6054s, saved /Users/srv/Git/KDP-Algoritmai/results/R05-20_50/benchmark-results-milp-rust.t300s.json
+
+[sweep] All timeouts complete for class=20_50.
+[sweep] Files: /Users/srv/Git/KDP-Algoritmai/results/R05-20_50/benchmark-results-milp-rust.t*s.json
+[sweep] Restoring stashed problem classes...
+[sweep] Restore complete.
