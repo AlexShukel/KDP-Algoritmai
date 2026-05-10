@@ -98,11 +98,18 @@ async function main(): Promise<void> {
     // bounds + MILP rows because the LP/MILP formulation defines EMPTY
     // as an upper bound on the load-aware empty distance, not a matching
     // quantity (documents/MILP_adaptation_notes.md §2.4).
+    const milpTimeoutMs = (() => {
+        const raw = process.env.MILP_TIMEOUT_MS;
+        if (!raw) return undefined;
+        const n = Number(raw);
+        return Number.isFinite(n) && n > 0 ? n : undefined;
+    })();
+
     const algorithms: Algorithm[] = [
         new BruteForceAlgorithmRust(),
         new DirectLowerBound(),
         new LpLowerBound(),
-        new MilpExact(),
+        new MilpExact(milpTimeoutMs),
         new ParallelSimulatedAnnealingRust(),
         new CoevolutionaryAlgorithmRust(),
     ];
