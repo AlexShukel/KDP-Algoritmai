@@ -20,6 +20,8 @@ import { ParallelSimulatedAnnealingRust } from './algorithms/p-sa';
 import { CoevolutionaryAlgorithmRust } from './algorithms/cea';
 import { DirectLowerBound, LpLowerBound } from './algorithms/bounds';
 import { MilpExact } from './algorithms/milp';
+import { OrToolsCpSat } from './algorithms/or-tools-cp-sat';
+import { OrToolsRouting } from './algorithms/or-tools-routing';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -105,11 +107,20 @@ async function main(): Promise<void> {
         return Number.isFinite(n) && n > 0 ? n : undefined;
     })();
 
+    const orToolsTimeoutMs = (() => {
+        const raw = process.env.OR_TOOLS_TIMEOUT_MS;
+        if (!raw) return undefined;
+        const n = Number(raw);
+        return Number.isFinite(n) && n > 0 ? n : undefined;
+    })();
+
     const algorithms: Algorithm[] = [
         new BruteForceAlgorithmRust(),
         new DirectLowerBound(),
         new LpLowerBound(),
         new MilpExact(milpTimeoutMs),
+        new OrToolsCpSat(orToolsTimeoutMs),
+        new OrToolsRouting(orToolsTimeoutMs),
         new ParallelSimulatedAnnealingRust(),
         new CoevolutionaryAlgorithmRust(),
     ];
