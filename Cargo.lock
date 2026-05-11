@@ -489,6 +489,7 @@ dependencies = [
  "vrppd-cea",
  "vrppd-core",
  "vrppd-milp",
+ "vrppd-or-tools",
  "vrppd-psa",
 ]
 
