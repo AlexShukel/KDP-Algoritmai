@@ -74,3 +74,32 @@ fn cp_sat_n1_matches_bf() {
         bf_optimum
     );
 }
+
+#[test]
+fn cp_sat_n3_matches_bf() {
+    if skip_unless_enabled() {
+        return;
+    }
+    use std::path::PathBuf;
+
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push("../vrppd-bounds/tests/fixtures/two_vehicles_three_orders.json");
+    let raw = std::fs::read_to_string(&path).unwrap();
+    let problem: Problem = serde_json::from_str(&raw).unwrap();
+
+    let bf = vrppd_brute_force::solve(&problem);
+    let bf_optimum = bf.best_distance_solution.total_distance;
+
+    let r = solve_cp_sat(&problem, Objective::Distance, Duration::from_secs(60), 2).unwrap();
+    assert_eq!(
+        r.status,
+        OrToolsStatus::Optimal,
+        "CP-SAT did not prove optimum in 60s on the 2v3o fixture"
+    );
+    assert!(
+        (r.objective_value - bf_optimum).abs() < 1e-3,
+        "CP-SAT {} vs BF {}",
+        r.objective_value,
+        bf_optimum
+    );
+}
