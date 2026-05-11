@@ -94,8 +94,110 @@ def succeed(objective_value, status, solver_runtime_ms):
 
 
 def solve_routing(req):
-    """Placeholder. Real implementation lands in a follow-up task."""
-    return fail("solver_internal", "routing solver not yet implemented")
+    from ortools.constraint_solver import pywrapcp, routing_enums_pb2
+
+    started = time.monotonic()
+    g = build_geometry(req)
+    V, N = g["V"], g["N"]
+    num_nodes = g["num_nodes"]
+
+    # Vehicle start = its own physical start node. End = same node; the cost
+    # callback returns 0 for arcs that end at any vehicle's start so the
+    # closing leg is free (matches vrppd-milp's "free return-to-start" rule).
+    starts = [v for v in range(V)]
+    ends = [v for v in range(V)]
+
+    manager = pywrapcp.RoutingIndexManager(num_nodes, V, starts, ends)
+    routing = pywrapcp.RoutingModel(manager)
+
+    start_node_set = set(starts)
+
+    # One transit callback per vehicle to scale by price_km when target is PRICE.
+    transit_callback_ids = []
+    for v in range(V):
+        weight = _objective_weight(req, v)
+
+        def make_cb(weight_v):
+            def cb(from_index, to_index):
+                from_node = manager.IndexToNode(from_index)
+                to_node = manager.IndexToNode(to_index)
+                if to_node in start_node_set:
+                    return 0
+                return int(round(g["dist_km"](from_node, to_node) * weight_v * DIST_SCALE))
+            return cb
+
+        idx = routing.RegisterTransitCallback(make_cb(weight))
+        routing.SetArcCostEvaluatorOfVehicle(idx, v)
+        transit_callback_ids.append(idx)
+
+    # Distance dimension for pickup-delivery precedence (uses a constant unit
+    # transit so precedence is purely on node sequence; the objective itself is
+    # handled by SetArcCostEvaluatorOfVehicle above).
+    unit_cb = routing.RegisterUnaryTransitCallback(lambda _idx: 1)
+    routing.AddDimension(
+        unit_cb,
+        0,
+        2 * N + V,
+        True,
+        "Order",
+    )
+    order_dim = routing.GetDimensionOrDie("Order")
+
+    # Capacity dimension. Demand: +w at pickup, -w at delivery, 0 elsewhere.
+    weights_scaled = []
+    for o in req["problem"]["orders"]:
+        weights_scaled.append(int(round(DIST_SCALE / o["load_factor"])))
+
+    def demand(from_index):
+        node = manager.IndexToNode(from_index)
+        if V <= node < V + N:
+            return weights_scaled[node - V]  # pickup
+        if V + N <= node < V + 2 * N:
+            return -weights_scaled[node - V - N]  # delivery
+        return 0
+
+    demand_cb = routing.RegisterUnaryTransitCallback(demand)
+    routing.AddDimensionWithVehicleCapacity(
+        demand_cb,
+        0,
+        [DIST_SCALE] * V,  # MAX_LOAD = 1.0 → DIST_SCALE units
+        True,
+        "Capacity",
+    )
+
+    # Pickup-delivery pairs + precedence + same-vehicle constraint
+    for o in range(N):
+        p_idx = manager.NodeToIndex(V + o)
+        d_idx = manager.NodeToIndex(V + N + o)
+        routing.AddPickupAndDelivery(p_idx, d_idx)
+        routing.solver().Add(routing.VehicleVar(p_idx) == routing.VehicleVar(d_idx))
+        routing.solver().Add(order_dim.CumulVar(p_idx) <= order_dim.CumulVar(d_idx))
+
+    search = pywrapcp.DefaultRoutingSearchParameters()
+    search.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
+    search.local_search_metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
+    secs = max(1, int(req["timeout_ms"] // 1000))
+    search.time_limit.seconds = secs
+
+    solution = routing.SolveWithParameters(search)
+
+    elapsed_ms = int((time.monotonic() - started) * 1000)
+
+    if solution is None:
+        # In OR-Tools 9.x, routing.status() returns integers:
+        #   0=NOT_SOLVED, 1=SUCCESS, 2=PARTIAL_SUCCESS, 3=FAIL, 4=FAIL_TIMEOUT,
+        #   5=INVALID, 6=INFEASIBLE, 7=OPTIMAL
+        # Neither routing_enums_pb2.ROUTING_FAIL_TIMEOUT nor routing.ROUTING_FAIL_TIMEOUT
+        # exist as named attributes in 9.15 — compare against the integer directly.
+        if routing.status() == 4:  # ROUTING_FAIL_TIMEOUT
+            return succeed(0.0, "TIMED_OUT", elapsed_ms)
+        return succeed(0.0, "FAILED", elapsed_ms)
+
+    value = solution.ObjectiveValue() / DIST_SCALE
+    # Status 7 = ROUTING_OPTIMAL; 1 = ROUTING_SUCCESS; 2 = ROUTING_PARTIAL_SUCCESS
+    rs = routing.status()
+    status_str = "OPTIMAL" if rs == 7 else "FEASIBLE"
+    return succeed(value, status_str, elapsed_ms)
 
 
 def solve_cp_sat(req):

@@ -5,7 +5,7 @@
 
 use std::time::Duration;
 use vrppd_core::{Location, Objective, Order, Problem, Vehicle};
-use vrppd_or_tools::{solve_cp_sat, solve_routing, OrToolsError, OrToolsStatus};
+use vrppd_or_tools::{solve_cp_sat, solve_routing, OrToolsStatus};
 
 fn skip_unless_enabled() -> bool {
     if std::env::var("VRPPD_TEST_ORTOOLS").is_err() {
@@ -36,23 +36,6 @@ fn one_vehicle_one_order() -> Problem {
             delivery_location: loc(54.7000, 25.3000),
             load_factor: 1.0,
         }],
-    }
-}
-
-#[test]
-fn plumbing_surfaces_solver_internal_for_placeholder() {
-    if skip_unless_enabled() {
-        return;
-    }
-    let p = one_vehicle_one_order();
-    // The Python placeholder returns error_kind="solver_internal", which the
-    // Rust side maps to OrToolsError::SolverInternal.
-    let err = solve_routing(&p, Objective::Distance, Duration::from_secs(10), 1).unwrap_err();
-    match err {
-        OrToolsError::SolverInternal(msg) => {
-            assert!(msg.contains("not yet implemented"), "unexpected msg: {msg}");
-        }
-        other => panic!("expected SolverInternal, got {other:?}"),
     }
 }
 
@@ -123,5 +106,59 @@ fn cp_sat_status_timeout() {
         matches!(r.status, OrToolsStatus::Feasible | OrToolsStatus::TimedOut),
         "expected Feasible or TimedOut, got {:?}",
         r.status
+    );
+}
+
+#[test]
+fn routing_n1_matches_bf() {
+    if skip_unless_enabled() {
+        return;
+    }
+    let p = one_vehicle_one_order();
+    let bf = vrppd_brute_force::solve(&p);
+    let bf_optimum = bf.best_distance_solution.total_distance;
+
+    let r = solve_routing(&p, Objective::Distance, Duration::from_secs(10), 1).unwrap();
+    assert!(
+        matches!(r.status, OrToolsStatus::Feasible | OrToolsStatus::Optimal),
+        "Routing returned {:?}",
+        r.status
+    );
+    assert!(
+        (r.objective_value - bf_optimum).abs() < 1e-2,
+        "Routing {} vs BF {}",
+        r.objective_value,
+        bf_optimum
+    );
+}
+
+#[test]
+fn routing_n3_within_tolerance() {
+    if skip_unless_enabled() {
+        return;
+    }
+    use std::path::PathBuf;
+
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push("../vrppd-bounds/tests/fixtures/two_vehicles_three_orders.json");
+    let raw = std::fs::read_to_string(&path).unwrap();
+    let problem: Problem = serde_json::from_str(&raw).unwrap();
+
+    let bf = vrppd_brute_force::solve(&problem);
+    let bf_optimum = bf.best_distance_solution.total_distance;
+
+    let r = solve_routing(&problem, Objective::Distance, Duration::from_secs(30), 1).unwrap();
+    assert_eq!(r.status, OrToolsStatus::Feasible);
+    assert!(
+        r.objective_value >= bf_optimum - 1e-3,
+        "Routing {} below proven optimum {} — model/scaling bug",
+        r.objective_value,
+        bf_optimum
+    );
+    assert!(
+        r.objective_value <= bf_optimum * 1.05,
+        "Routing {} above 5% tolerance vs BF {}",
+        r.objective_value,
+        bf_optimum
     );
 }
