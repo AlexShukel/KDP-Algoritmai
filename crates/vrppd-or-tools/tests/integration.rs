@@ -55,3 +55,22 @@ fn plumbing_surfaces_solver_internal_for_placeholder() {
         other => panic!("expected SolverInternal, got {other:?}"),
     }
 }
+
+#[test]
+fn cp_sat_n1_matches_bf() {
+    if skip_unless_enabled() {
+        return;
+    }
+    let p = one_vehicle_one_order();
+    let bf = vrppd_brute_force::solve(&p);
+    let bf_optimum = bf.best_distance_solution.total_distance;
+
+    let r = solve_cp_sat(&p, Objective::Distance, Duration::from_secs(30), 2).unwrap();
+    assert_eq!(r.status, OrToolsStatus::Optimal);
+    assert!(
+        (r.objective_value - bf_optimum).abs() < 1e-2,
+        "CP-SAT {} vs BF {}",
+        r.objective_value,
+        bf_optimum
+    );
+}
