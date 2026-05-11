@@ -103,3 +103,25 @@ fn cp_sat_n3_matches_bf() {
         bf_optimum
     );
 }
+
+#[test]
+fn cp_sat_status_timeout() {
+    if skip_unless_enabled() {
+        return;
+    }
+    use std::path::PathBuf;
+
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push("../vrppd-bounds/tests/fixtures/two_vehicles_three_orders.json");
+    let raw = std::fs::read_to_string(&path).unwrap();
+    let problem: Problem = serde_json::from_str(&raw).unwrap();
+
+    // 1 ms is well below CP-SAT's startup overhead → status must be
+    // FEASIBLE (incumbent found by primal heuristic) or TIMED_OUT.
+    let r = solve_cp_sat(&problem, Objective::Distance, Duration::from_millis(1), 1).unwrap();
+    assert!(
+        matches!(r.status, OrToolsStatus::Feasible | OrToolsStatus::TimedOut),
+        "expected Feasible or TimedOut, got {:?}",
+        r.status
+    );
+}

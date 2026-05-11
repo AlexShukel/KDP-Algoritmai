@@ -241,12 +241,14 @@ def solve_cp_sat(req):
 
     status = solver.Solve(model)
 
+    # With max_time_in_seconds configured, UNKNOWN means CP-SAT found no solution within
+    # the time budget, so we map it to TIMED_OUT rather than FAILED for accurate reporting.
     status_str = {
         cp_model.OPTIMAL: "OPTIMAL",
         cp_model.FEASIBLE: "FEASIBLE",
         cp_model.INFEASIBLE: "INFEASIBLE",
         cp_model.MODEL_INVALID: "FAILED",
-        cp_model.UNKNOWN: "FAILED",
+        cp_model.UNKNOWN: "TIMED_OUT",
     }.get(status, "FAILED")
 
     if status_str in ("OPTIMAL", "FEASIBLE"):
