@@ -128,10 +128,15 @@ PLAN.md §4.2 comparison matrix:
   highest-quality reference available at N ∈ {100, 200, 500}.
 
 Both solvers shell out to a Python script that uses the
-`google/or-tools` package. Install once:
+`google/or-tools` package. The recommended install is a project-local
+virtual environment at `.venv/` (works around PEP 668 on Homebrew
+Python; the Rust crate auto-detects this venv at runtime, so no
+shell-level activation is needed before `pnpm start`):
 
 ```bash
-pip install -r crates/vrppd-or-tools/python/requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r crates/vrppd-or-tools/python/requirements.txt
 ```
 
 Verify the install:
@@ -139,6 +144,9 @@ Verify the install:
 ```bash
 python3 crates/vrppd-or-tools/python/solver.py --self-test
 ```
+
+(After the first run, `.venv/bin/python3` is what the crate executes
+regardless of whether your current shell has the venv activated.)
 
 Both Rust functions (`solve_routing` / `solve_cp_sat`) return typed
 errors (`OrtoolsImportFailed`, `PythonNotFound`) if the install is
@@ -154,6 +162,9 @@ Environment variables that affect the OR-Tools rows of `pnpm start`:
   `crates/vrppd-or-tools/python/solver.py` resolved relative to the
   crate's compile-time directory. Useful when the binary runs from a
   different working tree.
+- `VRPPD_PYTHON3` — override the python3 interpreter. When unset the
+  crate prefers `<workspace>/.venv/bin/python3` if it exists, else
+  falls back to `python3` on PATH.
 
 Integration tests for the crate require both Python and the
 `ortools` package, and are gated behind `VRPPD_TEST_ORTOOLS=1`:

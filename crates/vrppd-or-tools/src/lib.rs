@@ -161,9 +161,25 @@ fn script_path() -> String {
     })
 }
 
+/// Resolves the python3 interpreter, preferring (1) the `VRPPD_PYTHON3` env
+/// override, then (2) a workspace-local venv at `<workspace>/.venv/bin/python3`,
+/// then (3) `python3` on PATH. The venv path lets callers skip
+/// `source .venv/bin/activate` before every `pnpm start` / `cargo test`.
+fn python_bin() -> String {
+    if let Ok(v) = std::env::var("VRPPD_PYTHON3") {
+        return v;
+    }
+    let workspace_venv = concat!(env!("CARGO_MANIFEST_DIR"), "/../../.venv/bin/python3");
+    if std::path::Path::new(workspace_venv).exists() {
+        return workspace_venv.to_string();
+    }
+    "python3".to_string()
+}
+
 fn run_python(request: &SolverRequest) -> Result<SolverResponse, OrToolsError> {
     let script = script_path();
-    let mut child = match Command::new("python3")
+    let python = python_bin();
+    let mut child = match Command::new(&python)
         .arg(&script)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -172,7 +188,7 @@ fn run_python(request: &SolverRequest) -> Result<SolverResponse, OrToolsError> {
     {
         Ok(c) => c,
         Err(e) if e.kind() == ErrorKind::NotFound => return Err(OrToolsError::PythonNotFound),
-        Err(e) => return Err(OrToolsError::SolverFailed(format!("spawn python3: {e}"))),
+        Err(e) => return Err(OrToolsError::SolverFailed(format!("spawn {python}: {e}"))),
     };
 
     {

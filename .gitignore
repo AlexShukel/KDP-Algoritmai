@@ -11,6 +11,10 @@ temp-results
 # Rust workspace build artifacts
 target/
 
+# Python virtualenv for vrppd-or-tools (created via
+# `python3 -m venv .venv` per BENCHMARKS.md "OR-Tools baseline setup").
+.venv/
+
 # Third-party copyrighted papers used as references but not redistributable.
 # The author's own thesis PDFs (Kursinis_darbas.pdf, Kursinio_darbo_projektas.pdf)
 # are intentionally NOT excluded — those belong to the project author.
