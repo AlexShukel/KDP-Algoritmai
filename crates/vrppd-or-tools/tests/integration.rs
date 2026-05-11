@@ -154,7 +154,11 @@ fn routing_n3_within_tolerance() {
     let bf_optimum = bf.best_distance_solution.total_distance;
 
     let r = solve_routing(&problem, Objective::Distance, Duration::from_secs(30), 1).unwrap();
-    assert_eq!(r.status, OrToolsStatus::Feasible);
+    assert!(
+        matches!(r.status, OrToolsStatus::Feasible | OrToolsStatus::Optimal),
+        "Routing returned {:?}",
+        r.status
+    );
     assert!(
         r.objective_value >= bf_optimum - 1e-3,
         "Routing {} below proven optimum {} — model/scaling bug",

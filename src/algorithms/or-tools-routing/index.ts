@@ -8,7 +8,7 @@
  */
 
 import { solveOrToolsRouting } from 'napi-bridge';
-import type { OrToolsResultWire, ProblemSolution } from 'napi-bridge';
+import type { AlgorithmSolution, OrToolsResultWire, ProblemSolution } from 'napi-bridge';
 import {
     AlgorithmConfig,
     AlgorithmResultWithMetadata,
@@ -36,7 +36,7 @@ export class OrToolsRouting implements MultiTargetAlgorithm {
     async solve(
         problem: Problem,
         _config: AlgorithmConfig,
-    ): Promise<AlgorithmResultWithMetadata<import('napi-bridge').AlgorithmSolution>> {
+    ): Promise<AlgorithmResultWithMetadata<AlgorithmSolution>> {
         const dist = solveOrToolsRouting(problem, OptimizationTarget.DISTANCE, {
             timeoutMs: this.timeoutMs,
         });

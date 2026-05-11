@@ -332,5 +332,5 @@ SKIP_ALGORITHMS=brute-force-rust,milp-rust bash scripts/run-r05.sh
 
 The `SKIP_ALGORITHMS` env var is a comma-separated list of algorithm names
 as printed by the harness (`brute-force-rust`, `lb-direct`, `lb-lp`,
-`milp-rust`, `p-sa-rust`, `cea-rust`).  Skipped algorithms do not write
-their result file, so prior-round data is preserved.
+`milp-rust`, `or-tools-cp-sat`, `or-tools-routing`, `p-sa-rust`, `cea-rust`).
+Skipped algorithms do not write their result file, so prior-round data is preserved.

@@ -130,6 +130,7 @@ for i in "${!CLASSES[@]}"; do
         SKIP_ALGORITHMS="$SKIP_LIST" \
         HEURISTIC_REPETITIONS="$REPS_COUNT" \
         MILP_TIMEOUT_MS=60000 \
+        OR_TOOLS_TIMEOUT_MS=60000 \
         pnpm start 2>&1
     ) | tee -a "$LOG_FILE"
 
