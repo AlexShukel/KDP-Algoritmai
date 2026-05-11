@@ -4,8 +4,9 @@
 //! Run with: `VRPPD_TEST_ORTOOLS=1 cargo test -p vrppd-or-tools --test integration`.
 
 use std::time::Duration;
+use serial_test::serial;
 use vrppd_core::{Location, Objective, Order, Problem, Vehicle};
-use vrppd_or_tools::{solve_cp_sat, solve_routing, OrToolsStatus};
+use vrppd_or_tools::{solve_cp_sat, solve_routing, OrToolsError, OrToolsStatus};
 
 fn skip_unless_enabled() -> bool {
     if std::env::var("VRPPD_TEST_ORTOOLS").is_err() {
@@ -40,6 +41,7 @@ fn one_vehicle_one_order() -> Problem {
 }
 
 #[test]
+#[serial]
 fn cp_sat_n1_matches_bf() {
     if skip_unless_enabled() {
         return;
@@ -59,6 +61,7 @@ fn cp_sat_n1_matches_bf() {
 }
 
 #[test]
+#[serial]
 fn cp_sat_n3_matches_bf() {
     if skip_unless_enabled() {
         return;
@@ -88,6 +91,7 @@ fn cp_sat_n3_matches_bf() {
 }
 
 #[test]
+#[serial]
 fn cp_sat_status_timeout() {
     if skip_unless_enabled() {
         return;
@@ -110,6 +114,7 @@ fn cp_sat_status_timeout() {
 }
 
 #[test]
+#[serial]
 fn routing_n1_matches_bf() {
     if skip_unless_enabled() {
         return;
@@ -133,6 +138,7 @@ fn routing_n1_matches_bf() {
 }
 
 #[test]
+#[serial]
 fn routing_n3_within_tolerance() {
     if skip_unless_enabled() {
         return;
@@ -161,4 +167,38 @@ fn routing_n3_within_tolerance() {
         r.objective_value,
         bf_optimum
     );
+}
+
+#[test]
+#[serial]
+fn python_missing_error() {
+    if skip_unless_enabled() {
+        return;
+    }
+    // Point at a nonexistent script. python3 will exit non-zero with a
+    // FileNotFoundError on stderr; our Rust side surfaces it as SolverFailed
+    // (since the spawn itself succeeded — the script just doesn't exist).
+
+    // Save the original value to restore it after the test.
+    let original = std::env::var("VRPPD_ORTOOLS_PY").ok();
+    std::env::set_var("VRPPD_ORTOOLS_PY", "/tmp/this-path-definitely-does-not-exist-12345.py");
+
+    let p = one_vehicle_one_order();
+    let err = solve_routing(&p, Objective::Distance, Duration::from_secs(5), 1).unwrap_err();
+
+    // Restore the original value.
+    match original {
+        Some(val) => std::env::set_var("VRPPD_ORTOOLS_PY", val),
+        None => std::env::remove_var("VRPPD_ORTOOLS_PY"),
+    }
+
+    match err {
+        OrToolsError::SolverFailed(msg) => {
+            assert!(
+                msg.contains("parse stdout") || msg.contains("12345"),
+                "unexpected msg: {msg}"
+            );
+        }
+        other => panic!("expected SolverFailed, got {other:?}"),
+    }
 }

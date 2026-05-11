@@ -853,3 +853,356 @@ Saved 60 records to benchmark-results-milp-rust.json
 [R05] All classes restored.
 [R05] All passes complete. Per-class results under results/R05-*/
 [R05] Full log: /Users/srv/Git/KDP-Algoritmai/results/R05-2026-05-10.log
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] 10_20 already has results in /Users/srv/Git/KDP-Algoritmai/results/R05-10_20, skipping.
+[R05] ===== 20_50  (HEURISTIC_REPETITIONS=3) =====
+[R05] 20_50 already has results in /Users/srv/Git/KDP-Algoritmai/results/R05-20_50, skipping.
+[R05] ===== 30_100  (HEURISTIC_REPETITIONS=2) =====
+[R05] problems/ now contains only: 30_100
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.61 kB │ gzip:  3.20 kB │ map:  29.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 349ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 531ms
+Skipping algorithms: brute-force-rust, lb-lp
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/30_100/9_1778169862263.json
+Processing problems/30_100/8_1778169862263.json
+Processing problems/30_100/7_1778169862263.json
+Processing problems/30_100/6_1778169862263.json
+Processing problems/30_100/5_1778169862263.json
+Processing problems/30_100/4_1778169862263.json
+Processing problems/30_100/3_1778169862263.json
+Processing problems/30_100/2_1778169862263.json
+Processing problems/30_100/1_1778169862263.json
+Processing problems/30_100/19_1778169862263.json
+Processing problems/30_100/18_1778169862263.json
+Processing problems/30_100/17_1778169862263.json
+Processing problems/30_100/16_1778169862263.json
+Processing problems/30_100/15_1778169862263.json
+Processing problems/30_100/14_1778169862263.json
+Processing problems/30_100/13_1778169862263.json
+Processing problems/30_100/12_1778169862263.json
+Processing problems/30_100/11_1778169862263.json
+Processing problems/30_100/10_1778169862263.json
+Processing problems/30_100/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/30_100/9_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/8_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/7_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/6_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/5_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/4_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/3_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/2_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/1_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/19_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/18_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/17_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/16_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/15_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/14_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/13_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/12_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/11_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/10_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Processing problems/30_100/0_1778169862263.json
+milp-rust: timed out on 30v×100o target=DISTANCE after 60000ms — recording best primal incumbent
+milp-rust: timed out on 30v×100o target=PRICE after 60000ms — recording best primal incumbent
+Saved 60 records to benchmark-results-milp-rust.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/30_100/9_1778169862263.json
+Processing problems/30_100/8_1778169862263.json
+Processing problems/30_100/7_1778169862263.json
+Processing problems/30_100/6_1778169862263.json
+Processing problems/30_100/5_1778169862263.json
+Processing problems/30_100/4_1778169862263.json
+Processing problems/30_100/3_1778169862263.json
+Processing problems/30_100/2_1778169862263.json
+Processing problems/30_100/1_1778169862263.json
+Processing problems/30_100/19_1778169862263.json
+Processing problems/30_100/18_1778169862263.json
+Processing problems/30_100/17_1778169862263.json
+Processing problems/30_100/16_1778169862263.json
+Processing problems/30_100/15_1778169862263.json
+Processing problems/30_100/14_1778169862263.json
+Processing problems/30_100/13_1778169862263.json
+Processing problems/30_100/12_1778169862263.json
+Processing problems/30_100/11_1778169862263.json
+Processing problems/30_100/10_1778169862263.json
+Processing problems/30_100/0_1778169862263.json
+Saved 120 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/30_100/9_1778169862263.json
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 37 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 38 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+Processing problems/30_100/8_1778169862263.json
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 36 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 34 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+Processing problems/30_100/7_1778169862263.json
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 20 generations (conv_count=300 not reached)
+Processing problems/30_100/6_1778169862263.json
+[cea] wall-time cap hit after 30 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 35 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 38 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+Processing problems/30_100/5_1778169862263.json
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 34 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 19 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 17 generations (conv_count=300 not reached)
+Processing problems/30_100/4_1778169862263.json
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 20 generations (conv_count=300 not reached)
+Processing problems/30_100/3_1778169862263.json
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 20 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 18 generations (conv_count=300 not reached)
+Processing problems/30_100/2_1778169862263.json
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+Processing problems/30_100/1_1778169862263.json
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 19 generations (conv_count=300 not reached)
+Processing problems/30_100/19_1778169862263.json
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 36 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 36 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+Processing problems/30_100/18_1778169862263.json
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 32 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 17 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 17 generations (conv_count=300 not reached)
+Processing problems/30_100/17_1778169862263.json
+[cea] wall-time cap hit after 25 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 30 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 20 generations (conv_count=300 not reached)
+Processing problems/30_100/16_1778169862263.json
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 32 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 30 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+Processing problems/30_100/15_1778169862263.json
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 31 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 18 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 19 generations (conv_count=300 not reached)
+Processing problems/30_100/14_1778169862263.json
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 27 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 36 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 37 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 23 generations (conv_count=300 not reached)
+Processing problems/30_100/13_1778169862263.json
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 32 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 21 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+Processing problems/30_100/12_1778169862263.json
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 29 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 17 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 18 generations (conv_count=300 not reached)
+Processing problems/30_100/11_1778169862263.json
+[cea] wall-time cap hit after 30 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 28 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 39 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 37 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+Processing problems/30_100/10_1778169862263.json
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 25 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 37 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 37 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 24 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 22 generations (conv_count=300 not reached)
+Processing problems/30_100/0_1778169862263.json
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 26 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 32 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 33 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 18 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 19 generations (conv_count=300 not reached)
+Saved 120 records to benchmark-results-cea-rust.json
+[R05] 30_100 pass complete, copying results...
+[R05] Results saved to /Users/srv/Git/KDP-Algoritmai/results/R05-30_100
+[R05] All classes restored.
+[R05] ===== 50_200  (HEURISTIC_REPETITIONS=1) =====
+[R05] problems/ now contains only: 50_200
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.61 kB │ gzip:  3.20 kB │ map:  29.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 361ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 550ms
+Skipping algorithms: brute-force-rust, lb-lp
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/50_200/9_1778169862263.json
+Processing problems/50_200/8_1778169862263.json
+Processing problems/50_200/7_1778169862263.json
+Processing problems/50_200/6_1778169862263.json
+Processing problems/50_200/5_1778169862263.json
+Processing problems/50_200/4_1778169862263.json
+Processing problems/50_200/3_1778169862263.json
+Processing problems/50_200/2_1778169862263.json
+Processing problems/50_200/1_1778169862263.json
+Processing problems/50_200/19_1778169862263.json
+Processing problems/50_200/18_1778169862263.json
+Processing problems/50_200/17_1778169862263.json
+Processing problems/50_200/16_1778169862263.json
+Processing problems/50_200/15_1778169862263.json
+Processing problems/50_200/14_1778169862263.json
+Processing problems/50_200/13_1778169862263.json
+Processing problems/50_200/12_1778169862263.json
+Processing problems/50_200/11_1778169862263.json
+Processing problems/50_200/10_1778169862263.json
+Processing problems/50_200/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: milp-rust
+========================================
+Processing problems/50_200/9_1778169862263.json
+sh: line 1: 83712 Killed: 9               node --max-old-space-size=12288 vrp.es.mjs
+ ELIFECYCLE  Command failed with exit code 137.

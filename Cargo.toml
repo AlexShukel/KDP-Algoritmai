@@ -26,6 +26,7 @@ rand_xoshiro = "0.6"
 crossbeam-channel = "0.5"
 rayon = "1"
 good_lp = { version = "1.15", default-features = false, features = ["microlp"] }
+serial_test = "3"
 vrppd-core = { path = "crates/vrppd-core" }
 vrppd-brute-force = { path = "crates/vrppd-brute-force" }
 vrppd-psa = { path = "crates/vrppd-psa" }

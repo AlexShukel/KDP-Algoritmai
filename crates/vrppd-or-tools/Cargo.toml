@@ -14,3 +14,4 @@ serde_json = { workspace = true }
 
 [dev-dependencies]
 vrppd-brute-force = { workspace = true }
+serial_test = { workspace = true }
