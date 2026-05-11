@@ -243,6 +243,67 @@ pub fn solve_milp(
   }
 }
 
+/// OR-Tools Routing Solver. `target` accepts `"DISTANCE" | "PRICE"`.
+/// `EMPTY` is rejected because the OR-Tools cost model does not
+/// measure the implementation's load-aware empty distance.
+#[napi]
+pub fn solve_or_tools_routing(
+  problem: Problem,
+  target: String,
+  config: Option<OrToolsConfig>,
+) -> Result<OrToolsResultWire> {
+  let objective = parse_target(&target)?;
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_or_tools::DEFAULT_TIMEOUT,
+  };
+  let threads = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+
+  match vrppd_or_tools::solve_routing(&core_problem, objective, timeout, threads) {
+    Ok(r) => Ok(OrToolsResultWire {
+      value: r.objective_value,
+      status: or_tools_status_str(r.status),
+      solve_time_ms: r.solve_time_ms as f64,
+    }),
+    Err(e) => Err(Error::new(Status::GenericFailure, format!("OR-Tools Routing: {e}"))),
+  }
+}
+
+/// OR-Tools CP-SAT. `target` accepts `"DISTANCE" | "PRICE"`. EMPTY is rejected
+/// for the same reason as `solve_milp`.
+#[napi]
+pub fn solve_or_tools_cp_sat(
+  problem: Problem,
+  target: String,
+  config: Option<OrToolsConfig>,
+) -> Result<OrToolsResultWire> {
+  let objective = parse_target(&target)?;
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_or_tools::DEFAULT_TIMEOUT,
+  };
+  let threads = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+
+  match vrppd_or_tools::solve_cp_sat(&core_problem, objective, timeout, threads) {
+    Ok(r) => Ok(OrToolsResultWire {
+      value: r.objective_value,
+      status: or_tools_status_str(r.status),
+      solve_time_ms: r.solve_time_ms as f64,
+    }),
+    Err(e) => Err(Error::new(Status::GenericFailure, format!("OR-Tools CP-SAT: {e}"))),
+  }
+}
+
+fn or_tools_status_str(s: vrppd_or_tools::OrToolsStatus) -> String {
+  match s {
+    vrppd_or_tools::OrToolsStatus::Optimal => "OPTIMAL".to_string(),
+    vrppd_or_tools::OrToolsStatus::Feasible => "FEASIBLE".to_string(),
+    vrppd_or_tools::OrToolsStatus::TimedOut => "TIMEDOUT".to_string(),
+  }
+}
+
 fn parse_target(s: &str) -> Result<Objective> {
   match s {
     "EMPTY" => Ok(Objective::Empty),

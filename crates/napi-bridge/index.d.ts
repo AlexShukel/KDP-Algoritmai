@@ -108,6 +108,24 @@ export interface Order {
   loadFactor: number
 }
 
+/**
+ * OR-Tools run config. `timeoutMs <= 0` (or undefined) falls back to
+ * `vrppd_or_tools::DEFAULT_TIMEOUT` (30 minutes).
+ */
+export interface OrToolsConfig {
+  timeoutMs?: number
+}
+
+/**
+ * OR-Tools result. `status` is `"OPTIMAL"` (CP-SAT only — proven),
+ * `"FEASIBLE"` (best-found, not proven), or `"TIMEDOUT"` (no incumbent).
+ */
+export interface OrToolsResultWire {
+  value: number
+  status: string
+  solveTimeMs: number
+}
+
 export interface Problem {
   vehicles: Array<Vehicle>
   orders: Array<Order>
@@ -196,6 +214,19 @@ export declare function solveMilpBoth(problem: Problem, config?: MilpConfig | un
  * DISTANCE solve, PRICE warm-start for the PRICE solve).
  */
 export declare function solveMilpBothWarmStart(problem: Problem, distanceWarmStart: ProblemSolution, priceWarmStart: ProblemSolution, config?: MilpConfig | undefined | null): MilpBothResult
+
+/**
+ * OR-Tools CP-SAT. `target` accepts `"DISTANCE" | "PRICE"`. EMPTY is rejected
+ * for the same reason as `solve_milp`.
+ */
+export declare function solveOrToolsCpSat(problem: Problem, target: string, config?: OrToolsConfig | undefined | null): OrToolsResultWire
+
+/**
+ * OR-Tools Routing Solver. `target` accepts `"DISTANCE" | "PRICE"`.
+ * `EMPTY` is rejected because the OR-Tools cost model does not
+ * measure the implementation's load-aware empty distance.
+ */
+export declare function solveOrToolsRouting(problem: Problem, target: string, config?: OrToolsConfig | undefined | null): OrToolsResultWire
 
 /**
  * Run the multi-thread p-SA pipeline. `target` accepts the same SCREAMING_CASE
