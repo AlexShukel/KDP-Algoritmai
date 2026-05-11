@@ -9,6 +9,7 @@ members = [
   "crates/vrppd-milp",
   "crates/vrppd-validation",
   "crates/napi-bridge",
+  "crates/vrppd-or-tools",
 ]
 
 [workspace.package]
@@ -32,6 +33,7 @@ vrppd-cea = { path = "crates/vrppd-cea" }
 vrppd-bounds = { path = "crates/vrppd-bounds" }
 vrppd-milp = { path = "crates/vrppd-milp" }
 vrppd-validation = { path = "crates/vrppd-validation" }
+vrppd-or-tools = { path = "crates/vrppd-or-tools" }
 
 [profile.release]
 lto = true
