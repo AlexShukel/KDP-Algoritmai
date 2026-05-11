@@ -124,6 +124,14 @@ pub fn solve_milp(
   hm.set_option("time_limit", timeout.as_secs_f64());
   hm.set_option("output_flag", false);
   hm.set_option("threads", threads.max(1) as i32);
+  // Memory-friendly MIP options for large-N instances. Parallel B&B
+  // keeps multiple subtrees alive simultaneously (large RSS at N ≥ 100);
+  // heuristic effort + node cap bound accumulated state when proving
+  // optimality is hopeless under the 3-index formulation.
+  hm.set_option("parallel", "off");
+  hm.set_option("presolve", "on");
+  hm.set_option("mip_heuristic_effort", 1.0_f64);
+  hm.set_option("mip_max_nodes", 10_000_i32);
 
   let solved = hm.solve();
   let status = match solved.status() {
@@ -184,6 +192,14 @@ pub fn solve_milp_with_warm_start(
   hm.set_option("time_limit", timeout.as_secs_f64());
   hm.set_option("output_flag", false);
   hm.set_option("threads", threads.max(1) as i32);
+  // Memory-friendly MIP options for large-N instances. Parallel B&B
+  // keeps multiple subtrees alive simultaneously (large RSS at N ≥ 100);
+  // heuristic effort + node cap bound accumulated state when proving
+  // optimality is hopeless under the 3-index formulation.
+  hm.set_option("parallel", "off");
+  hm.set_option("presolve", "on");
+  hm.set_option("mip_heuristic_effort", 1.0_f64);
+  hm.set_option("mip_max_nodes", 10_000_i32);
 
   let col_values = warm_start::decode(problem, warm_start, &model.layout);
   hm.set_solution(Some(&col_values), None, None, None);
