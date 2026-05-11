@@ -18,8 +18,8 @@ use vrppd_psa::{default_config_for, OperatorWeights, SaConfig};
 
 pub use wire::{
   AlgorithmSolution, CeaConfig, CeaConvergencePoint, CeaSolved, Location, LowerBoundsResult,
-  MilpBothResult, MilpConfig, MilpResult, Order, Problem, ProblemSolution, PsaConfig,
-  PsaConvergencePoint, PsaSolved, RouteStop, Vehicle, VehicleRoute,
+  MilpBothResult, MilpConfig, MilpResult, Order, OrToolsConfig, OrToolsResultWire, Problem,
+  ProblemSolution, PsaConfig, PsaConvergencePoint, PsaSolved, RouteStop, Vehicle, VehicleRoute,
 };
 
 #[napi]

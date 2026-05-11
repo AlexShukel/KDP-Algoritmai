@@ -248,6 +248,24 @@ pub struct MilpBothResult {
   pub price: MilpResult,
 }
 
+/// OR-Tools run config. `timeoutMs <= 0` (or undefined) falls back to
+/// `vrppd_or_tools::DEFAULT_TIMEOUT` (30 minutes).
+#[napi(object)]
+#[derive(Clone, Debug, Default)]
+pub struct OrToolsConfig {
+  pub timeout_ms: Option<f64>,
+}
+
+/// OR-Tools result. `status` is `"OPTIMAL"` (CP-SAT only — proven),
+/// `"FEASIBLE"` (best-found, not proven), or `"TIMEDOUT"` (no incumbent).
+#[napi(object)]
+#[derive(Clone, Debug)]
+pub struct OrToolsResultWire {
+  pub value: f64,
+  pub status: String,
+  pub solve_time_ms: f64,
+}
+
 // --- conversions: wire -> core ---
 
 impl From<Location> for vrppd_core::Location {
