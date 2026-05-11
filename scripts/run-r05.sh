@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # R05 — large-instance benchmark for all classes beyond 10×10.
 #
-# Runs lb-direct, lb-lp, milp-rust, p-sa-rust, and cea-rust on the five
-# large problem classes (10×20, 20×50, 30×100, 50×200, 100×500).
-# brute-force-rust is skipped (problems are too large) so its result file
-# from the prior small-instance round is not overwritten.
+# Runs lb-direct, lb-lp, milp-rust, or-tools-cp-sat, or-tools-routing,
+# p-sa-rust, and cea-rust on the five large problem classes (10×20,
+# 20×50, 30×100, 50×200, 100×500). brute-force-rust is skipped
+# (problems are too large) so its result file from the prior small-
+# instance round is not overwritten.
 #
 # Each class is benchmarked in its own pass with a size-appropriate
 # HEURISTIC_REPETITIONS so wall-time stays manageable:
@@ -104,9 +105,10 @@ for i in "${!CLASSES[@]}"; do
 
     # lb-lp uses microlp (simplex, pure Rust) whose practical ceiling is
     # N ≤ 20 orders. Skip it for every class beyond 10×20.
-    # milp-rust OOMs on a 16 GB machine at 50×200 and above — defer those
-    # passes to a larger-RAM host (run MILP-only against the same problem
-    # files there, then drop the resulting JSON into results/R05-<class>/).
+    # milp-rust and or-tools-cp-sat both OOM on a 16 GB machine at
+    # 50×200 and above — defer those passes to a larger-RAM host
+    # (run them against the same problem files there, then drop the
+    # resulting JSON into results/R05-<class>/).
     case "$CLASS" in
         10_20)
             SKIP_LIST="brute-force-rust"
@@ -114,8 +116,11 @@ for i in "${!CLASSES[@]}"; do
         20_50|30_100)
             SKIP_LIST="brute-force-rust,lb-lp"
             ;;
+        50_200)
+            SKIP_LIST="brute-force-rust,lb-lp,milp-rust,or-tools-cp-sat"
+            ;;
         *)
-            SKIP_LIST="brute-force-rust,lb-lp,milp-rust"
+            SKIP_LIST="brute-force-rust,lb-lp,milp-rust,or-tools-cp-sat"
             ;;
     esac
 
