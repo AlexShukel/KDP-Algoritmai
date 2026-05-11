@@ -115,6 +115,55 @@ hard-coded paths after re-running `pnpm generate:data`.
 
 ---
 
+## OR-Tools baseline setup
+
+The `vrppd-or-tools` crate provides two additional baselines for the
+PLAN.md §4.2 comparison matrix:
+
+- `or-tools-cp-sat` — exact CP-SAT solver, complements `milp-rust`
+  with a typically tighter formulation; aims to prove optimality up
+  to N ≈ 30–50.
+- `or-tools-routing` — OR-Tools Routing Solver (cheapest-insertion +
+  guided local search). Returns near-optimal solutions; the
+  highest-quality reference available at N ∈ {100, 200, 500}.
+
+Both solvers shell out to a Python script that uses the
+`google/or-tools` package. Install once:
+
+```bash
+pip install -r crates/vrppd-or-tools/python/requirements.txt
+```
+
+Verify the install:
+
+```bash
+python3 crates/vrppd-or-tools/python/solver.py --self-test
+```
+
+Both Rust functions (`solve_routing` / `solve_cp_sat`) return typed
+errors (`OrtoolsImportFailed`, `PythonNotFound`) if the install is
+missing — so a misconfigured environment fails fast at the first
+solve, not silently.
+
+Environment variables that affect the OR-Tools rows of `pnpm start`:
+
+- `OR_TOOLS_TIMEOUT_MS` — per-instance timeout in milliseconds.
+  Defaults to 60000. Set to e.g. `1800000` for a thesis-grade
+  30-minute sweep.
+- `VRPPD_ORTOOLS_PY` — override the script path. Defaults to
+  `crates/vrppd-or-tools/python/solver.py` resolved relative to the
+  crate's compile-time directory. Useful when the binary runs from a
+  different working tree.
+
+Integration tests for the crate require both Python and the
+`ortools` package, and are gated behind `VRPPD_TEST_ORTOOLS=1`:
+
+```bash
+VRPPD_TEST_ORTOOLS=1 cargo test -p vrppd-or-tools --test integration
+```
+
+---
+
 ## p-SA parity benchmark (PLAN.md §1.1)
 
 Quantifies how the Rust port (`crates/vrppd-psa`, exposed via `napi-bridge`)
