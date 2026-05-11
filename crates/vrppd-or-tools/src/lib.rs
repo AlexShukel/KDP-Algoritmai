@@ -4,27 +4,22 @@
 
 mod wire;
 
-use std::time::Duration;
-use vrppd_core::Objective;
+use std::io::{ErrorKind, Read, Write};
+use std::process::{Command, Stdio};
+use std::time::{Duration, Instant};
+use vrppd_core::{Objective, Problem};
 
-/// 30-minute default budget per instance — matches `vrppd_milp::DEFAULT_TIMEOUT`
-/// and PLAN.md §3.3.
+use crate::wire::{SolverRequest, SolverResponse, WireOrder, WireProblem, WireVehicle};
+
 pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30 * 60);
 
 #[derive(Debug)]
 pub enum OrToolsError {
-    /// EMPTY objective is not supported — see
-    /// `documents/MILP_adaptation_notes.md` §4.5.
     UnsupportedObjective(Objective),
-    /// `python3` not on PATH.
     PythonNotFound,
-    /// `import ortools` failed inside the subprocess.
     OrtoolsImportFailed(String),
-    /// Solver returned `FAILED`, exited non-zero, or produced malformed output.
     SolverFailed(String),
-    /// Python raised an unexpected exception; `error_msg` from the script.
     SolverInternal(String),
-    /// CP-SAT proved the model has no feasible solution.
     Infeasible,
 }
 
@@ -35,13 +30,9 @@ impl std::fmt::Display for OrToolsError {
                 write!(f, "OR-Tools does not support objective {o:?}")
             }
             OrToolsError::PythonNotFound => write!(f, "python3 not found on PATH"),
-            OrToolsError::OrtoolsImportFailed(msg) => {
-                write!(f, "ortools import failed: {msg}")
-            }
+            OrToolsError::OrtoolsImportFailed(msg) => write!(f, "ortools import failed: {msg}"),
             OrToolsError::SolverFailed(msg) => write!(f, "OR-Tools solver failed: {msg}"),
-            OrToolsError::SolverInternal(msg) => {
-                write!(f, "OR-Tools internal error: {msg}")
-            }
+            OrToolsError::SolverInternal(msg) => write!(f, "OR-Tools internal error: {msg}"),
             OrToolsError::Infeasible => write!(f, "Model is infeasible"),
         }
     }
@@ -49,88 +40,10 @@ impl std::fmt::Display for OrToolsError {
 
 impl std::error::Error for OrToolsError {}
 
-use vrppd_core::Problem;
-
-/// Solve the adapted VRPPD via OR-Tools Routing Solver. Returns a near-optimal
-/// solution; never proves optimality (status is at most `Feasible`).
-pub fn solve_routing(
-    problem: &Problem,
-    target: Objective,
-    timeout: Duration,
-    threads: usize,
-) -> Result<OrToolsResult, OrToolsError> {
-    if matches!(target, Objective::Empty) {
-        return Err(OrToolsError::UnsupportedObjective(target));
-    }
-    if problem.orders.is_empty() || problem.vehicles.is_empty() {
-        return Ok(OrToolsResult {
-            objective_value: 0.0,
-            status: OrToolsStatus::Optimal,
-            solve_time_ms: 0,
-        });
-    }
-    // Python dispatch lands in Task 6.
-    let _ = (timeout, threads);
-    Err(OrToolsError::SolverFailed(
-        "solve_routing: Python dispatch not yet implemented".into(),
-    ))
-}
-
-/// Solve the adapted VRPPD MILP via OR-Tools CP-SAT. Can prove optimality
-/// (status `Optimal`); falls back to `Feasible` or `TimedOut` on budget
-/// expiry.
-pub fn solve_cp_sat(
-    problem: &Problem,
-    target: Objective,
-    timeout: Duration,
-    threads: usize,
-) -> Result<OrToolsResult, OrToolsError> {
-    if matches!(target, Objective::Empty) {
-        return Err(OrToolsError::UnsupportedObjective(target));
-    }
-    if problem.orders.is_empty() || problem.vehicles.is_empty() {
-        return Ok(OrToolsResult {
-            objective_value: 0.0,
-            status: OrToolsStatus::Optimal,
-            solve_time_ms: 0,
-        });
-    }
-    let _ = (timeout, threads);
-    Err(OrToolsError::SolverFailed(
-        "solve_cp_sat: Python dispatch not yet implemented".into(),
-    ))
-}
-
-/// Convenience wrapper using `DEFAULT_TIMEOUT` and all available threads.
-pub fn solve_routing_default(
-    problem: &Problem,
-    target: Objective,
-) -> Result<OrToolsResult, OrToolsError> {
-    let threads = std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1);
-    solve_routing(problem, target, DEFAULT_TIMEOUT, threads)
-}
-
-/// Convenience wrapper using `DEFAULT_TIMEOUT` and all available threads.
-pub fn solve_cp_sat_default(
-    problem: &Problem,
-    target: Objective,
-) -> Result<OrToolsResult, OrToolsError> {
-    let threads = std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1);
-    solve_cp_sat(problem, target, DEFAULT_TIMEOUT, threads)
-}
-
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum OrToolsStatus {
-    /// CP-SAT proved the returned `objective_value` is optimal.
     Optimal,
-    /// Best-known solution found but optimality not proven. Routing's normal
-    /// success state; CP-SAT's timeout-with-incumbent state.
     Feasible,
-    /// No feasible solution found within the wall-clock budget.
     TimedOut,
 }
 
@@ -139,6 +52,167 @@ pub struct OrToolsResult {
     pub objective_value: f64,
     pub status: OrToolsStatus,
     pub solve_time_ms: u64,
+}
+
+pub fn solve_routing(
+    problem: &Problem,
+    target: Objective,
+    timeout: Duration,
+    threads: usize,
+) -> Result<OrToolsResult, OrToolsError> {
+    dispatch("routing", problem, target, timeout, threads)
+}
+
+pub fn solve_cp_sat(
+    problem: &Problem,
+    target: Objective,
+    timeout: Duration,
+    threads: usize,
+) -> Result<OrToolsResult, OrToolsError> {
+    dispatch("cp_sat", problem, target, timeout, threads)
+}
+
+pub fn solve_routing_default(
+    problem: &Problem,
+    target: Objective,
+) -> Result<OrToolsResult, OrToolsError> {
+    let threads = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+    solve_routing(problem, target, DEFAULT_TIMEOUT, threads)
+}
+
+pub fn solve_cp_sat_default(
+    problem: &Problem,
+    target: Objective,
+) -> Result<OrToolsResult, OrToolsError> {
+    let threads = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+    solve_cp_sat(problem, target, DEFAULT_TIMEOUT, threads)
+}
+
+fn dispatch(
+    solver: &str,
+    problem: &Problem,
+    target: Objective,
+    timeout: Duration,
+    threads: usize,
+) -> Result<OrToolsResult, OrToolsError> {
+    if matches!(target, Objective::Empty) {
+        return Err(OrToolsError::UnsupportedObjective(target));
+    }
+    if problem.orders.is_empty() || problem.vehicles.is_empty() {
+        return Ok(OrToolsResult {
+            objective_value: 0.0,
+            status: OrToolsStatus::Optimal,
+            solve_time_ms: 0,
+        });
+    }
+
+    let started = Instant::now();
+    let objective_str = match target {
+        Objective::Distance => "DISTANCE",
+        Objective::Price => "PRICE",
+        Objective::Empty => unreachable!("guarded above"),
+    };
+
+    let request = SolverRequest {
+        solver,
+        objective: objective_str,
+        timeout_ms: timeout.as_millis() as u64,
+        threads: threads.max(1),
+        problem: WireProblem {
+            vehicles: problem.vehicles.iter().map(WireVehicle::from_core).collect(),
+            orders: problem.orders.iter().map(WireOrder::from_core).collect(),
+        },
+    };
+
+    let response = run_python(&request)?;
+    let solve_time_ms = response.solver_runtime_ms.unwrap_or(started.elapsed().as_millis() as u64);
+
+    if !response.ok {
+        let kind = response.error_kind.as_deref().unwrap_or("");
+        let msg = response.error_msg.unwrap_or_default();
+        return Err(match kind {
+            "ortools_import" => OrToolsError::OrtoolsImportFailed(msg),
+            "invalid_request" => OrToolsError::SolverFailed(msg),
+            _ => OrToolsError::SolverInternal(msg),
+        });
+    }
+
+    let status_str = response.status.as_deref().unwrap_or("");
+    let status = match status_str {
+        "OPTIMAL" => OrToolsStatus::Optimal,
+        "FEASIBLE" => OrToolsStatus::Feasible,
+        "TIMED_OUT" => OrToolsStatus::TimedOut,
+        "INFEASIBLE" => return Err(OrToolsError::Infeasible),
+        "FAILED" => return Err(OrToolsError::SolverFailed("FAILED".into())),
+        other => return Err(OrToolsError::SolverFailed(format!("unknown status: {other}"))),
+    };
+
+    let objective_value = response.objective_value.unwrap_or(0.0).max(0.0);
+    Ok(OrToolsResult {
+        objective_value,
+        status,
+        solve_time_ms,
+    })
+}
+
+fn script_path() -> String {
+    std::env::var("VRPPD_ORTOOLS_PY").unwrap_or_else(|_| {
+        concat!(env!("CARGO_MANIFEST_DIR"), "/python/solver.py").to_string()
+    })
+}
+
+fn run_python(request: &SolverRequest) -> Result<SolverResponse, OrToolsError> {
+    let script = script_path();
+    let mut child = match Command::new("python3")
+        .arg(&script)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+    {
+        Ok(c) => c,
+        Err(e) if e.kind() == ErrorKind::NotFound => return Err(OrToolsError::PythonNotFound),
+        Err(e) => return Err(OrToolsError::SolverFailed(format!("spawn python3: {e}"))),
+    };
+
+    {
+        let stdin = child
+            .stdin
+            .as_mut()
+            .ok_or_else(|| OrToolsError::SolverFailed("python3 stdin not piped".into()))?;
+        let json = serde_json::to_vec(request)
+            .map_err(|e| OrToolsError::SolverFailed(format!("serialize request: {e}")))?;
+        stdin
+            .write_all(&json)
+            .map_err(|e| OrToolsError::SolverFailed(format!("write stdin: {e}")))?;
+    }
+    // Drop stdin so Python sees EOF.
+    drop(child.stdin.take());
+
+    let mut stdout = String::new();
+    if let Some(mut s) = child.stdout.take() {
+        s.read_to_string(&mut stdout)
+            .map_err(|e| OrToolsError::SolverFailed(format!("read stdout: {e}")))?;
+    }
+    let mut stderr = String::new();
+    if let Some(mut s) = child.stderr.take() {
+        let _ = s.read_to_string(&mut stderr);
+    }
+
+    let status = child
+        .wait()
+        .map_err(|e| OrToolsError::SolverFailed(format!("wait: {e}")))?;
+
+    let parsed: SolverResponse = match serde_json::from_str(&stdout) {
+        Ok(v) => v,
+        Err(e) => {
+            let exit = status.code().map(|c| c.to_string()).unwrap_or_else(|| "signal".into());
+            return Err(OrToolsError::SolverFailed(format!(
+                "parse stdout (exit={exit}): {e}; stdout={stdout:?}; stderr={stderr:?}"
+            )));
+        }
+    };
+    Ok(parsed)
 }
 
 #[cfg(test)]
