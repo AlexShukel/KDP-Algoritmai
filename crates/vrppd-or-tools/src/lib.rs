@@ -2,6 +2,8 @@
 //! `docs/superpowers/specs/2026-05-11-or-tools-baseline-design.md` for the
 //! full design.
 
+mod wire;
+
 use std::time::Duration;
 use vrppd_core::Objective;
 
