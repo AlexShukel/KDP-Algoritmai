@@ -58,13 +58,38 @@ require_jq() {
   }
 }
 
+check_problem_set_guard() {
+  local class
+  for class in "${CLASSES[@]}"; do
+    if [[ ! -d "$PROBLEMS_DIR/$class" ]]; then
+      echo "[stochastic-reps] FATAL: $PROBLEMS_DIR/$class does not exist." >&2
+      echo "                 The canonical R05 problem set (timestamp $EXPECTED_TS) is required." >&2
+      exit 1
+    fi
+    shopt -s nullglob
+    local all=("$PROBLEMS_DIR/$class"/*.json)
+    local matching=("$PROBLEMS_DIR/$class"/*"${EXPECTED_TS}"*.json)
+    shopt -u nullglob
+    if [[ ${#all[@]} -eq 0 ]]; then
+      echo "[stochastic-reps] FATAL: $PROBLEMS_DIR/$class is empty." >&2
+      exit 1
+    fi
+    if [[ ${#matching[@]} -ne ${#all[@]} ]]; then
+      echo "[stochastic-reps] FATAL: $PROBLEMS_DIR/$class contains files not matching canonical R05 timestamp $EXPECTED_TS." >&2
+      echo "                 Regenerating problems would break the R05 comparison (CLAUDE.md §Problem-set persistence)." >&2
+      exit 1
+    fi
+  done
+}
+
 main() {
   if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
     usage
     return 0
   fi
   require_jq
-  echo "[stochastic-reps] (skeleton — no work yet)"
+  check_problem_set_guard
+  echo "[stochastic-reps] Problem-set guard passed for: ${CLASSES[*]}"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
