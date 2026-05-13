@@ -1,0 +1,6 @@
+[
+  {"problemPath":"problems/x/p1.json","problemSize":{"vehicles":2,"orders":3},"optimizationTarget":"DISTANCE","runIndex":0,"execTime":100,"isBatchResult":false,"metrics":{"totalDistance":10,"totalPrice":20,"emptyDistance":1}},
+  {"problemPath":"problems/x/p1.json","problemSize":{"vehicles":2,"orders":3},"optimizationTarget":"DISTANCE","runIndex":1,"execTime":110,"isBatchResult":false,"metrics":{"totalDistance":11,"totalPrice":21,"emptyDistance":2}},
+  {"problemPath":"problems/x/p2.json","problemSize":{"vehicles":2,"orders":3},"optimizationTarget":"DISTANCE","runIndex":0,"execTime":120,"isBatchResult":false,"metrics":{"totalDistance":12,"totalPrice":22,"emptyDistance":3}},
+  {"problemPath":"problems/x/p2.json","problemSize":{"vehicles":2,"orders":3},"optimizationTarget":"DISTANCE","runIndex":1,"execTime":130,"isBatchResult":false,"metrics":{"totalDistance":13,"totalPrice":23,"emptyDistance":4}}
+]

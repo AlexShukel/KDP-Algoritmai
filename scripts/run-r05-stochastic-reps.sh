@@ -89,6 +89,64 @@ count_reps_in_batch_set() {
   echo "$total"
 }
 
+# Concatenates all benchmark-results-cea-rust.reps10.batch-NN.json files
+# under $1 (a class results dir), renumbers runIndex globally to 0..N-1
+# within each (problemPath, optimizationTarget) group, and writes
+# benchmark-results-cea-rust.reps10.json. Verifies the merged total
+# matches $2 (expected total reps) before writing.
+merge_cea_batches() {
+  local class_dir="$1"
+  local expected_reps="$2"
+
+  shopt -s nullglob
+  local batches=("$class_dir"/benchmark-results-cea-rust.reps10.batch-*.json)
+  shopt -u nullglob
+
+  if [[ ${#batches[@]} -eq 0 ]]; then
+    echo "[merge] no batch files under $class_dir" >&2
+    return 1
+  fi
+
+  # Sort batches by filename so older batches come first.
+  IFS=$'\n' batches=($(printf '%s\n' "${batches[@]}" | sort))
+  unset IFS
+
+  local total
+  total=$(count_reps_in_batch_set "${batches[@]}")
+  if [[ "$total" != "$expected_reps" ]]; then
+    echo "[merge] expected $expected_reps reps across batches under $class_dir, got $total" >&2
+    return 1
+  fi
+
+  local out="$class_dir/benchmark-results-cea-rust.reps10.json"
+  local tmp="$out.tmp.$$"
+
+  # Concatenate arrays, group by (problemPath, target), renumber runIndex
+  # globally within each group based on input order.
+  jq -s '
+    add
+    | group_by([.problemPath, .optimizationTarget])
+    | map(
+        to_entries
+        | map(.value + {runIndex: .key})
+      )
+    | flatten
+  ' "${batches[@]}" > "$tmp"
+
+  local records
+  records=$(jq 'length' "$tmp")
+  local per_problem_targets
+  per_problem_targets=$(jq -c '[group_by([.problemPath, .optimizationTarget]) | .[] | length] | unique' "$tmp")
+  if [[ "$per_problem_targets" != "[$expected_reps]" ]]; then
+    echo "[merge] non-uniform per-group count after merge: $per_problem_targets (expected [$expected_reps])" >&2
+    rm -f "$tmp"
+    return 1
+  fi
+
+  mv "$tmp" "$out"
+  echo "[merge] wrote $out ($records records across $((records / expected_reps)) (problem, target) cells × $expected_reps reps)"
+}
+
 check_problem_set_guard() {
   local class
   for class in "${CLASSES[@]}"; do
