@@ -1,0 +1,281 @@
+[ORT-PCI] Starting OR-Tools Routing with PARALLEL_CHEAPEST_INSERTION on: 10_20 20_50 30_100 50_200 100_500
+
+[ORT-PCI] ===== 10_20 =====
+[ORT-PCI] problems/ now contains only: 10_20
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 33 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                   10.74 kB │ gzip:  3.51 kB │ map:  37.46 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 357ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 542ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, milp-rust, or-tools-cp-sat, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: or-tools-routing
+========================================
+Processing problems/10_20/9_1778535813465.json
+Processing problems/10_20/8_1778535813465.json
+Processing problems/10_20/7_1778535813465.json
+Processing problems/10_20/6_1778535813465.json
+Processing problems/10_20/5_1778535813465.json
+Processing problems/10_20/4_1778535813465.json
+Processing problems/10_20/3_1778535813465.json
+Processing problems/10_20/2_1778535813465.json
+Processing problems/10_20/1_1778535813465.json
+Processing problems/10_20/19_1778535813465.json
+Processing problems/10_20/18_1778535813465.json
+Processing problems/10_20/17_1778535813465.json
+Processing problems/10_20/16_1778535813465.json
+Processing problems/10_20/15_1778535813465.json
+Processing problems/10_20/14_1778535813465.json
+Processing problems/10_20/13_1778535813465.json
+Processing problems/10_20/12_1778535813465.json
+Processing problems/10_20/11_1778535813465.json
+Processing problems/10_20/10_1778535813465.json
+Processing problems/10_20/0_1778535813465.json
+Saved 60 records to benchmark-results-or-tools-routing.json
+[ORT-PCI] 10_20 result saved to /Users/srv/Git/KDP-Algoritmai/results/R05-10_20/benchmark-results-or-tools-routing.parallel-cheapest-insertion.json
+[ORT-PCI] All classes restored.
+
+[ORT-PCI] ===== 20_50 =====
+[ORT-PCI] problems/ now contains only: 20_50
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 33 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                   10.74 kB │ gzip:  3.51 kB │ map:  37.46 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 367ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 566ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, milp-rust, or-tools-cp-sat, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: or-tools-routing
+========================================
+Processing problems/20_50/9_1778535813465.json
+Processing problems/20_50/8_1778535813465.json
+Processing problems/20_50/7_1778535813465.json
+Processing problems/20_50/6_1778535813465.json
+Processing problems/20_50/5_1778535813465.json
+Processing problems/20_50/4_1778535813465.json
+Processing problems/20_50/3_1778535813465.json
+Processing problems/20_50/2_1778535813465.json
+Processing problems/20_50/1_1778535813465.json
+Processing problems/20_50/19_1778535813465.json
+Processing problems/20_50/18_1778535813465.json
+Processing problems/20_50/17_1778535813465.json
+Processing problems/20_50/16_1778535813465.json
+Processing problems/20_50/15_1778535813465.json
+Processing problems/20_50/14_1778535813465.json
+Processing problems/20_50/13_1778535813465.json
+Processing problems/20_50/12_1778535813465.json
+Processing problems/20_50/11_1778535813465.json
+Processing problems/20_50/10_1778535813465.json
+Processing problems/20_50/0_1778535813465.json
+Saved 60 records to benchmark-results-or-tools-routing.json
+[ORT-PCI] 20_50 result saved to /Users/srv/Git/KDP-Algoritmai/results/R05-20_50/benchmark-results-or-tools-routing.parallel-cheapest-insertion.json
+[ORT-PCI] All classes restored.
+
+[ORT-PCI] ===== 30_100 =====
+[ORT-PCI] problems/ now contains only: 30_100
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 33 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                   10.74 kB │ gzip:  3.51 kB │ map:  37.46 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 370ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 548ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, milp-rust, or-tools-cp-sat, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: or-tools-routing
+========================================
+Processing problems/30_100/9_1778535813465.json
+Processing problems/30_100/8_1778535813465.json
+Processing problems/30_100/7_1778535813465.json
+Processing problems/30_100/6_1778535813465.json
+Processing problems/30_100/5_1778535813465.json
+Processing problems/30_100/4_1778535813465.json
+Processing problems/30_100/3_1778535813465.json
+Processing problems/30_100/2_1778535813465.json
+Processing problems/30_100/1_1778535813465.json
+Processing problems/30_100/19_1778535813465.json
+Processing problems/30_100/18_1778535813465.json
+Processing problems/30_100/17_1778535813465.json
+Processing problems/30_100/16_1778535813465.json
+Processing problems/30_100/15_1778535813465.json
+Processing problems/30_100/14_1778535813465.json
+Processing problems/30_100/13_1778535813465.json
+Processing problems/30_100/12_1778535813465.json
+Processing problems/30_100/11_1778535813465.json
+Processing problems/30_100/10_1778535813465.json
+Processing problems/30_100/0_1778535813465.json
+Saved 60 records to benchmark-results-or-tools-routing.json
+[ORT-PCI] 30_100 result saved to /Users/srv/Git/KDP-Algoritmai/results/R05-30_100/benchmark-results-or-tools-routing.parallel-cheapest-insertion.json
+[ORT-PCI] All classes restored.
+
+[ORT-PCI] ===== 50_200 =====
+[ORT-PCI] problems/ now contains only: 50_200
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 33 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                   10.74 kB │ gzip:  3.51 kB │ map:  37.46 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 349ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 530ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, milp-rust, or-tools-cp-sat, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: or-tools-routing
+========================================
+Processing problems/50_200/9_1778535813465.json
+Processing problems/50_200/8_1778535813465.json
+Processing problems/50_200/7_1778535813465.json
+Processing problems/50_200/6_1778535813465.json
+Processing problems/50_200/5_1778535813465.json
+Processing problems/50_200/4_1778535813465.json
+Processing problems/50_200/3_1778535813465.json
+Processing problems/50_200/2_1778535813465.json
+Processing problems/50_200/1_1778535813465.json
+Processing problems/50_200/19_1778535813465.json
+Processing problems/50_200/18_1778535813465.json
+Processing problems/50_200/17_1778535813465.json
+Processing problems/50_200/16_1778535813465.json
+Processing problems/50_200/15_1778535813465.json
+Processing problems/50_200/14_1778535813465.json
+Processing problems/50_200/13_1778535813465.json
+Processing problems/50_200/12_1778535813465.json
+Processing problems/50_200/11_1778535813465.json
+Processing problems/50_200/10_1778535813465.json
+Processing problems/50_200/0_1778535813465.json
+Saved 60 records to benchmark-results-or-tools-routing.json
+[ORT-PCI] 50_200 result saved to /Users/srv/Git/KDP-Algoritmai/results/R05-50_200/benchmark-results-or-tools-routing.parallel-cheapest-insertion.json
+[ORT-PCI] All classes restored.
+
+[ORT-PCI] ===== 100_500 =====
+[ORT-PCI] problems/ now contains only: 100_500
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 33 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                   10.74 kB │ gzip:  3.51 kB │ map:  37.46 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 355ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 545ms
+Skipping algorithms: brute-force-rust, lb-direct, lb-lp, milp-rust, or-tools-cp-sat, p-sa-rust, cea-rust
+
+========================================
+Starting benchmark for: or-tools-routing
+========================================
+Processing problems/100_500/9_1778535813465.json
+Processing problems/100_500/8_1778535813465.json
+Processing problems/100_500/7_1778535813465.json
+Processing problems/100_500/6_1778535813465.json
+Processing problems/100_500/5_1778535813465.json
+Processing problems/100_500/4_1778535813465.json
+Processing problems/100_500/3_1778535813465.json
+Processing problems/100_500/2_1778535813465.json
+Processing problems/100_500/1_1778535813465.json
+Processing problems/100_500/19_1778535813465.json
+Processing problems/100_500/18_1778535813465.json
+Processing problems/100_500/17_1778535813465.json
+Processing problems/100_500/16_1778535813465.json
+Processing problems/100_500/15_1778535813465.json
+Processing problems/100_500/14_1778535813465.json
+Processing problems/100_500/13_1778535813465.json
+Processing problems/100_500/12_1778535813465.json
+Processing problems/100_500/11_1778535813465.json
+Processing problems/100_500/10_1778535813465.json
+Processing problems/100_500/0_1778535813465.json
+Saved 60 records to benchmark-results-or-tools-routing.json
+[ORT-PCI] 100_500 result saved to /Users/srv/Git/KDP-Algoritmai/results/R05-100_500/benchmark-results-or-tools-routing.parallel-cheapest-insertion.json
+[ORT-PCI] All classes restored.
+
+[ORT-PCI] Complete. Variant files under results/R05-*/benchmark-results-or-tools-routing.parallel-cheapest-insertion.json
+[ORT-PCI] Full log: /Users/srv/Git/KDP-Algoritmai/results/R05-ortools-pci-2026-05-13.log
+[ORT-PCI] Restoring any stashed problem classes...
+[ORT-PCI] Restore complete.
