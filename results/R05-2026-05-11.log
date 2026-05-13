@@ -1,0 +1,338 @@
+[R05] ===== 10_20  (HEURISTIC_REPETITIONS=5) =====
+[R05] 10_20 already has results in /Users/srv/Git/KDP-Algoritmai/results/R05-10_20, skipping.
+[R05] ===== 20_50  (HEURISTIC_REPETITIONS=3) =====
+[R05] 20_50 already has results in /Users/srv/Git/KDP-Algoritmai/results/R05-20_50, skipping.
+[R05] ===== 30_100  (HEURISTIC_REPETITIONS=2) =====
+[R05] 30_100 already has results in /Users/srv/Git/KDP-Algoritmai/results/R05-30_100, skipping.
+[R05] ===== 50_200  (HEURISTIC_REPETITIONS=1) =====
+[R05] problems/ now contains only: 50_200
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.61 kB │ gzip:  3.20 kB │ map:  29.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 334ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 513ms
+Skipping algorithms: brute-force-rust, lb-lp, milp-rust
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/50_200/9_1778169862263.json
+Processing problems/50_200/8_1778169862263.json
+Processing problems/50_200/7_1778169862263.json
+Processing problems/50_200/6_1778169862263.json
+Processing problems/50_200/5_1778169862263.json
+Processing problems/50_200/4_1778169862263.json
+Processing problems/50_200/3_1778169862263.json
+Processing problems/50_200/2_1778169862263.json
+Processing problems/50_200/1_1778169862263.json
+Processing problems/50_200/19_1778169862263.json
+Processing problems/50_200/18_1778169862263.json
+Processing problems/50_200/17_1778169862263.json
+Processing problems/50_200/16_1778169862263.json
+Processing problems/50_200/15_1778169862263.json
+Processing problems/50_200/14_1778169862263.json
+Processing problems/50_200/13_1778169862263.json
+Processing problems/50_200/12_1778169862263.json
+Processing problems/50_200/11_1778169862263.json
+Processing problems/50_200/10_1778169862263.json
+Processing problems/50_200/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/50_200/9_1778169862263.json
+Processing problems/50_200/8_1778169862263.json
+Processing problems/50_200/7_1778169862263.json
+Processing problems/50_200/6_1778169862263.json
+Processing problems/50_200/5_1778169862263.json
+Processing problems/50_200/4_1778169862263.json
+Processing problems/50_200/3_1778169862263.json
+Processing problems/50_200/2_1778169862263.json
+Processing problems/50_200/1_1778169862263.json
+Processing problems/50_200/19_1778169862263.json
+Processing problems/50_200/18_1778169862263.json
+Processing problems/50_200/17_1778169862263.json
+Processing problems/50_200/16_1778169862263.json
+Processing problems/50_200/15_1778169862263.json
+Processing problems/50_200/14_1778169862263.json
+Processing problems/50_200/13_1778169862263.json
+Processing problems/50_200/12_1778169862263.json
+Processing problems/50_200/11_1778169862263.json
+Processing problems/50_200/10_1778169862263.json
+Processing problems/50_200/0_1778169862263.json
+Saved 60 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/50_200/9_1778169862263.json
+[cea] wall-time cap hit after 3 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/8_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/7_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/6_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+Processing problems/50_200/5_1778169862263.json
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/4_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/3_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/2_1778169862263.json
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/1_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/19_1778169862263.json
+[cea] wall-time cap hit after 3 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/18_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+Processing problems/50_200/17_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/16_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+Processing problems/50_200/15_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/14_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/13_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/12_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/11_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/10_1778169862263.json
+[cea] wall-time cap hit after 5 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Processing problems/50_200/0_1778169862263.json
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 6 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 4 generations (conv_count=300 not reached)
+Saved 60 records to benchmark-results-cea-rust.json
+[R05] 50_200 pass complete, copying results...
+[R05] Results saved to /Users/srv/Git/KDP-Algoritmai/results/R05-50_200
+[R05] All classes restored.
+[R05] ===== 100_500  (HEURISTIC_REPETITIONS=1) =====
+[R05] problems/ now contains only: 100_500
+
+> kdp-algoritmai@1.0.0 start /Users/srv/Git/KDP-Algoritmai
+> pnpm build && cd dist && node --max-old-space-size=12288 vrp.es.mjs
+
+
+> kdp-algoritmai@1.0.0 build /Users/srv/Git/KDP-Algoritmai
+> vite build
+
+vite v7.2.0 building client environment for production...
+transforming...
+✓ 31 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index-xgqlYWm2.mjs                            0.88 kB │ gzip:  0.45 kB │ map:   4.31 kB
+dist/tuneCea.es.mjs                                2.78 kB │ gzip:  1.27 kB │ map:   9.23 kB
+dist/tunePsa.es.mjs                                2.98 kB │ gzip:  1.31 kB │ map:   9.85 kB
+dist/vrp.es.mjs                                    8.61 kB │ gzip:  3.20 kB │ map:  29.60 kB
+dist/greatCircleDistanceCalculator-B1xbCdPL.mjs  151.77 kB │ gzip: 40.28 kB │ map: 433.23 kB
+[vite:dts] Declaration files built in 335ms.
+
+[vite-plugin-static-copy] Copied 1 items.
+✓ built in 509ms
+Skipping algorithms: brute-force-rust, lb-lp, milp-rust
+
+========================================
+Starting benchmark for: lb-direct
+========================================
+Processing problems/100_500/9_1778169862263.json
+Processing problems/100_500/8_1778169862263.json
+Processing problems/100_500/7_1778169862263.json
+Processing problems/100_500/6_1778169862263.json
+Processing problems/100_500/5_1778169862263.json
+Processing problems/100_500/4_1778169862263.json
+Processing problems/100_500/3_1778169862263.json
+Processing problems/100_500/2_1778169862263.json
+Processing problems/100_500/1_1778169862263.json
+Processing problems/100_500/19_1778169862263.json
+Processing problems/100_500/18_1778169862263.json
+Processing problems/100_500/17_1778169862263.json
+Processing problems/100_500/16_1778169862263.json
+Processing problems/100_500/15_1778169862263.json
+Processing problems/100_500/14_1778169862263.json
+Processing problems/100_500/13_1778169862263.json
+Processing problems/100_500/12_1778169862263.json
+Processing problems/100_500/11_1778169862263.json
+Processing problems/100_500/10_1778169862263.json
+Processing problems/100_500/0_1778169862263.json
+Saved 60 records to benchmark-results-lb-direct.json
+
+========================================
+Starting benchmark for: p-sa-rust
+========================================
+Processing problems/100_500/9_1778169862263.json
+Processing problems/100_500/8_1778169862263.json
+Processing problems/100_500/7_1778169862263.json
+Processing problems/100_500/6_1778169862263.json
+Processing problems/100_500/5_1778169862263.json
+Processing problems/100_500/4_1778169862263.json
+Processing problems/100_500/3_1778169862263.json
+Processing problems/100_500/2_1778169862263.json
+Processing problems/100_500/1_1778169862263.json
+Processing problems/100_500/19_1778169862263.json
+Processing problems/100_500/18_1778169862263.json
+Processing problems/100_500/17_1778169862263.json
+Processing problems/100_500/16_1778169862263.json
+Processing problems/100_500/15_1778169862263.json
+Processing problems/100_500/14_1778169862263.json
+Processing problems/100_500/13_1778169862263.json
+Processing problems/100_500/12_1778169862263.json
+Processing problems/100_500/11_1778169862263.json
+Processing problems/100_500/10_1778169862263.json
+Processing problems/100_500/0_1778169862263.json
+Saved 60 records to benchmark-results-p-sa-rust.json
+
+========================================
+Starting benchmark for: cea-rust
+========================================
+Processing problems/100_500/9_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/8_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/7_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/6_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/5_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/4_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/3_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/2_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/1_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/19_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/18_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/17_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/16_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/15_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/14_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/13_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/12_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/11_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/10_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Processing problems/100_500/0_1778169862263.json
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+[cea] wall-time cap hit after 1 generations (conv_count=300 not reached)
+Saved 60 records to benchmark-results-cea-rust.json
+[R05] 100_500 pass complete, copying results...
+[R05] Results saved to /Users/srv/Git/KDP-Algoritmai/results/R05-100_500
+[R05] All classes restored.
+[R05] All passes complete. Per-class results under results/R05-*/
+[R05] Full log: /Users/srv/Git/KDP-Algoritmai/results/R05-2026-05-11.log

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # R05 — large-instance benchmark for all classes beyond 10×10.
 #
-# Runs lb-direct, lb-lp, milp-rust, p-sa-rust, and cea-rust on the five
-# large problem classes (10×20, 20×50, 30×100, 50×200, 100×500).
-# brute-force-rust is skipped (problems are too large) so its result file
-# from the prior small-instance round is not overwritten.
+# Runs lb-direct, lb-lp, milp-rust, or-tools-cp-sat, or-tools-routing,
+# p-sa-rust, and cea-rust on the five large problem classes (10×20,
+# 20×50, 30×100, 50×200, 100×500). brute-force-rust is skipped
+# (problems are too large) so its result file from the prior small-
+# instance round is not overwritten.
 #
 # Each class is benchmarked in its own pass with a size-appropriate
 # HEURISTIC_REPETITIONS so wall-time stays manageable:
@@ -85,27 +86,51 @@ for i in "${!CLASSES[@]}"; do
         continue
     fi
 
+    # Per-class results directory.
+    CLASS_RESULTS="$RESULTS_DIR/R05-$CLASS"
+
+    # CEA is the slowest solver in the suite, so its result file marks a
+    # completed pass. Delete the file (or the whole directory) to force a
+    # re-run of an already-processed class.
+    if [[ -f "$CLASS_RESULTS/benchmark-results-cea-rust.json" ]]; then
+        echo "[R05] $CLASS already has results in $CLASS_RESULTS, skipping." | tee -a "$LOG_FILE"
+        continue
+    fi
+
     # Isolate this class.
     stash_all_except "$CLASS"
     echo "[R05] problems/ now contains only: $(ls "$PROBLEMS_DIR")" | tee -a "$LOG_FILE"
 
-    # Per-class results directory.
-    CLASS_RESULTS="$RESULTS_DIR/R05-$CLASS"
     mkdir -p "$CLASS_RESULTS"
 
     # lb-lp uses microlp (simplex, pure Rust) whose practical ceiling is
     # N ≤ 20 orders. Skip it for every class beyond 10×20.
-    if [[ "$CLASS" == "10_20" ]]; then
-        SKIP_LIST="brute-force-rust"
-    else
-        SKIP_LIST="brute-force-rust,lb-lp"
-    fi
+    # milp-rust and or-tools-cp-sat both OOM on a 16 GB machine at
+    # 50×200 and above — defer those passes to a larger-RAM host
+    # (run them against the same problem files there, then drop the
+    # resulting JSON into results/R05-<class>/).
+    case "$CLASS" in
+        10_20)
+            SKIP_LIST="brute-force-rust"
+            ;;
+        20_50|30_100)
+            SKIP_LIST="brute-force-rust,lb-lp"
+            ;;
+        50_200)
+            SKIP_LIST="brute-force-rust,lb-lp,milp-rust,or-tools-cp-sat"
+            ;;
+        *)
+            SKIP_LIST="brute-force-rust,lb-lp,milp-rust,or-tools-cp-sat"
+            ;;
+    esac
 
     # Run the harness.
     (
         cd "$REPO_ROOT"
         SKIP_ALGORITHMS="$SKIP_LIST" \
         HEURISTIC_REPETITIONS="$REPS_COUNT" \
+        MILP_TIMEOUT_MS=60000 \
+        OR_TOOLS_TIMEOUT_MS=60000 \
         pnpm start 2>&1
     ) | tee -a "$LOG_FILE"
 

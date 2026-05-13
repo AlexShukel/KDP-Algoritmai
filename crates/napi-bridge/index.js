@@ -583,4 +583,6 @@ module.exports.solveCea = nativeBinding.solveCea
 module.exports.solveMilp = nativeBinding.solveMilp
 module.exports.solveMilpBoth = nativeBinding.solveMilpBoth
 module.exports.solveMilpBothWarmStart = nativeBinding.solveMilpBothWarmStart
+module.exports.solveOrToolsCpSat = nativeBinding.solveOrToolsCpSat
+module.exports.solveOrToolsRouting = nativeBinding.solveOrToolsRouting
 module.exports.solvePSa = nativeBinding.solvePSa

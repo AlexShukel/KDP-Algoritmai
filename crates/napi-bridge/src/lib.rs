@@ -18,8 +18,8 @@ use vrppd_psa::{default_config_for, OperatorWeights, SaConfig};
 
 pub use wire::{
   AlgorithmSolution, CeaConfig, CeaConvergencePoint, CeaSolved, Location, LowerBoundsResult,
-  MilpBothResult, MilpConfig, MilpResult, Order, Problem, ProblemSolution, PsaConfig,
-  PsaConvergencePoint, PsaSolved, RouteStop, Vehicle, VehicleRoute,
+  MilpBothResult, MilpConfig, MilpResult, OrToolsConfig, OrToolsResultWire, Order, Problem,
+  ProblemSolution, PsaConfig, PsaConvergencePoint, PsaSolved, RouteStop, Vehicle, VehicleRoute,
 };
 
 #[napi]
@@ -151,10 +151,22 @@ pub fn solve_milp_both_warm_start(
   let price_ws: vrppd_core::ProblemSolution = price_warm_start.into();
 
   let h_dist = std::thread::spawn(move || {
-    vrppd_milp::solve_milp_with_warm_start(&p_dist, Objective::Distance, timeout, threads_each, &dist_ws)
+    vrppd_milp::solve_milp_with_warm_start(
+      &p_dist,
+      Objective::Distance,
+      timeout,
+      threads_each,
+      &dist_ws,
+    )
   });
   let h_price = std::thread::spawn(move || {
-    vrppd_milp::solve_milp_with_warm_start(&p_price, Objective::Price, timeout, threads_each, &price_ws)
+    vrppd_milp::solve_milp_with_warm_start(
+      &p_price,
+      Objective::Price,
+      timeout,
+      threads_each,
+      &price_ws,
+    )
   });
 
   let dist = h_dist
@@ -240,6 +252,77 @@ pub fn solve_milp(
       solve_time_ms: r.solve_time_ms as f64,
     }),
     Err(e) => Err(Error::new(Status::GenericFailure, format!("MILP: {e}"))),
+  }
+}
+
+/// OR-Tools Routing Solver. `target` accepts `"DISTANCE" | "PRICE"`.
+/// `EMPTY` is rejected because the OR-Tools cost model does not
+/// measure the implementation's load-aware empty distance.
+#[napi]
+pub fn solve_or_tools_routing(
+  problem: Problem,
+  target: String,
+  config: Option<OrToolsConfig>,
+) -> Result<OrToolsResultWire> {
+  let objective = parse_target(&target)?;
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_or_tools::DEFAULT_TIMEOUT,
+  };
+  let threads = std::thread::available_parallelism()
+    .map(|n| n.get())
+    .unwrap_or(1);
+
+  match vrppd_or_tools::solve_routing(&core_problem, objective, timeout, threads) {
+    Ok(r) => Ok(OrToolsResultWire {
+      value: r.objective_value,
+      status: or_tools_status_str(r.status),
+      solve_time_ms: r.solve_time_ms as f64,
+    }),
+    Err(e) => Err(Error::new(
+      Status::GenericFailure,
+      format!("OR-Tools Routing: {e}"),
+    )),
+  }
+}
+
+/// OR-Tools CP-SAT. `target` accepts `"DISTANCE" | "PRICE"`. EMPTY is rejected
+/// for the same reason as `solve_milp`.
+#[napi]
+pub fn solve_or_tools_cp_sat(
+  problem: Problem,
+  target: String,
+  config: Option<OrToolsConfig>,
+) -> Result<OrToolsResultWire> {
+  let objective = parse_target(&target)?;
+  let core_problem: vrppd_core::Problem = problem.into();
+  let timeout = match config.as_ref().and_then(|c| c.timeout_ms) {
+    Some(ms) if ms > 0.0 => std::time::Duration::from_millis(ms as u64),
+    _ => vrppd_or_tools::DEFAULT_TIMEOUT,
+  };
+  let threads = std::thread::available_parallelism()
+    .map(|n| n.get())
+    .unwrap_or(1);
+
+  match vrppd_or_tools::solve_cp_sat(&core_problem, objective, timeout, threads) {
+    Ok(r) => Ok(OrToolsResultWire {
+      value: r.objective_value,
+      status: or_tools_status_str(r.status),
+      solve_time_ms: r.solve_time_ms as f64,
+    }),
+    Err(e) => Err(Error::new(
+      Status::GenericFailure,
+      format!("OR-Tools CP-SAT: {e}"),
+    )),
+  }
+}
+
+fn or_tools_status_str(s: vrppd_or_tools::OrToolsStatus) -> String {
+  match s {
+    vrppd_or_tools::OrToolsStatus::Optimal => "OPTIMAL".to_string(),
+    vrppd_or_tools::OrToolsStatus::Feasible => "FEASIBLE".to_string(),
+    vrppd_or_tools::OrToolsStatus::TimedOut => "TIMEDOUT".to_string(),
   }
 }
 

@@ -1,0 +1,93 @@
+{
+  "vehicles": [
+    {
+      "id": 230,
+      "priceKm": 1.2887213037419425,
+      "startLocation": {
+        "hash": "u1ntv0",
+        "latitude": 51.63715028664477,
+        "longitude": 9.364576146285245
+      }
+    },
+    {
+      "id": 3672,
+      "priceKm": 1.2553231320860434,
+      "startLocation": {
+        "hash": "u4n2j6",
+        "latitude": 56.262864144943904,
+        "longitude": 9.026356931965108
+      }
+    },
+    {
+      "id": 4425,
+      "priceKm": 2.385432145511918,
+      "startLocation": {
+        "hash": "u22h7h",
+        "latitude": 47.17915354839721,
+        "longitude": 11.382209997056442
+      }
+    },
+    {
+      "id": 6213,
+      "priceKm": 2.4146346334240794,
+      "startLocation": {
+        "hash": "u0e53j",
+        "latitude": 48.414430774247954,
+        "longitude": 4.266429947938689
+      }
+    },
+    {
+      "id": 1452,
+      "priceKm": 1.4004968504960043,
+      "startLocation": {
+        "hash": "u34bjp",
+        "latitude": 50.667679773103885,
+        "longitude": 15.345378386183077
+      }
+    }
+  ],
+  "orders": [
+    {
+      "id": 4965,
+      "pickupLocation": {
+        "hash": "u1qf5y",
+        "latitude": 52.4193614,
+        "longitude": 9.6574947
+      },
+      "deliveryLocation": {
+        "hash": "u3k4he",
+        "latitude": 52.404004,
+        "longitude": 17.075411
+      },
+      "loadFactor": 4
+    },
+    {
+      "id": 5589,
+      "pickupLocation": {
+        "hash": "u281z7",
+        "latitude": 48.137272,
+        "longitude": 11.575482
+      },
+      "deliveryLocation": {
+        "hash": "u1h4k4",
+        "latitude": 51.033829,
+        "longitude": 5.80965
+      },
+      "loadFactor": 8
+    },
+    {
+      "id": 5984,
+      "pickupLocation": {
+        "hash": "u0wqdb",
+        "latitude": 48.955734,
+        "longitude": 8.920005
+      },
+      "deliveryLocation": {
+        "hash": "u0wsvs",
+        "latitude": 48.67276,
+        "longitude": 9.38384
+      },
+      "loadFactor": 8
+    }
+  ]
+}
