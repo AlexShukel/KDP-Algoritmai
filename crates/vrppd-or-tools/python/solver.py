@@ -176,12 +176,12 @@ def solve_routing(req):
 
     search = pywrapcp.DefaultRoutingSearchParameters()
     # OR_TOOLS_FIRST_SOLUTION env var lets us swap the first-solution heuristic
-    # without recompiling. Common values: PATH_CHEAPEST_ARC (default),
-    # PARALLEL_CHEAPEST_INSERTION, LOCAL_CHEAPEST_INSERTION, SAVINGS, CHRISTOFIDES.
-    strategy_name = os.environ.get("OR_TOOLS_FIRST_SOLUTION", "PATH_CHEAPEST_ARC")
+    # without recompiling. Common values: PARALLEL_CHEAPEST_INSERTION (default),
+    # PATH_CHEAPEST_ARC, LOCAL_CHEAPEST_INSERTION, SAVINGS, CHRISTOFIDES.
+    strategy_name = os.environ.get("OR_TOOLS_FIRST_SOLUTION", "PARALLEL_CHEAPEST_INSERTION")
     search.first_solution_strategy = getattr(
         routing_enums_pb2.FirstSolutionStrategy, strategy_name,
-        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC,
+        routing_enums_pb2.FirstSolutionStrategy.PARALLEL_CHEAPEST_INSERTION,
     )
     search.local_search_metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
     secs = max(1, int(req["timeout_ms"] // 1000))
