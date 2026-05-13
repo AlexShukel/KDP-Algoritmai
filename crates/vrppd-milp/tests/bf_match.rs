@@ -12,35 +12,14 @@ use std::path::PathBuf;
 
 use vrppd_core::{Objective, Problem};
 
-/// Load `problems/<V>_<N>/0_<latest_ts>.json` from the repo root. Picks the
-/// sample-0 file with the highest timestamp, matching the latest invocation
-/// of `pnpm generate:problems:small`.
+/// Load `tests/fixtures/<V>_<N>.json` — a snapshot of one
+/// `pnpm generate:problems:small` sample-0 file per cell, checked in so the
+/// test runs in CI without regenerating the (gitignored) `problems/` tree.
 fn load_grid_problem(v: usize, n: usize) -> Problem {
-  let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-  dir.push("../..");
-  dir.push("problems");
-  dir.push(format!("{v}_{n}"));
-
-  let mut entries: Vec<(u64, std::fs::DirEntry)> = std::fs::read_dir(&dir)
-    .unwrap_or_else(|e| panic!("read_dir {dir:?}: {e}"))
-    .filter_map(|e| e.ok())
-    .filter_map(|e| {
-      let name = e.file_name().into_string().ok()?;
-      let stem = name.strip_suffix(".json")?;
-      let (idx, ts) = stem.split_once('_')?;
-      if idx != "0" {
-        return None;
-      }
-      let ts: u64 = ts.parse().ok()?;
-      Some((ts, e))
-    })
-    .collect();
-
-  entries.sort_by_key(|(ts, _)| *ts);
-  let (_, entry) = entries
-    .last()
-    .unwrap_or_else(|| panic!("no sample-0 problem under {dir:?}"));
-  let raw = std::fs::read_to_string(entry.path()).unwrap();
+  let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    .join("tests/fixtures")
+    .join(format!("{v}_{n}.json"));
+  let raw = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("read {path:?}: {e}"));
   serde_json::from_str(&raw).unwrap()
 }
 
@@ -49,7 +28,10 @@ fn check_cell(v: usize, n: usize) {
   let bf = vrppd_brute_force::solve(&problem);
 
   for (target, bf_optimum) in [
-    (Objective::Distance, bf.best_distance_solution.total_distance),
+    (
+      Objective::Distance,
+      bf.best_distance_solution.total_distance,
+    ),
     (Objective::Price, bf.best_price_solution.total_price),
   ] {
     let cold = vrppd_milp::solve_milp(&problem, target, std::time::Duration::from_secs(600), 1)
@@ -75,7 +57,10 @@ fn check_cell_warm(v: usize, n: usize) {
   let bf = vrppd_brute_force::solve(&problem);
 
   for (target, bf_optimum) in [
-    (Objective::Distance, bf.best_distance_solution.total_distance),
+    (
+      Objective::Distance,
+      bf.best_distance_solution.total_distance,
+    ),
     (Objective::Price, bf.best_price_solution.total_price),
   ] {
     let psa = solve_pipeline_seeded(&problem, target, default_config_for(target), 1);

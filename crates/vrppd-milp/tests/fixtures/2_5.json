@@ -1,0 +1,94 @@
+{
+  "vehicles": [
+    {
+      "id": 3100,
+      "priceKm": 2.257000639868611,
+      "startLocation": {
+        "hash": "u31wxu",
+        "latitude": 51.7945980532672,
+        "longitude": 13.703475355937949
+      }
+    },
+    {
+      "id": 7831,
+      "priceKm": 1.856345098970981,
+      "startLocation": {
+        "hash": "u1md7p",
+        "latitude": 52.466998418934,
+        "longitude": 7.8701115028365685
+      }
+    }
+  ],
+  "orders": [
+    {
+      "id": 9982,
+      "pickupLocation": {
+        "hash": "u14k10",
+        "latitude": 51.331438,
+        "longitude": 3.208329
+      },
+      "deliveryLocation": {
+        "hash": "u355vw",
+        "latitude": 51.32109,
+        "longitude": 15.71148
+      },
+      "loadFactor": 8
+    },
+    {
+      "id": 1967,
+      "pickupLocation": {
+        "hash": "u28k82",
+        "latitude": 48.605431,
+        "longitude": 11.623412
+      },
+      "deliveryLocation": {
+        "hash": "u0wc0j",
+        "latitude": 48.015807,
+        "longitude": 9.501031
+      },
+      "loadFactor": 9
+    },
+    {
+      "id": 5116,
+      "pickupLocation": {
+        "hash": "u1q52c",
+        "latitude": 52.609453,
+        "longitude": 8.480184
+      },
+      "deliveryLocation": {
+        "hash": "u2bjh1",
+        "latitude": 50.1053724,
+        "longitude": 11.4259891
+      },
+      "loadFactor": 7
+    },
+    {
+      "id": 8584,
+      "pickupLocation": {
+        "hash": "u1yv4m",
+        "latitude": 55.7507,
+        "longitude": 9.593335
+      },
+      "deliveryLocation": {
+        "hash": "u0vqcb",
+        "latitude": 50.4062232,
+        "longitude": 7.4699548
+      },
+      "loadFactor": 7
+    },
+    {
+      "id": 9814,
+      "pickupLocation": {
+        "hash": "u2c0s2",
+        "latitude": 49.308084,
+        "longitude": 12.845029
+      },
+      "deliveryLocation": {
+        "hash": "u28k2t",
+        "latitude": 48.5910722,
+        "longitude": 11.6306979
+      },
+      "loadFactor": 8
+    }
+  ]
+}
