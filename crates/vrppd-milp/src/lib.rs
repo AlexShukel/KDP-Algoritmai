@@ -369,8 +369,7 @@ fn build_milp(problem: &Problem, target: Objective) -> MilpModel {
 
   // 1. Order assignment: Σ_v y_ov = 1.
   for o in 0..n_count {
-    let factors: Vec<(highs::Col, f64)> =
-      (0..v_count).map(|v| (y_col[&(o, v)], 1.0)).collect();
+    let factors: Vec<(highs::Col, f64)> = (0..v_count).map(|v| (y_col[&(o, v)], 1.0)).collect();
     pb.add_row(1.0..=1.0, &factors);
   }
 
@@ -616,8 +615,7 @@ mod tests {
       orders: vec![order(1, (0.0, 0.0), (0.0, 0.5))],
     };
 
-    let cold =
-      solve_milp(&problem, Objective::Distance, Duration::from_secs(10), 1).unwrap();
+    let cold = solve_milp(&problem, Objective::Distance, Duration::from_secs(10), 1).unwrap();
 
     let psa = solve_pipeline_seeded(
       &problem,
