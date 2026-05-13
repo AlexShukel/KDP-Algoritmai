@@ -10,6 +10,7 @@ docs/superpowers/specs/2026-05-11-or-tools-baseline-design.md.
 
 import json
 import math
+import os
 import sys
 import time
 
@@ -174,7 +175,14 @@ def solve_routing(req):
         routing.solver().Add(order_dim.CumulVar(p_idx) <= order_dim.CumulVar(d_idx))
 
     search = pywrapcp.DefaultRoutingSearchParameters()
-    search.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
+    # OR_TOOLS_FIRST_SOLUTION env var lets us swap the first-solution heuristic
+    # without recompiling. Common values: PATH_CHEAPEST_ARC (default),
+    # PARALLEL_CHEAPEST_INSERTION, LOCAL_CHEAPEST_INSERTION, SAVINGS, CHRISTOFIDES.
+    strategy_name = os.environ.get("OR_TOOLS_FIRST_SOLUTION", "PATH_CHEAPEST_ARC")
+    search.first_solution_strategy = getattr(
+        routing_enums_pb2.FirstSolutionStrategy, strategy_name,
+        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC,
+    )
     search.local_search_metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
     secs = max(1, int(req["timeout_ms"] // 1000))
     search.time_limit.seconds = secs
