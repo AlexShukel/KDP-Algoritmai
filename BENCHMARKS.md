@@ -345,3 +345,27 @@ The `SKIP_ALGORITHMS` env var is a comma-separated list of algorithm names
 as printed by the harness (`brute-force-rust`, `lb-direct`, `lb-lp`,
 `milp-rust`, `or-tools-cp-sat`, `or-tools-routing`, `p-sa-rust`, `cea-rust`).
 Skipped algorithms do not write their result file, so prior-round data is preserved.
+
+### Stochastic replication-extension (post-R05)
+
+R05 ran with thin replication budgets at the largest two classes (1 rep at
+50×200 and 100×500). To support the §4.3 statistical analyses (Wilcoxon
+paired, 95 % bootstrap CIs, Cohen-d effect sizes) at those scales, the
+script `scripts/run-r05-stochastic-reps.sh` brings `cea-rust` and
+`p-sa-rust` to 10 reps in resumable nightly batches, writing variant files
+`benchmark-results-{cea,p-sa}-rust.reps10.json` alongside the existing R05
+outputs.
+
+PSA finishes in a single ~20-minute invocation. CEA at 50×200 needs two
+~6-hour batches; CEA at 100×500 needs five ~12-hour batches. The script
+enforces the canonical R05 problem timestamp (1778535813465) on every run
+so the comparison stays self-consistent.
+
+```bash
+bash scripts/run-r05-stochastic-reps.sh
+# Chain two CEA batches in one invocation (e.g., weekend):
+MAX_CEA_BATCHES_PER_INVOCATION=2 bash scripts/run-r05-stochastic-reps.sh
+```
+
+Spec: `docs/superpowers/specs/2026-05-13-r05-stochastic-reps-extension-design.md`
+Plan: `docs/superpowers/plans/2026-05-13-r05-stochastic-reps-extension.md`
