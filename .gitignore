@@ -21,3 +21,17 @@ target/
 documents/WC13_*.pdf
 .DS_Store
 results/benchmark-results-*.json
+
+# Python bytecode cache (vrppd-or-tools/python).
+__pycache__/
+
+# Claude Code harness runtime state.
+.claude/scheduled_tasks.lock
+
+# Ad-hoc archive of pre-2026-05-12-sweep results + problems. Kept on disk as a
+# local safety net; never tracked.
+.archive-2026-05-12/
+
+# Temporary problems-dir stash used by scripts/run-r05-ortools-routing-pci.sh
+# while the script swaps classes in and out. Auto-cleaned on script exit.
+.ortools-pci-stash/
