@@ -58,6 +58,37 @@ require_jq() {
   }
 }
 
+# Counts the number of replications represented in a single result file.
+# Assumes the schema: one record per (problemPath, optimizationTarget, runIndex)
+# and a uniform rep count across (problemPath, optimizationTarget) cells.
+# Echoes 0 if the file does not exist.
+count_reps_in_file() {
+  local file="$1"
+  [[ -f "$file" ]] || { echo 0; return; }
+  jq -r '
+    group_by([.problemPath, .optimizationTarget])
+    | map(length)
+    | if length == 0 then 0
+      else
+        if (unique | length) == 1 then .[0]
+        else error("non-uniform rep count across (problem, target) cells in \($__loc__)")
+        end
+      end
+  ' "$file"
+}
+
+# Sums reps across a set of batch files; emits the total rep count
+# represented by their union.
+count_reps_in_batch_set() {
+  local total=0
+  local f
+  for f in "$@"; do
+    [[ -f "$f" ]] || continue
+    total=$(( total + $(count_reps_in_file "$f") ))
+  done
+  echo "$total"
+}
+
 check_problem_set_guard() {
   local class
   for class in "${CLASSES[@]}"; do
