@@ -64,7 +64,7 @@ This is documented in the module-level `//!` doc on `src/lib.rs` and in
 ## 5. Algorithm in pseudo-code
 
 ```
-input: problem P, target T (Distance | Price; Empty errors out), timeout
+input: problem P, target T (Distance | Price; Empty errors out), timeout, threads
 output: MilpResult { objective_value, status, solve_time_ms } or MilpError
 
 1.  if T == Empty: return MilpError::UnsupportedObjective(Empty)
@@ -73,20 +73,21 @@ output: MilpResult { objective_value, status, solve_time_ms } or MilpError
 4.  hm = model.optimise(Sense::Minimise)
 5.  hm.set_option("time_limit", timeout)
 6.  hm.set_option("output_flag", false)         # silence stdout chatter
-7.  solved = hm.solve()
-8.  match solved.status():
+7.  hm.set_option("threads", max(threads, 1))   # B&B + concurrent simplex
+8.  solved = hm.solve()
+9.  match solved.status():
        Optimal           → status = Optimal
        ReachedTimeLimit  → status = TimedOut
        Infeasible        → return MilpError::Infeasible
        other             → return MilpError::SolverFailed(other)
-9.  z = Σ coef · solved.get_solution()[col] over objective_coeffs
-10. return Ok(max(z, 0.0), status, elapsed_ms)
+10. z = Σ coef · solved.get_solution()[col] over objective_coeffs
+11. return Ok(max(z, 0.0), status, elapsed_ms)
 ```
 
-Step 9 reconstructs the objective from the primal vector — see §3 for
+Step 10 reconstructs the objective from the primal vector — see §3 for
 why we do this ourselves.
 
-The `max(z, 0.0)` clamp on step 10 is identical to the LP path's
+The `max(z, 0.0)` clamp on step 11 is identical to the LP path's
 clamp: numerical noise occasionally pushes the reported objective a hair
 below zero on degenerate instances; clamping makes the result safe to
 feed into RPD math downstream.
@@ -117,15 +118,27 @@ crates don't have to share an internal type.
 
 ## 7. Configuration
 
-`solve_milp(problem, target, timeout)`:
+`solve_milp(problem, target, timeout, threads)`:
 
 - `target`: `Objective::Distance` or `Price`. `Empty` returns
   `UnsupportedObjective`.
 - `timeout`: wall-clock cap. Forwarded to HiGHS as the `time_limit`
   option (in seconds).
+- `threads`: parallel branch-and-bound node count + concurrent-simplex
+  thread count (HiGHS strategy 4). Pass `available_parallelism() / 2`
+  when running two instances concurrently to avoid CPU over-subscription.
 
 `solve_milp_default(problem, target)` is the convenience wrapper using
-`DEFAULT_TIMEOUT` (30 minutes — matches PLAN.md §3.3).
+`DEFAULT_TIMEOUT` (30 minutes — matches PLAN.md §3.3) and
+`available_parallelism()` threads.
+
+`solve_milp_with_warm_start(problem, target, timeout, threads,
+warm_start)` accepts a `ProblemSolution` (e.g. from PSA / CEA) and seeds
+HiGHS with it as the initial primal incumbent via `set_solution`. The
+decode lives in the private `warm_start` module and emits column values
+for `(y_ov, x_ijv, q_iv, u_iv)`. An infeasible warm-start is silently
+discarded by HiGHS, so the function behaves identically to `solve_milp`
+in that case.
 
 ## 8. Result interpretation
 
@@ -142,8 +155,10 @@ valid lower bound on what the MILP's optimum *would* have been.
 
 | File | Purpose |
 |---|---|
-| `src/lib.rs` | Everything: types, `solve_milp`, `solve_milp_default`, `build_milp`, helpers. ~500 lines incl tests. |
-| `tests/bf_match.rs` | Compares the MILP optimum against `vrppd-brute-force` on small fixtures. The two should match exactly. |
+| `src/lib.rs` | Result types, `solve_milp`, `solve_milp_default`, `solve_milp_with_warm_start`, `build_milp`, `NodeIndex`, helpers. ~700 lines incl tests. |
+| `src/warm_start.rs` | Decoder turning a `ProblemSolution` into a column-value vector for HiGHS `set_solution`. |
+| `tests/bf_match.rs` | Compares the MILP optimum against `vrppd-brute-force` on small fixtures across a `(V, N)` grid. The two should match exactly. |
+| `tests/fixtures/` | Checked-in JSON instances per `(V, N)` cell so the test runs in CI without regenerating `problems/`. |
 
 ## 10. Reading order for hand-rewrite
 
